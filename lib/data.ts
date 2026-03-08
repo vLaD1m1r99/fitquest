@@ -166,20 +166,29 @@ export interface MealDatabase {
 	entries: MealDatabaseEntry[]
 }
 
+export interface PlanExercise {
+	name: string
+	sets: number
+	reps: string
+	rest: string
+	notes?: string
+	youtube?: string
+}
+
 export interface WorkoutTemplate {
 	name: string
-	exercises: Array<{
-		name: string
-		sets: number
-		reps: string
-		rest: string
-	}>
+	exercises: PlanExercise[]
 }
 
 export interface WorkoutPlan {
 	currentPlan: string
 	startDate: string
-	schedule: Record<string, Record<string, string>>
+	schedule: {
+		week?: Record<string, string>
+		cardio?: string
+		abs?: string
+		[key: string]: unknown
+	}
 	workouts: Record<string, WorkoutTemplate>
 	notes: string
 }

@@ -1,49 +1,161 @@
 {
-  "currentPlan": "PPL (Push/Pull/Legs)",
-  "startDate": "2026-03-09",
-  "schedule": {
-    "week": {
-      "day1": "Push",
-      "day2": "Pull",
-      "day3": "Legs",
-      "day4": "Rest",
-      "day5": "Rest",
-      "day6": "Rest",
-      "day7": "Rest"
-    }
-  },
-  "workouts": {
-    "Push": {
-      "name": "Push Day",
-      "exercises": [
-        { "name": "Machine Incline Bench Press", "sets": 5, "reps": "8-12", "rest": "90s" },
-        { "name": "Flys (Machine or Dumbbell Flat)", "sets": 5, "reps": "10-15", "rest": "60s" },
-        { "name": "Skull Crushers", "sets": 4, "reps": "10-12", "rest": "60s" },
-        { "name": "Cable Triceps Pushdowns", "sets": 4, "reps": "12-15", "rest": "60s" },
-        { "name": "Dumbbell Lateral Raises", "sets": 5, "reps": "12-15", "rest": "45s" }
-      ]
-    },
-    "Pull": {
-      "name": "Pull Day",
-      "exercises": [
-        { "name": "Inverted Rows (Barbell Rack)", "sets": 4, "reps": "8-12", "rest": "90s" },
-        { "name": "Lat Pulldowns", "sets": 4, "reps": "10-12", "rest": "60s" },
-        { "name": "Straight-Arm Pulldowns / Rows", "sets": 4, "reps": "10-12", "rest": "60s" },
-        { "name": "Hyperextensions", "sets": 4, "reps": "12-15", "rest": "60s" },
-        { "name": "Preacher Curls (Barbell)", "sets": 4, "reps": "10-12", "rest": "60s" },
-        { "name": "Incline Dumbbell Curls", "sets": 4, "reps": "10-12", "rest": "60s" }
-      ]
-    },
-    "Legs": {
-      "name": "Leg Day",
-      "exercises": [
-        { "name": "Lunges", "sets": 4, "reps": "10-12 each", "rest": "90s" },
-        { "name": "Leg Press", "sets": 4, "reps": "10-15", "rest": "90s" },
-        { "name": "Machine Leg Extensions", "sets": 4, "reps": "12-15", "rest": "60s" },
-        { "name": "Romanian Deadlifts", "sets": 4, "reps": "10-12", "rest": "90s" },
-        { "name": "Calves + Lateral Raises (Superset)", "sets": 5, "reps": "15-20 / 12-15", "rest": "45s" }
-      ]
-    }
-  },
-  "notes": "Hypertrophy focus — controlled reps, full ROM, relatively light weights. Lateral raises on Push + Legs for extra side delt volume. Considering adding a second Push + Pull day for 5-day PPLPP rotation."
+	"currentPlan": "PPL (Push/Pull/Legs)",
+	"startDate": "2026-03-09",
+	"schedule": {
+		"week": {
+			"day1": "Push",
+			"day2": "Pull",
+			"day3": "Legs",
+			"day4": "Rest",
+			"day5": "Rest",
+			"day6": "Rest",
+			"day7": "Rest"
+		}
+	},
+	"workouts": {
+		"Push": {
+			"name": "Push Day",
+			"exercises": [
+				{
+					"name": "Machine Incline Bench Press",
+					"sets": 5,
+					"reps": "8-12",
+					"rest": "90s",
+					"notes": "Controlled eccentric, full stretch at bottom",
+					"youtube": "https://www.youtube.com/watch?v=MsKbKmLMbus"
+				},
+				{
+					"name": "Flys (Machine or Dumbbell Flat)",
+					"sets": 5,
+					"reps": "10-15",
+					"rest": "60s",
+					"notes": "Deep stretch, squeeze at top",
+					"youtube": "https://www.youtube.com/watch?v=eozdVDA78K0"
+				},
+				{
+					"name": "Skull Crushers",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "60s",
+					"notes": "EZ bar, lower behind head for long-head stretch",
+					"youtube": "https://www.youtube.com/watch?v=d_KZxkY_0cM"
+				},
+				{
+					"name": "Cable Triceps Pushdowns",
+					"sets": 4,
+					"reps": "12-15",
+					"rest": "60s",
+					"notes": "Rope attachment, spread at bottom",
+					"youtube": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+				},
+				{
+					"name": "Dumbbell Lateral Raises",
+					"sets": 5,
+					"reps": "12-15",
+					"rest": "45s",
+					"notes": "Slight lean, controlled tempo",
+					"youtube": "https://www.youtube.com/watch?v=3VcKaXpzqRo"
+				}
+			]
+		},
+		"Pull": {
+			"name": "Pull Day",
+			"exercises": [
+				{
+					"name": "Inverted Rows (Barbell Rack)",
+					"sets": 4,
+					"reps": "8-12",
+					"rest": "90s",
+					"notes": "Feet elevated for more difficulty, squeeze scapula",
+					"youtube": "https://www.youtube.com/watch?v=dYhN2BOKUkU"
+				},
+				{
+					"name": "Lat Pulldowns",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "60s",
+					"notes": "Wide grip, pull to upper chest",
+					"youtube": "https://www.youtube.com/watch?v=CAwf7n6Luuc"
+				},
+				{
+					"name": "Straight-Arm Pulldowns / Rows",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "60s",
+					"notes": "Focus on lat contraction",
+					"youtube": "https://www.youtube.com/watch?v=AjCCGN2SE8c"
+				},
+				{
+					"name": "Hyperextensions",
+					"sets": 4,
+					"reps": "12-15",
+					"rest": "60s",
+					"notes": "Hold plate on chest, controlled",
+					"youtube": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+				},
+				{
+					"name": "Preacher Curls (Barbell)",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "60s",
+					"notes": "Full stretch at bottom, don't swing",
+					"youtube": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
+				},
+				{
+					"name": "Incline Dumbbell Curls",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "60s",
+					"notes": "45° bench, long head emphasis",
+					"youtube": "https://www.youtube.com/watch?v=soxrZlIl35U"
+				}
+			]
+		},
+		"Legs": {
+			"name": "Leg Day",
+			"exercises": [
+				{
+					"name": "Lunges",
+					"sets": 4,
+					"reps": "10-12 each",
+					"rest": "90s",
+					"notes": "Walking or stationary, deep knee flexion",
+					"youtube": "https://www.youtube.com/watch?v=QOVaHwm-Q6U"
+				},
+				{
+					"name": "Leg Press",
+					"sets": 4,
+					"reps": "10-15",
+					"rest": "90s",
+					"notes": "Feet high and wide for more glute/ham",
+					"youtube": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"
+				},
+				{
+					"name": "Machine Leg Extensions",
+					"sets": 4,
+					"reps": "12-15",
+					"rest": "60s",
+					"notes": "Full lockout, squeeze at top",
+					"youtube": "https://www.youtube.com/watch?v=YyvSfVjQeL0"
+				},
+				{
+					"name": "Romanian Deadlifts",
+					"sets": 4,
+					"reps": "10-12",
+					"rest": "90s",
+					"notes": "Hinge at hips, soft knees, bar close to legs",
+					"youtube": "https://www.youtube.com/watch?v=7AaaYhMqTws"
+				},
+				{
+					"name": "Calves + Lateral Raises (Superset)",
+					"sets": 5,
+					"reps": "15-20 / 12-15",
+					"rest": "45s",
+					"notes": "Standing calf raises superset with dumbbell lateral raises",
+					"youtube": "https://www.youtube.com/watch?v=gwLzBJYoWlI"
+				}
+			]
+		}
+	},
+	"notes": "Hypertrophy focus — controlled reps, full ROM, relatively light weights. Lateral raises on Push + Legs for extra side delt volume. Considering adding a second Push + Pull day for 5-day PPLPP rotation."
 }
