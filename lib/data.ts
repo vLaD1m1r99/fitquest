@@ -295,8 +295,8 @@ export async function getMealDatabase(): Promise<MealDatabase> {
 	return fetchData(`shared/meal-database.json`)
 }
 
-export async function getWorkoutPlan(): Promise<WorkoutPlan> {
-	return fetchData(`shared/workout-plan.json`)
+export async function getWorkoutPlan(user: User): Promise<WorkoutPlan> {
+	return fetchData(`${user}/workout-plan.json`)
 }
 
 export async function getConfig(): Promise<Config> {

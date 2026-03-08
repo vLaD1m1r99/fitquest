@@ -1,0 +1,49 @@
+{
+  "currentPlan": "PPL (Push/Pull/Legs)",
+  "startDate": "2026-03-09",
+  "schedule": {
+    "week": {
+      "day1": "Push",
+      "day2": "Pull",
+      "day3": "Legs",
+      "day4": "Rest",
+      "day5": "Rest",
+      "day6": "Rest",
+      "day7": "Rest"
+    }
+  },
+  "workouts": {
+    "Push": {
+      "name": "Push Day",
+      "exercises": [
+        { "name": "Machine Incline Bench Press", "sets": 5, "reps": "8-12", "rest": "90s" },
+        { "name": "Flys (Machine or Dumbbell Flat)", "sets": 5, "reps": "10-15", "rest": "60s" },
+        { "name": "Skull Crushers", "sets": 4, "reps": "10-12", "rest": "60s" },
+        { "name": "Cable Triceps Pushdowns", "sets": 4, "reps": "12-15", "rest": "60s" },
+        { "name": "Dumbbell Lateral Raises", "sets": 5, "reps": "12-15", "rest": "45s" }
+      ]
+    },
+    "Pull": {
+      "name": "Pull Day",
+      "exercises": [
+        { "name": "Inverted Rows (Barbell Rack)", "sets": 4, "reps": "8-12", "rest": "90s" },
+        { "name": "Lat Pulldowns", "sets": 4, "reps": "10-12", "rest": "60s" },
+        { "name": "Straight-Arm Pulldowns / Rows", "sets": 4, "reps": "10-12", "rest": "60s" },
+        { "name": "Hyperextensions", "sets": 4, "reps": "12-15", "rest": "60s" },
+        { "name": "Preacher Curls (Barbell)", "sets": 4, "reps": "10-12", "rest": "60s" },
+        { "name": "Incline Dumbbell Curls", "sets": 4, "reps": "10-12", "rest": "60s" }
+      ]
+    },
+    "Legs": {
+      "name": "Leg Day",
+      "exercises": [
+        { "name": "Lunges", "sets": 4, "reps": "10-12 each", "rest": "90s" },
+        { "name": "Leg Press", "sets": 4, "reps": "10-15", "rest": "90s" },
+        { "name": "Machine Leg Extensions", "sets": 4, "reps": "12-15", "rest": "60s" },
+        { "name": "Romanian Deadlifts", "sets": 4, "reps": "10-12", "rest": "90s" },
+        { "name": "Calves + Lateral Raises (Superset)", "sets": 5, "reps": "15-20 / 12-15", "rest": "45s" }
+      ]
+    }
+  },
+  "notes": "Hypertrophy focus — controlled reps, full ROM, relatively light weights. Lateral raises on Push + Legs for extra side delt volume. Considering adding a second Push + Pull day for 5-day PPLPP rotation."
+}
