@@ -1,0 +1,166 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noAutofocus": "off",
+        "useButtonType": "off",
+        "noStaticElementInteractions": "warn",
+        "useKeyWithClickEvents": "warn",
+        "useSemanticElements": "warn"
+      },
+      "complexity": {
+        "noForEach": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
+        "noUnusedFunctionParameters": "warn",
+        "useJsxKeyInIterable": "warn"
+      },
+      "style": {
+        "noNegationElse": "warn",
+        "useFragmentSyntax": "off",
+        "noNonNullAssertion": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "error",
+        "noDangerouslySetInnerHtmlWithChildren": "error",
+        "noGlobalEval": "error"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noConsole": "error",
+        "noEmptyBlockStatements": "error",
+        "useAwait": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "jsxRuntime": "reactClassic",
+    "formatter": {
+      "enabled": true,
+      "semicolons": "asNeeded",
+      "quoteStyle": "double",
+      "indentStyle": "tab",
+      "lineWidth": 120,
+      "lineEnding": "lf",
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "double",
+      "arrowParentheses": "asNeeded",
+      "indentWidth": 4
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "next.config.ts",
+        "postcss.config.mjs",
+        "tailwind.config.*",
+        "trigger.config.ts"
+      ],
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["**/tsconfig.json", "**/tsconfig.*.json", "**/package.json"],
+      "json": {
+        "formatter": {
+          "enabled": false
+        },
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    },
+    {
+      "includes": ["components/ui/**"],
+      "formatter": {
+        "enabled": false
+      },
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["app/globals.css"],
+      "css": {
+        "formatter": {
+          "enabled": false
+        },
+        "linter": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "includes": ["legacy/**"],
+      "linter": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["tmp/**", "scripts/**"],
+      "linter": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["tests/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off",
+            "useAwait": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.d.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    }
+  ],
+  "vcs": {
+    "clientKind": "git",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
+}

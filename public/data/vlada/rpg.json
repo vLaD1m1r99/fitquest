@@ -1,0 +1,14 @@
+{
+  "level": 1,
+  "totalXP": 0,
+  "xpToNextLevel": 500,
+  "currentStreak": 0,
+  "longestStreak": 0,
+  "totalWorkouts": 0,
+  "totalPRs": 0,
+  "perfectMacroDays": 0,
+  "xpHistory": [
+    { "date": "2026-03-09", "xpGained": 0, "reason": "Day 1 - Journey begins" }
+  ],
+  "achievements": []
+}

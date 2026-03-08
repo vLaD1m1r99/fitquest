@@ -1,0 +1,23 @@
+{
+  "name": "Vlada",
+  "gender": "male",
+  "age": 27,
+  "heightCm": 177,
+  "currentWeightKg": 90.4,
+  "startingWeightKg": 90.4,
+  "goalWeightKg": null,
+  "bmr": 1880,
+  "tdee": 2914,
+  "dailyCalorieTarget": 2414,
+  "macros": {
+    "proteinG": 199,
+    "fatG": 67,
+    "carbsG": 254
+  },
+  "deficit": 500,
+  "activityFactor": 1.55,
+  "supplements": ["Creatine 5g/day", "Whey protein"],
+  "restrictions": [],
+  "lastRecalculation": "2026-03-09",
+  "notes": ""
+}
