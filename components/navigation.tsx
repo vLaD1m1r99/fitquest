@@ -2,16 +2,21 @@
 
 import { ChevronDown, Dumbbell, LayoutDashboard, Target, TrendingUp, Utensils } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useRef, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useRef, useState, useTransition } from "react"
+import { switchUser } from "@/app/actions"
+import { USER_DISPLAY_NAMES, type User } from "@/lib/data"
 import { ThemeToggle } from "./theme-toggle"
-import { useActiveUser, USER_DISPLAY_NAMES } from "./user-context"
 
-export function Navigation() {
+export function Navigation({ activeUser }: { activeUser: User }) {
 	const pathname = usePathname()
-	const { activeUser, displayName, setActiveUser } = useActiveUser()
+	const router = useRouter()
 	const [userMenuOpen, setUserMenuOpen] = useState(false)
+	const [isPending, startTransition] = useTransition()
 	const menuRef = useRef<HTMLDivElement>(null)
+
+	const displayName = USER_DISPLAY_NAMES[activeUser]
+	const otherUser: User = activeUser === "vlada" ? "sneska" : "vlada"
 
 	const isActive = (path: string) => {
 		if (path === "/" && pathname === "/") return true
@@ -27,7 +32,13 @@ export function Navigation() {
 		{ href: "/challenges", label: "Quests", icon: Target },
 	]
 
-	const otherUser = activeUser === "vlada" ? "sneska" : "vlada"
+	const handleSwitchUser = () => {
+		setUserMenuOpen(false)
+		startTransition(async () => {
+			await switchUser(otherUser)
+			router.refresh()
+		})
+	}
 
 	return (
 		<nav className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-sm">
@@ -65,9 +76,10 @@ export function Navigation() {
 							<div className="relative" ref={menuRef}>
 								<button
 									onClick={() => setUserMenuOpen(!userMenuOpen)}
-									className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-accent/15 text-accent hover:bg-accent/25 transition-all"
+									disabled={isPending}
+									className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-accent/15 text-accent hover:bg-accent/25 transition-all ${isPending ? "opacity-50" : ""}`}
 								>
-									<span>{displayName}</span>
+									<span>{isPending ? "..." : displayName}</span>
 									<ChevronDown
 										size={14}
 										className={`transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
@@ -85,14 +97,11 @@ export function Navigation() {
 												{displayName}
 											</button>
 											<button
-												onClick={() => {
-													setActiveUser(otherUser as "vlada" | "sneska")
-													setUserMenuOpen(false)
-												}}
+												onClick={handleSwitchUser}
 												className="w-full px-4 py-2.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-2"
 											>
 												<span className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-												{USER_DISPLAY_NAMES[otherUser as "vlada" | "sneska"]}
+												{USER_DISPLAY_NAMES[otherUser]}
 											</button>
 										</div>
 									</>

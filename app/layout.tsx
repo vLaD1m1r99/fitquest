@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import { cookies } from "next/headers"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
-import { Providers } from "@/components/providers"
+import { ThemeProvider } from "@/components/theme-context"
+import type { User } from "@/lib/data"
 
 const geistSans = Geist({
 	variable: "--font-sans",
@@ -15,22 +17,28 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-	title: "FitQuest — Vlada & Sneska",
-	description: "Dark-themed fitness tracker with RPG elements",
+	title: {
+		default: "FitQuest — Vlada & Sneška",
+		template: "%s | FitQuest",
+	},
+	description: "Fitness tracker with RPG elements for Vlada & Sneška",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const cookieStore = await cookies()
+	const activeUser = (cookieStore.get("activeUser")?.value || "vlada") as User
+
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" data-user={activeUser} suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
-				<Providers>
-					<Navigation />
+				<ThemeProvider>
+					<Navigation activeUser={activeUser} />
 					<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">{children}</main>
-				</Providers>
+				</ThemeProvider>
 			</body>
 		</html>
 	)

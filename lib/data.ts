@@ -1,3 +1,10 @@
+export const GITHUB_RAW_BASE = "https://raw.githubusercontent.com/vLaD1m1r99/fitquest/master/public/data/"
+
+export const USER_DISPLAY_NAMES: Record<User, string> = {
+	vlada: "Vlada",
+	sneska: "Sneška",
+}
+
 export interface Macros {
 	proteinG: number
 	fatG: number
@@ -246,61 +253,67 @@ export interface ProgressPhotosData {
 export type User = "vlada" | "sneska"
 
 async function fetchData<T>(path: string): Promise<T> {
-	const response = await fetch(path, {
-		cache: "no-store",
+	const url = `${GITHUB_RAW_BASE}${path}`
+	const response = await fetch(url, {
+		next: { revalidate: 60 },
 	})
 	if (!response.ok) {
-		throw new Error(`Failed to fetch ${path}: ${response.statusText}`)
+		throw new Error(`Failed to fetch ${url}: ${response.statusText}`)
 	}
 	return response.json()
 }
 
 export async function getProfile(user: User): Promise<Profile> {
-	return fetchData(`/data/${user}/profile.json`)
+	return fetchData(`${user}/profile.json`)
 }
 
 export async function getRPG(user: User): Promise<RPG> {
-	return fetchData(`/data/${user}/rpg.json`)
+	return fetchData(`${user}/rpg.json`)
 }
 
 export async function getWeightLog(user: User): Promise<WeightLog> {
-	return fetchData(`/data/${user}/weight-log.json`)
+	return fetchData(`${user}/weight-log.json`)
 }
 
 export async function getMeasurementLog(user: User): Promise<MeasurementLog> {
-	return fetchData(`/data/${user}/measurements.json`)
+	return fetchData(`${user}/measurements.json`)
 }
 
 export async function getNutritionLog(user: User): Promise<NutritionLog> {
-	return fetchData(`/data/${user}/nutrition-log.json`)
+	return fetchData(`${user}/nutrition-log.json`)
 }
 
 export async function getWorkoutLog(user: User): Promise<WorkoutLog> {
-	return fetchData(`/data/${user}/workout-log.json`)
+	return fetchData(`${user}/workout-log.json`)
 }
 
 export async function getDailyLog(user: User): Promise<DailyLog> {
-	return fetchData(`/data/${user}/daily-log.json`)
+	return fetchData(`${user}/daily-log.json`)
 }
 
 export async function getMealDatabase(): Promise<MealDatabase> {
-	return fetchData(`/data/shared/meal-database.json`)
+	return fetchData(`shared/meal-database.json`)
 }
 
 export async function getWorkoutPlan(): Promise<WorkoutPlan> {
-	return fetchData(`/data/shared/workout-plan.json`)
+	return fetchData(`shared/workout-plan.json`)
 }
 
 export async function getConfig(): Promise<Config> {
-	return fetchData(`/data/shared/config.json`)
+	return fetchData(`shared/config.json`)
 }
 
 export async function getChallenges(user: User): Promise<ChallengesData> {
-	return fetchData(`/data/${user}/challenges.json`)
+	return fetchData(`${user}/challenges.json`)
 }
 
 export async function getProgressPhotos(user: User): Promise<ProgressPhotosData> {
-	return fetchData(`/data/${user}/progress-photos.json`)
+	return fetchData(`${user}/progress-photos.json`)
+}
+
+export function getActiveUserFromCookie(userCookie: string | undefined): User {
+	if (userCookie === "sneska") return "sneska"
+	return "vlada"
 }
 
 export function daysSinceStart(startDate: string): number {
@@ -358,11 +371,6 @@ export function getLatestMeasurements(measurements: MeasurementLog): Measurement
 	return measurements.entries[measurements.entries.length - 1]
 }
 
-/**
- * Estimate body fat % using US Navy method.
- * Male: 495 / (1.0324 - 0.19077*log10(waist-neck) + 0.15456*log10(height)) - 450
- * Female: 495 / (1.29579 - 0.35004*log10(waist+hip-neck) + 0.22100*log10(height)) - 450
- */
 export function estimateBodyFat(
 	gender: "male" | "female",
 	waistCm: number,
