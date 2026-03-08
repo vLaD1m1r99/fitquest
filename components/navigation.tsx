@@ -1,6 +1,6 @@
 "use client"
 
-import { Dumbbell, LayoutDashboard, TrendingUp, User, Utensils } from "lucide-react"
+import { Dumbbell, LayoutDashboard, Target, TrendingUp, User, Utensils } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ThemeToggle } from "./theme-toggle"
@@ -36,6 +36,11 @@ export function Navigation() {
 			icon: TrendingUp,
 		},
 		{
+			href: "/challenges",
+			label: "Quests",
+			icon: Target,
+		},
+		{
 			href: "/profile",
 			label: "Profile",
 			icon: User,
@@ -46,7 +51,7 @@ export function Navigation() {
 		<nav className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-sm">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
-					<Link href="/" className="text-xl font-bold text-rose flex items-center gap-2">
+					<Link href="/" className="text-xl font-bold text-accent flex items-center gap-2">
 						<span>⚡</span>
 						<span>FitQuest</span>
 					</Link>
@@ -59,8 +64,10 @@ export function Navigation() {
 								<Link
 									key={item.href}
 									href={item.href}
-									className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-										active ? "bg-rose text-card" : "text-foreground hover:bg-muted"
+									className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+										active
+											? "bg-accent text-accent-foreground shadow-sm shadow-accent/25"
+											: "text-muted-foreground hover:text-foreground hover:bg-muted"
 									}`}
 								>
 									<Icon size={18} />

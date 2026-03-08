@@ -156,19 +156,19 @@
   --primary: #a78bfa;
 }
 
-/* Sneska — Rose */
+/* Sneska — Soft Pink */
 [data-user="sneska"] {
-  --accent: #f43f5e;
-  --accent-muted: #ffe4e6;
-  --ring: #f43f5e;
-  --primary: #f43f5e;
+  --accent: #ec4899;
+  --accent-muted: #fce7f3;
+  --ring: #ec4899;
+  --primary: #ec4899;
 }
 .dark[data-user="sneska"],
 .dark [data-user="sneska"] {
-  --accent: #fb7185;
-  --accent-muted: #4c0519;
-  --ring: #fb7185;
-  --primary: #fb7185;
+  --accent: #f472b6;
+  --accent-muted: #831843;
+  --ring: #f472b6;
+  --primary: #f472b6;
 }
 
 @layer base {

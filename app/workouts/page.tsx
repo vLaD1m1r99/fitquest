@@ -146,7 +146,7 @@ export default function WorkoutsPage() {
 																	<span>
 																		{set.reps} reps @ {set.weightKg}kg
 																	</span>
-																	<span className="text-rose">RPE {set.rpe}</span>
+																	<span className="text-accent">RPE {set.rpe}</span>
 																</div>
 															))}
 														</div>

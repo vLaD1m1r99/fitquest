@@ -1,6 +1,6 @@
 "use client"
 
-import { Activity, Brain, Heart, Moon, TrendingDown, TrendingUp } from "lucide-react"
+import { Activity, AlertCircle, Brain, Heart, Lightbulb, Moon, TrendingDown, TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import {
 	Bar,
@@ -18,19 +18,22 @@ import { Card } from "@/components/ui/card"
 import { useActiveUser } from "@/components/user-context"
 import { UserToggle } from "@/components/user-toggle"
 import {
+	estimateBodyFat,
 	getDailyLog,
 	getMeasurementLog,
 	getNutritionLog,
 	getProfile,
+	getProgressPhotos,
 	getWeightLog,
 	type Profile,
+	type ProgressPhotosData,
 	weightChange,
 } from "@/lib/data"
 
 type Timespan = "1W" | "2W" | "1M" | "3M" | "All"
 
 interface FilteredData {
-	weight: Array<{ date: string; weightKg: number; weeklyAvgKg: number }>
+	weight: Array<{ date: string; weightKg: number; weeklyAvgKg: number | null }>
 	measurements: Array<{
 		date: string
 		waistCm: number
@@ -54,6 +57,7 @@ export default function ProgressPage() {
 		nutrition: [],
 		dailyLog: [],
 	})
+	const [progressPhotos, setProgressPhotos] = useState<ProgressPhotosData | null>(null)
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
@@ -61,15 +65,18 @@ export default function ProgressPage() {
 			if (!activeUser) return
 
 			try {
-				const [profileData, weightData, measurementData, nutritionData, dailyLogData] = await Promise.all([
-					getProfile(activeUser),
-					getWeightLog(activeUser),
-					getMeasurementLog(activeUser),
-					getNutritionLog(activeUser),
-					getDailyLog(activeUser),
-				])
+				const [profileData, weightData, measurementData, nutritionData, dailyLogData, photosData] =
+					await Promise.all([
+						getProfile(activeUser),
+						getWeightLog(activeUser),
+						getMeasurementLog(activeUser),
+						getNutritionLog(activeUser),
+						getDailyLog(activeUser),
+						getProgressPhotos(activeUser),
+					])
 
 				setProfile(profileData)
+				setProgressPhotos(photosData)
 
 				const now = new Date()
 				const days = getTimespanDays(timespan)
@@ -221,6 +228,81 @@ export default function ProgressPage() {
 		}
 	}
 
+	const generateInsights = () => {
+		const insights: string[] = []
+
+		if (filteredData.weight.length > 1) {
+			const firstWeight = filteredData.weight[0].weightKg
+			const lastWeight = filteredData.weight[filteredData.weight.length - 1].weightKg
+			const weightDiff = firstWeight - lastWeight
+			const days = filteredData.weight.length
+			const weeks = Math.max(1, Math.ceil(days / 7))
+			const kgPerWeek = weightDiff / weeks
+
+			if (Math.abs(weightDiff) < 0.5) {
+				insights.push("Your weight has been stable throughout this period.")
+			} else if (weightDiff > 0) {
+				insights.push(
+					`You've lost ${weightDiff.toFixed(1)} kg in ${weeks} weeks (${kgPerWeek.toFixed(2)} kg/week).`,
+				)
+
+				if (kgPerWeek > 1) {
+					insights.push(
+						"⚠️ Your weight loss rate exceeds 1 kg/week. Consider increasing calorie intake slightly to ensure sustainable progress.",
+					)
+				}
+			} else {
+				insights.push(`Your weight has increased by ${Math.abs(weightDiff).toFixed(1)} kg in ${weeks} weeks.`)
+			}
+		}
+
+		if (filteredData.nutrition.length > 0) {
+			const avgCalories =
+				filteredData.nutrition.reduce((sum, day) => {
+					const calsFromProtein = day.proteinG * 4
+					const calsFromCarbs = day.carbsG * 4
+					const calsFromFat = day.fatG * 9
+					return sum + calsFromProtein + calsFromCarbs + calsFromFat
+				}, 0) / filteredData.nutrition.length
+
+			const target = profile?.dailyCalorieTarget || 2000
+
+			insights.push(
+				`You're averaging ${Math.round(avgCalories)} calories/day. Your target is ${target} calories.`,
+			)
+
+			if (avgCalories < target * 0.9) {
+				insights.push("💡 You're eating significantly below your target. This may impact energy and recovery.")
+			} else if (avgCalories > target * 1.1) {
+				insights.push("💡 You're consuming above your target. Adjust portions to align with your goals.")
+			}
+		}
+
+		if (filteredData.dailyLog.length > 0) {
+			const avgSleep =
+				filteredData.dailyLog.reduce((sum, entry) => sum + entry.sleepHours, 0) / filteredData.dailyLog.length
+			const avgEnergy =
+				filteredData.dailyLog.reduce((sum, entry) => sum + entry.energyLevel, 0) / filteredData.dailyLog.length
+
+			insights.push(
+				`You're averaging ${avgSleep.toFixed(1)} hours of sleep per night with ${avgEnergy.toFixed(1)}/5 energy.`,
+			)
+
+			if (avgSleep < 7) {
+				insights.push(
+					"💡 Getting less than 7 hours of sleep. Prioritize sleep quality for better recovery and progress.",
+				)
+			}
+		}
+
+		const macroAdherence = calculateMacroAdherence()
+		if (macroAdherence < 50 && filteredData.nutrition.length > 0) {
+			insights.push("⚠️ Macro adherence is low. Focus on hitting your protein and carb targets consistently.")
+		}
+
+		return insights
+	}
+
 	const CustomTooltip = ({ active, payload }: any) => {
 		if (active && payload && payload.length) {
 			return (
@@ -259,6 +341,20 @@ export default function ProgressPage() {
 	const hasMultipleMeasurements = filteredData.measurements.length > 1
 	const latestMeasurement =
 		filteredData.measurements.length > 0 ? filteredData.measurements[filteredData.measurements.length - 1] : null
+	const insights = generateInsights()
+
+	const getBodyFatEstimate = () => {
+		if (!profile || !latestMeasurement) return null
+		return estimateBodyFat(
+			profile.gender as "male" | "female",
+			latestMeasurement.waistCm,
+			latestMeasurement.neckCm,
+			profile.heightCm,
+			latestMeasurement.hipsCm,
+		)
+	}
+
+	const bodyFatEstimate = getBodyFatEstimate()
 
 	return (
 		<div className="space-y-8">
@@ -276,7 +372,7 @@ export default function ProgressPage() {
 						onClick={() => setTimespan(span)}
 						className={`px-4 py-2 rounded-full font-medium transition-all ${
 							timespan === span
-								? "bg-accent text-accent-foreground"
+								? "bg-accent text-accent-foreground shadow-sm"
 								: "bg-card text-foreground border border-border hover:border-accent/50"
 						}`}
 					>
@@ -285,9 +381,9 @@ export default function ProgressPage() {
 				))}
 			</div>
 
-			{/* Weight Chart */}
+			{/* Weight Trend Chart */}
 			{filteredData.weight.length > 0 && (
-				<Card className="p-6 mb-8">
+				<Card className="p-6">
 					<h2 className="text-2xl font-semibold text-foreground mb-4">Weight Trend</h2>
 					<ResponsiveContainer width="100%" height={300}>
 						<LineChart data={filteredData.weight}>
@@ -318,50 +414,40 @@ export default function ProgressPage() {
 				</Card>
 			)}
 
-			{/* Stats Grid */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-				{/* Starting Weight */}
+			{/* Body Fat % Estimate */}
+			{latestMeasurement && (
 				<Card className="p-6">
-					<p className="text-sm font-medium text-muted-foreground mb-2">Starting Weight</p>
-					<p className="text-3xl font-bold text-foreground">{stats.startingWeight.toFixed(1)}</p>
-					<p className="text-xs text-muted-foreground mt-2">kg</p>
+					<h2 className="text-2xl font-semibold text-foreground mb-4">Body Fat % Estimate</h2>
+					{bodyFatEstimate !== null ? (
+						<div className="space-y-4">
+							<div className="flex items-end gap-4">
+								<div>
+									<p className="text-sm font-medium text-muted-foreground mb-2">Estimated Body Fat</p>
+									<p className="text-5xl font-bold text-foreground">{bodyFatEstimate.toFixed(1)}</p>
+									<p className="text-sm text-muted-foreground">%</p>
+								</div>
+								<div className="flex-1 h-32 bg-muted rounded-lg p-4 flex flex-col justify-between">
+									<div className="w-full bg-muted rounded-full h-4 overflow-hidden mb-2 border border-border">
+										<div
+											className="bg-accent h-full transition-all"
+											style={{ width: `${Math.min(bodyFatEstimate, 100)}%` }}
+										/>
+									</div>
+									<p className="text-xs text-muted-foreground text-center">
+										Based on waist, neck, and height
+									</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<p className="text-muted-foreground">No measurement data yet</p>
+					)}
 				</Card>
-
-				{/* Current Weight */}
-				<Card className="p-6">
-					<p className="text-sm font-medium text-muted-foreground mb-2">Current Weight</p>
-					<p className="text-3xl font-bold text-foreground">{stats.currentWeight.toFixed(1)}</p>
-					<p className="text-xs text-muted-foreground mt-2">kg</p>
-				</Card>
-
-				{/* Total Change */}
-				<Card className="p-6">
-					<p className="text-sm font-medium text-muted-foreground mb-2">Total Change</p>
-					<div className="flex items-center gap-2">
-						<p className="text-3xl font-bold text-foreground">{stats.totalChange.toFixed(1)}</p>
-						{stats.totalChange < 0 ? (
-							<TrendingDown className="w-6 h-6 text-success" />
-						) : (
-							<TrendingUp className="w-6 h-6 text-danger" />
-						)}
-					</div>
-					<p className="text-xs text-muted-foreground mt-2">
-						{stats.totalChangePercent > 0 ? "+" : ""}
-						{stats.totalChangePercent.toFixed(1)}%
-					</p>
-				</Card>
-
-				{/* Weekly Avg Change */}
-				<Card className="p-6">
-					<p className="text-sm font-medium text-muted-foreground mb-2">Weekly Avg Change</p>
-					<p className="text-3xl font-bold text-foreground">{stats.weeklyAvgChange.toFixed(2)}</p>
-					<p className="text-xs text-muted-foreground mt-2">kg/week</p>
-				</Card>
-			</div>
+			)}
 
 			{/* Body Measurements */}
 			{latestMeasurement && (
-				<Card className="p-6 mb-8">
+				<Card className="p-6">
 					<h2 className="text-2xl font-semibold text-foreground mb-6">Body Measurements</h2>
 
 					{/* Measurements Grid */}
@@ -422,7 +508,7 @@ export default function ProgressPage() {
 									<Line
 										type="monotone"
 										dataKey="hipsCm"
-										stroke="#fb7185"
+										stroke="#f472b6"
 										dot={{ r: 3 }}
 										name="Hips"
 										isAnimationActive={false}
@@ -443,6 +529,14 @@ export default function ProgressPage() {
 										name="Arms"
 										isAnimationActive={false}
 									/>
+									<Line
+										type="monotone"
+										dataKey="thighsCm"
+										stroke="#4ade80"
+										dot={{ r: 3 }}
+										name="Thighs"
+										isAnimationActive={false}
+									/>
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
@@ -450,9 +544,40 @@ export default function ProgressPage() {
 				</Card>
 			)}
 
+			{/* Nutrition Trend Chart */}
+			{filteredData.nutrition.length > 0 && (
+				<Card className="p-6">
+					<h2 className="text-2xl font-semibold text-foreground mb-4">Nutrition Trend</h2>
+					<ResponsiveContainer width="100%" height={300}>
+						<BarChart data={filteredData.nutrition}>
+							<CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.2} />
+							<XAxis dataKey="date" stroke="currentColor" opacity={0.6} />
+							<YAxis stroke="currentColor" opacity={0.6} />
+							<Tooltip content={<CustomTooltip />} />
+							<Legend />
+							<Bar
+								dataKey="proteinG"
+								stackId="a"
+								fill="#4ade80"
+								name="Protein (g)"
+								isAnimationActive={false}
+							/>
+							<Bar
+								dataKey="carbsG"
+								stackId="a"
+								fill="#fbbf24"
+								name="Carbs (g)"
+								isAnimationActive={false}
+							/>
+							<Bar dataKey="fatG" stackId="a" fill="#f87171" name="Fat (g)" isAnimationActive={false} />
+						</BarChart>
+					</ResponsiveContainer>
+				</Card>
+			)}
+
 			{/* Macro Adherence */}
 			{filteredData.nutrition.length > 0 && (
-				<Card className="p-6 mb-8">
+				<Card className="p-6">
 					<h2 className="text-2xl font-semibold text-foreground mb-4">Macro Adherence</h2>
 					<div className="flex items-center gap-4">
 						<div className="flex-1">
@@ -460,7 +585,7 @@ export default function ProgressPage() {
 								<p className="text-sm font-medium text-foreground">Days Hit Target</p>
 								<p className="text-sm font-semibold text-accent">{macroAdherence}%</p>
 							</div>
-							<div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+							<div className="w-full bg-muted rounded-full h-3 overflow-hidden border border-border">
 								<div
 									className="bg-accent h-full transition-all"
 									style={{ width: `${macroAdherence}%` }}
@@ -486,6 +611,25 @@ export default function ProgressPage() {
 				</Card>
 			)}
 
+			{/* Insights Section */}
+			{insights.length > 0 && (
+				<Card className="p-6 border-l-4 border-accent">
+					<div className="flex gap-3 items-start">
+						<Lightbulb className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
+						<div className="space-y-2">
+							<h2 className="text-lg font-semibold text-foreground">Insights</h2>
+							<div className="space-y-2">
+								{insights.map((insight, idx) => (
+									<p key={idx} className="text-sm text-foreground leading-relaxed">
+										{insight}
+									</p>
+								))}
+							</div>
+						</div>
+					</div>
+				</Card>
+			)}
+
 			{/* Daily Log Trends */}
 			{filteredData.dailyLog.length > 0 && (
 				<Card className="p-6">
@@ -494,7 +638,7 @@ export default function ProgressPage() {
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 						{/* Average Sleep */}
 						<div className="bg-muted p-4 rounded-lg flex items-center gap-3">
-							<Moon className="w-6 h-6 text-[#22d3ee] flex-shrink-0" />
+							<Moon className="w-6 h-6 text-cyan-400 flex-shrink-0" />
 							<div>
 								<p className="text-xs font-medium text-muted-foreground">Avg Sleep</p>
 								<p className="text-2xl font-bold text-foreground">{dailyAvg.avgSleep}</p>
@@ -533,6 +677,36 @@ export default function ProgressPage() {
 					</div>
 				</Card>
 			)}
+
+			{/* Progress Photos */}
+			<Card className="p-6">
+				<h2 className="text-2xl font-semibold text-foreground mb-6">Progress Photos</h2>
+				{progressPhotos && progressPhotos.photos && progressPhotos.photos.length > 0 ? (
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+						{progressPhotos.photos.map((photo, idx) => (
+							<div key={idx} className="bg-muted rounded-lg overflow-hidden">
+								<img
+									src={photo.url}
+									alt={photo.caption || "Progress photo"}
+									className="w-full aspect-square object-cover"
+								/>
+								<div className="p-3">
+									<p className="text-sm font-medium text-foreground">{formatDate(photo.date)}</p>
+									{photo.caption && (
+										<p className="text-xs text-muted-foreground mt-1">{photo.caption}</p>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="text-center py-12">
+						<p className="text-muted-foreground">
+							No progress photos yet — send your photos to Claude to add them here
+						</p>
+					</div>
+				)}
+			</Card>
 
 			{/* Empty State */}
 			{filteredData.weight.length === 0 && (

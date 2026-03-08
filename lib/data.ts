@@ -187,6 +187,62 @@ export interface Config {
 	theme: string
 }
 
+export interface Challenge {
+	id: string
+	name: string
+	description: string
+	type: "single" | "streak" | "cumulative"
+	category: "steps" | "nutrition" | "workouts" | "wellness" | "tracking"
+	target: number
+	current: number
+	unit: string
+	xpReward: number
+	startDate: string
+	endDate: string | null
+	completed: boolean
+	completedDate: string | null
+}
+
+export interface MonthlyChallenge {
+	id: string
+	name: string
+	description: string
+	type: "cumulative"
+	category: string
+	target: number
+	current: number
+	unit: string
+	xpReward: number
+	completed: boolean
+}
+
+export interface LevelReward {
+	title: string
+	badge: string
+	perk: string
+}
+
+export interface ChallengesData {
+	activeChallenges: Challenge[]
+	completedChallenges: Challenge[]
+	monthlyChallenges: {
+		month: string
+		challenges: MonthlyChallenge[]
+	}
+	levelRewards: Record<string, LevelReward>
+}
+
+export interface ProgressPhoto {
+	date: string
+	url: string
+	caption: string
+	type: "front" | "side" | "back"
+}
+
+export interface ProgressPhotosData {
+	photos: ProgressPhoto[]
+}
+
 export type User = "vlada" | "sneska"
 
 async function fetchData<T>(path: string): Promise<T> {
@@ -237,6 +293,14 @@ export async function getWorkoutPlan(): Promise<WorkoutPlan> {
 
 export async function getConfig(): Promise<Config> {
 	return fetchData(`/data/shared/config.json`)
+}
+
+export async function getChallenges(user: User): Promise<ChallengesData> {
+	return fetchData(`/data/${user}/challenges.json`)
+}
+
+export async function getProgressPhotos(user: User): Promise<ProgressPhotosData> {
+	return fetchData(`/data/${user}/progress-photos.json`)
 }
 
 export function daysSinceStart(startDate: string): number {
@@ -292,4 +356,28 @@ export function getRecentWorkouts(workouts: WorkoutLog, count: number = 3): Work
 
 export function getLatestMeasurements(measurements: MeasurementLog): MeasurementEntry | undefined {
 	return measurements.entries[measurements.entries.length - 1]
+}
+
+/**
+ * Estimate body fat % using US Navy method.
+ * Male: 495 / (1.0324 - 0.19077*log10(waist-neck) + 0.15456*log10(height)) - 450
+ * Female: 495 / (1.29579 - 0.35004*log10(waist+hip-neck) + 0.22100*log10(height)) - 450
+ */
+export function estimateBodyFat(
+	gender: "male" | "female",
+	waistCm: number,
+	neckCm: number,
+	heightCm: number,
+	hipsCm?: number,
+): number | null {
+	if (!waistCm || !neckCm || !heightCm) return null
+	if (gender === "female" && !hipsCm) return null
+
+	if (gender === "male") {
+		const bf = 495 / (1.0324 - 0.19077 * Math.log10(waistCm - neckCm) + 0.15456 * Math.log10(heightCm)) - 450
+		return Math.max(0, Math.round(bf * 10) / 10)
+	}
+	const bf =
+		495 / (1.29579 - 0.35004 * Math.log10(waistCm + (hipsCm || 0) - neckCm) + 0.221 * Math.log10(heightCm)) - 450
+	return Math.max(0, Math.round(bf * 10) / 10)
 }
