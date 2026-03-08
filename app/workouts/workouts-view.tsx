@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Clock, Dumbbell, ExternalLink, RotateCcw } from "lucide-react"
+import { ChevronDown, ChevronUp, Clock, Dumbbell, RotateCcw, X } from "lucide-react"
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { type WorkoutLog, type WorkoutPlan } from "@/lib/data"
@@ -10,11 +10,69 @@ interface WorkoutsViewProps {
 	workoutPlan: WorkoutPlan
 }
 
-function YouTubeIcon({ size = 16 }: { size?: number }) {
+/** Extract YouTube video ID from a watch URL */
+function getYouTubeId(url: string): string | null {
+	const match = url.match(/(?:watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+	return match ? match[1] : null
+}
+
+/** Inline YouTube thumbnail that expands to an iframe player on click */
+function YouTubePlayer({ url }: { url: string }) {
+	const [playing, setPlaying] = useState(false)
+	const videoId = getYouTubeId(url)
+	if (!videoId) return null
+
+	if (playing) {
+		return (
+			<div className="relative mt-2 rounded-lg overflow-hidden bg-black aspect-video">
+				<iframe
+					src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					className="absolute inset-0 w-full h-full"
+					title="Exercise form video"
+				/>
+				<button
+					onClick={(e) => {
+						e.stopPropagation()
+						setPlaying(false)
+					}}
+					className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 hover:bg-black/90 flex items-center justify-center text-white transition-colors"
+				>
+					<X size={14} />
+				</button>
+			</div>
+		)
+	}
+
 	return (
-		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-			<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-		</svg>
+		<button
+			onClick={() => setPlaying(true)}
+			className="relative mt-2 rounded-lg overflow-hidden bg-black/5 hover:bg-black/10 transition-colors group cursor-pointer w-full"
+		>
+			<div className="flex items-center gap-3 px-3 py-2">
+				{/* Thumbnail */}
+				<div className="relative flex-shrink-0 w-20 h-[45px] rounded overflow-hidden bg-muted">
+					<img
+						src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+						alt="Video thumbnail"
+						className="w-full h-full object-cover"
+					/>
+					{/* Play overlay */}
+					<div className="absolute inset-0 flex items-center justify-center">
+						<div className="w-8 h-6 bg-red-600 rounded-md flex items-center justify-center group-hover:bg-red-500 transition-colors">
+							<svg width="10" height="10" viewBox="0 0 10 10" fill="white">
+								<polygon points="2,0 10,5 2,10" />
+							</svg>
+						</div>
+					</div>
+				</div>
+				{/* Label */}
+				<span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+					Watch form video
+				</span>
+			</div>
+		</button>
 	)
 }
 
@@ -66,7 +124,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 				</div>
 			</div>
 
-			{/* Rotation Strip — just training days, no rest, no day-of-week labels */}
+			{/* Rotation Strip */}
 			<div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${rotation.length}, 1fr)` }}>
 				{rotation.map((key, idx) => {
 					const workout = workoutPlan.workouts[key]
@@ -96,7 +154,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 				})}
 			</div>
 
-			{/* Extra schedule info (cardio, abs) */}
+			{/* Extra schedule info */}
 			{(workoutPlan.schedule?.cardio || workoutPlan.schedule?.abs) && (
 				<div className="flex flex-wrap gap-2">
 					{workoutPlan.schedule.cardio && (
@@ -115,7 +173,6 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 			{/* Active Workout Detail */}
 			{activeWorkout && (
 				<Card className="bg-card border-border overflow-hidden">
-					{/* Workout header */}
 					<div className="p-5 border-b border-border/50">
 						<h2 className="text-lg font-bold">{activeWorkout.name}</h2>
 						<div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
@@ -130,7 +187,6 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 						</div>
 					</div>
 
-					{/* Exercise list */}
 					<div className="divide-y divide-border/30">
 						{activeWorkout.exercises.map((exercise, idx) => {
 							const isFST7 = exercise.name.toLowerCase().includes("fst-7") || exercise.sets === 7
@@ -140,7 +196,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 							return (
 								<div key={idx} className="p-4 hover:bg-muted/10 transition-colors">
 									<div className="flex items-start gap-3">
-										{/* Exercise number */}
+										{/* Number badge */}
 										<div
 											className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 ${
 												isFST7
@@ -153,7 +209,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 											{idx + 1}
 										</div>
 
-										{/* Exercise info */}
+										{/* Exercise content */}
 										<div className="flex-1 min-w-0">
 											<div className="flex items-center gap-2 flex-wrap">
 												<h3 className="font-semibold text-sm">{exercise.name}</h3>
@@ -189,21 +245,10 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 													{exercise.notes}
 												</p>
 											)}
-										</div>
 
-										{/* YouTube button */}
-										{exercise.youtube && (
-											<a
-												href={exercise.youtube}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 transition-colors text-xs font-medium"
-												title="Search form videos on YouTube"
-											>
-												<YouTubeIcon size={14} />
-												<span className="hidden sm:inline">Form</span>
-											</a>
-										)}
+											{/* YouTube embedded mini-player */}
+											{exercise.youtube && <YouTubePlayer url={exercise.youtube} />}
+										</div>
 									</div>
 								</div>
 							)
