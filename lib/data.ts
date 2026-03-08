@@ -184,6 +184,8 @@ export interface WorkoutPlan {
 	currentPlan: string
 	startDate: string
 	schedule: {
+		rotation?: string[]
+		frequency?: string
 		week?: Record<string, string>
 		cardio?: string
 		abs?: string

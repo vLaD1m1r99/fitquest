@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Clock, Dumbbell, ExternalLink, Play, RotateCcw } from "lucide-react"
+import { ChevronDown, ChevronUp, Clock, Dumbbell, ExternalLink, RotateCcw } from "lucide-react"
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { type WorkoutLog, type WorkoutPlan } from "@/lib/data"
@@ -10,9 +10,17 @@ interface WorkoutsViewProps {
 	workoutPlan: WorkoutPlan
 }
 
+function YouTubeIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+			<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+		</svg>
+	)
+}
+
 export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewProps) {
-	const workoutKeys = Object.keys(workoutPlan.workouts)
-	const [activeTab, setActiveTab] = useState(workoutKeys[0] || "")
+	const rotation = workoutPlan.schedule?.rotation || Object.keys(workoutPlan.workouts)
+	const [activeTab, setActiveTab] = useState(rotation[0] || "")
 	const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set())
 	const [expandedExercises, setExpandedExercises] = useState<Set<string>>(new Set())
 
@@ -32,15 +40,15 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 
 	const activeWorkout = workoutPlan.workouts[activeTab]
 
-	// Build schedule display
-	const scheduleWeek = workoutPlan.schedule?.week || {}
-	const scheduleDays = Object.entries(scheduleWeek).filter(([key]) => key.startsWith("day"))
-
-	// Count total sets for a workout
 	const totalSets = (key: string) => {
 		const w = workoutPlan.workouts[key]
 		if (!w) return 0
 		return w.exercises.reduce((sum, ex) => sum + ex.sets, 0)
+	}
+
+	const totalExercises = (key: string) => {
+		const w = workoutPlan.workouts[key]
+		return w ? w.exercises.length : 0
 	}
 
 	return (
@@ -48,75 +56,61 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 			{/* Header */}
 			<div>
 				<h1 className="text-3xl font-bold">Workouts</h1>
-				<p className="text-muted-foreground mt-1">{workoutPlan.currentPlan}</p>
+				<div className="flex items-center gap-3 mt-1">
+					<span className="text-muted-foreground">{workoutPlan.currentPlan}</span>
+					{workoutPlan.schedule?.frequency && (
+						<span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium">
+							{workoutPlan.schedule.frequency}
+						</span>
+					)}
+				</div>
 			</div>
 
-			{/* Weekly Schedule Strip */}
-			{scheduleDays.length > 0 && (
-				<Card className="p-4 bg-card border-border">
-					<div className="flex items-center gap-2 mb-3">
-						<RotateCcw size={16} className="text-muted-foreground" />
-						<span className="text-sm font-medium text-muted-foreground">Weekly Rotation</span>
-						<span className="text-xs text-muted-foreground ml-auto">Started {workoutPlan.startDate}</span>
-					</div>
-					<div className="grid grid-cols-7 gap-1.5">
-						{scheduleDays.map(([key, value]) => {
-							const dayNum = key.replace("day", "")
-							const isRest = value === "Rest"
-							const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-							const label = dayLabels[Number(dayNum) - 1] || `D${dayNum}`
-							return (
-								<button
-									key={key}
-									onClick={() => !isRest && setActiveTab(value)}
-									disabled={isRest}
-									className={`rounded-lg py-2 px-1 text-center transition-colors ${
-										activeTab === value
-											? "bg-accent text-accent-foreground"
-											: isRest
-												? "bg-muted/20 text-muted-foreground/50"
-												: "bg-muted/40 hover:bg-muted/60 text-foreground cursor-pointer"
-									}`}
-								>
-									<div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
-									<div className="text-xs font-semibold mt-0.5 truncate">
-										{isRest ? "Rest" : workoutPlan.workouts[value]?.name?.replace(/Day \d+ — /, "").split(" ")[0] || value}
-									</div>
-								</button>
-							)
-						})}
-					</div>
-					{/* Extra schedule info */}
-					{(workoutPlan.schedule?.cardio || workoutPlan.schedule?.abs) && (
-						<div className="mt-3 pt-3 border-t border-border/50 flex flex-wrap gap-3 text-xs text-muted-foreground">
-							{workoutPlan.schedule.cardio && <span>{workoutPlan.schedule.cardio}</span>}
-							{workoutPlan.schedule.abs && <span>{workoutPlan.schedule.abs}</span>}
-						</div>
-					)}
-				</Card>
-			)}
-
-			{/* Workout Day Tabs */}
-			<div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
-				{workoutKeys.map((key) => {
+			{/* Rotation Strip — just training days, no rest, no day-of-week labels */}
+			<div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${rotation.length}, 1fr)` }}>
+				{rotation.map((key, idx) => {
 					const workout = workoutPlan.workouts[key]
+					if (!workout) return null
 					const isActive = activeTab === key
 					return (
 						<button
 							key={key}
 							onClick={() => setActiveTab(key)}
-							className={`flex-shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+							className={`rounded-xl p-3 text-left transition-all ${
 								isActive
-									? "bg-accent text-accent-foreground"
-									: "bg-muted/30 hover:bg-muted/50 text-muted-foreground"
+									? "bg-accent text-accent-foreground ring-2 ring-accent/50"
+									: "bg-muted/30 hover:bg-muted/50 text-foreground"
 							}`}
 						>
-							{workout.name.replace(/Day \d+ — /, "")}
-							<span className="ml-1.5 text-xs opacity-60">{workout.exercises.length}</span>
+							<div className="text-[10px] uppercase tracking-wider opacity-60 font-medium">
+								{idx + 1}/{rotation.length}
+							</div>
+							<div className="text-sm font-bold mt-0.5 truncate">
+								{workout.name.replace(/Day \d+ — /, "")}
+							</div>
+							<div className="text-[10px] opacity-50 mt-0.5">
+								{totalExercises(key)} ex · {totalSets(key)} sets
+							</div>
 						</button>
 					)
 				})}
 			</div>
+
+			{/* Extra schedule info (cardio, abs) */}
+			{(workoutPlan.schedule?.cardio || workoutPlan.schedule?.abs) && (
+				<div className="flex flex-wrap gap-2">
+					{workoutPlan.schedule.cardio && (
+						<span className="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full">
+							{workoutPlan.schedule.cardio}
+						</span>
+					)}
+					{workoutPlan.schedule.abs && (
+						<span className="text-xs bg-orange-500/10 text-orange-400 px-2.5 py-1 rounded-full">
+							{workoutPlan.schedule.abs}
+						</span>
+					)}
+				</div>
+			)}
 
 			{/* Active Workout Detail */}
 			{activeWorkout && (
@@ -140,14 +134,15 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 					<div className="divide-y divide-border/30">
 						{activeWorkout.exercises.map((exercise, idx) => {
 							const isFST7 = exercise.name.toLowerCase().includes("fst-7") || exercise.sets === 7
-							const isSuperset = exercise.notes?.toLowerCase().includes("superset")
+							const isSuperset =
+								exercise.notes?.toLowerCase().includes("superset") || exercise.reps.includes("+")
 
 							return (
 								<div key={idx} className="p-4 hover:bg-muted/10 transition-colors">
 									<div className="flex items-start gap-3">
 										{/* Exercise number */}
 										<div
-											className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+											className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 ${
 												isFST7
 													? "bg-orange-500/20 text-orange-400"
 													: isSuperset
@@ -160,50 +155,53 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 
 										{/* Exercise info */}
 										<div className="flex-1 min-w-0">
-											<div className="flex items-center gap-2">
+											<div className="flex items-center gap-2 flex-wrap">
 												<h3 className="font-semibold text-sm">{exercise.name}</h3>
 												{isFST7 && (
-													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 uppercase tracking-wide">
+													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 uppercase tracking-wide flex-shrink-0">
 														FST-7
 													</span>
 												)}
 												{isSuperset && (
-													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 uppercase tracking-wide">
+													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 uppercase tracking-wide flex-shrink-0">
 														Superset
 													</span>
 												)}
 											</div>
 
-											{/* Sets / Reps / Rest row */}
-											<div className="flex items-center gap-3 mt-1.5 text-xs">
-												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded">
-													<strong>{exercise.sets}</strong> sets
+											{/* Sets / Reps / Rest */}
+											<div className="flex items-center gap-2 mt-1.5 text-xs flex-wrap">
+												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
+													{exercise.sets} sets
 												</span>
-												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded">
-													<strong>{exercise.reps}</strong> reps
+												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
+													{exercise.reps}
 												</span>
 												<span className="flex items-center gap-1 text-muted-foreground">
 													<Clock size={11} />
-													{exercise.rest}
+													{exercise.rest} rest
 												</span>
 											</div>
 
 											{/* Notes */}
 											{exercise.notes && (
-												<p className="text-xs text-muted-foreground mt-1.5">{exercise.notes}</p>
+												<p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+													{exercise.notes}
+												</p>
 											)}
 										</div>
 
-										{/* YouTube link */}
+										{/* YouTube button */}
 										{exercise.youtube && (
 											<a
 												href={exercise.youtube}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
-												title="Watch form video"
+												className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 transition-colors text-xs font-medium"
+												title="Search form videos on YouTube"
 											>
-												<Play size={14} fill="currentColor" />
+												<YouTubeIcon size={14} />
+												<span className="hidden sm:inline">Form</span>
 											</a>
 										)}
 									</div>
@@ -217,7 +215,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 			{/* Program Notes */}
 			{workoutPlan.notes && (
 				<Card className="p-4 bg-card border-border">
-					<p className="text-sm text-muted-foreground">{workoutPlan.notes}</p>
+					<p className="text-sm text-muted-foreground leading-relaxed">{workoutPlan.notes}</p>
 				</Card>
 			)}
 
