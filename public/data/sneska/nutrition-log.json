@@ -1,3 +1,232 @@
 {
-  "days": []
+  "days": [
+    {
+      "date": "2026-03-02",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Greek yogurt with honey", "calories": 180, "proteinG": 18, "carbsG": 22, "fatG": 3, "portionG": 200 },
+            { "name": "Banana", "calories": 105, "proteinG": 1, "carbsG": 27, "fatG": 0, "portionG": 120 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Chicken breast grilled", "calories": 265, "proteinG": 50, "carbsG": 0, "fatG": 6, "portionG": 200 },
+            { "name": "Rice", "calories": 195, "proteinG": 4, "carbsG": 43, "fatG": 1, "portionG": 150 },
+            { "name": "Cucumber tomato salad", "calories": 60, "proteinG": 2, "carbsG": 8, "fatG": 3, "portionG": 150 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "Salmon fillet", "calories": 260, "proteinG": 30, "carbsG": 0, "fatG": 15, "portionG": 150 },
+            { "name": "Steamed broccoli", "calories": 45, "proteinG": 4, "carbsG": 9, "fatG": 1, "portionG": 130 },
+            { "name": "Baked potato small", "calories": 160, "proteinG": 4, "carbsG": 36, "fatG": 0, "portionG": 180 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Whey protein shake", "calories": 120, "proteinG": 25, "carbsG": 3, "fatG": 1, "portionG": 35 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1390, "proteinG": 138, "carbsG": 148, "fatG": 30 },
+      "remaining": { "calories": 131, "proteinG": -5, "carbsG": 4, "fatG": 12 }
+    },
+    {
+      "date": "2026-03-03",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Oatmeal with berries", "calories": 280, "proteinG": 10, "carbsG": 48, "fatG": 5, "portionG": 250 },
+            { "name": "Boiled egg", "calories": 78, "proteinG": 6, "carbsG": 1, "fatG": 5, "portionG": 50 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Turkey breast slices", "calories": 200, "proteinG": 40, "carbsG": 0, "fatG": 4, "portionG": 160 },
+            { "name": "Whole wheat wrap", "calories": 180, "proteinG": 6, "carbsG": 30, "fatG": 4, "portionG": 70 },
+            { "name": "Mixed greens", "calories": 30, "proteinG": 2, "carbsG": 4, "fatG": 1, "portionG": 100 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "Chicken stir-fry", "calories": 350, "proteinG": 35, "carbsG": 25, "fatG": 12, "portionG": 300 },
+            { "name": "Jasmine rice", "calories": 170, "proteinG": 3, "carbsG": 38, "fatG": 0, "portionG": 130 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Apple", "calories": 95, "proteinG": 0, "carbsG": 25, "fatG": 0, "portionG": 180 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1383, "proteinG": 102, "carbsG": 171, "fatG": 31 },
+      "remaining": { "calories": 138, "proteinG": 31, "carbsG": -19, "fatG": 11 }
+    },
+    {
+      "date": "2026-03-04",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Scrambled eggs (2)", "calories": 200, "proteinG": 14, "carbsG": 2, "fatG": 15, "portionG": 120 },
+            { "name": "Toast with avocado", "calories": 220, "proteinG": 5, "carbsG": 22, "fatG": 14, "portionG": 100 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Tuna salad", "calories": 250, "proteinG": 40, "carbsG": 8, "fatG": 7, "portionG": 200 },
+            { "name": "Whole wheat bread", "calories": 80, "proteinG": 3, "carbsG": 14, "fatG": 1, "portionG": 30 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "Chicken breast baked", "calories": 265, "proteinG": 50, "carbsG": 0, "fatG": 6, "portionG": 200 },
+            { "name": "Quinoa", "calories": 180, "proteinG": 7, "carbsG": 32, "fatG": 3, "portionG": 150 },
+            { "name": "Roasted zucchini", "calories": 50, "proteinG": 2, "carbsG": 6, "fatG": 3, "portionG": 120 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Protein bar", "calories": 180, "proteinG": 18, "carbsG": 20, "fatG": 6, "portionG": 55 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1425, "proteinG": 139, "carbsG": 104, "fatG": 55 },
+      "remaining": { "calories": 96, "proteinG": -6, "carbsG": 48, "fatG": -13 }
+    },
+    {
+      "date": "2026-03-05",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Smoothie (banana, protein, oats)", "calories": 350, "proteinG": 30, "carbsG": 45, "fatG": 6, "portionG": 400 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Chicken caesar salad (no croutons)", "calories": 320, "proteinG": 38, "carbsG": 8, "fatG": 16, "portionG": 280 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "White fish baked", "calories": 200, "proteinG": 40, "carbsG": 0, "fatG": 4, "portionG": 200 },
+            { "name": "Sweet potato mash", "calories": 180, "proteinG": 3, "carbsG": 42, "fatG": 0, "portionG": 200 },
+            { "name": "Green beans", "calories": 35, "proteinG": 2, "carbsG": 7, "fatG": 0, "portionG": 100 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Greek yogurt", "calories": 100, "proteinG": 17, "carbsG": 6, "fatG": 1, "portionG": 150 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1185, "proteinG": 130, "carbsG": 108, "fatG": 27 },
+      "remaining": { "calories": 336, "proteinG": 3, "carbsG": 44, "fatG": 15 }
+    },
+    {
+      "date": "2026-03-06",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Protein pancakes", "calories": 320, "proteinG": 28, "carbsG": 35, "fatG": 8, "portionG": 200 },
+            { "name": "Strawberries", "calories": 50, "proteinG": 1, "carbsG": 12, "fatG": 0, "portionG": 150 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Chicken thigh grilled", "calories": 280, "proteinG": 35, "carbsG": 0, "fatG": 15, "portionG": 180 },
+            { "name": "Bulgur salad", "calories": 200, "proteinG": 6, "carbsG": 38, "fatG": 3, "portionG": 180 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "Shrimp stir-fry", "calories": 250, "proteinG": 30, "carbsG": 15, "fatG": 8, "portionG": 250 },
+            { "name": "Rice noodles", "calories": 190, "proteinG": 3, "carbsG": 44, "fatG": 1, "portionG": 150 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Cottage cheese", "calories": 90, "proteinG": 12, "carbsG": 4, "fatG": 3, "portionG": 120 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1380, "proteinG": 115, "carbsG": 148, "fatG": 38 },
+      "remaining": { "calories": 141, "proteinG": 18, "carbsG": 4, "fatG": 4 }
+    },
+    {
+      "date": "2026-03-07",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Omelette (2 eggs, veggies)", "calories": 220, "proteinG": 16, "carbsG": 5, "fatG": 15, "portionG": 180 },
+            { "name": "Toast", "calories": 80, "proteinG": 3, "carbsG": 14, "fatG": 1, "portionG": 30 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Grilled chicken breast", "calories": 265, "proteinG": 50, "carbsG": 0, "fatG": 6, "portionG": 200 },
+            { "name": "Couscous", "calories": 180, "proteinG": 6, "carbsG": 36, "fatG": 1, "portionG": 150 },
+            { "name": "Side salad", "calories": 50, "proteinG": 2, "carbsG": 6, "fatG": 3, "portionG": 100 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "name": "Salmon fillet small", "calories": 220, "proteinG": 25, "carbsG": 0, "fatG": 13, "portionG": 130 },
+            { "name": "Brown rice", "calories": 180, "proteinG": 4, "carbsG": 37, "fatG": 2, "portionG": 140 },
+            { "name": "Steamed spinach", "calories": 30, "proteinG": 3, "carbsG": 3, "fatG": 1, "portionG": 80 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "name": "Whey protein shake", "calories": 120, "proteinG": 25, "carbsG": 3, "fatG": 1, "portionG": 35 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 1345, "proteinG": 134, "carbsG": 104, "fatG": 43 },
+      "remaining": { "calories": 176, "proteinG": -1, "carbsG": 48, "fatG": -1 }
+    },
+    {
+      "date": "2026-03-08",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "name": "Greek yogurt with granola", "calories": 250, "proteinG": 18, "carbsG": 32, "fatG": 6, "portionG": 250 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "name": "Chicken wrap with veggies", "calories": 380, "proteinG": 32, "carbsG": 35, "fatG": 12, "portionG": 250 }
+          ]
+        }
+      ],
+      "dailyTotals": { "calories": 630, "proteinG": 50, "carbsG": 67, "fatG": 18 },
+      "remaining": { "calories": 891, "proteinG": 83, "carbsG": 85, "fatG": 24 }
+    }
+  ]
 }

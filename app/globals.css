@@ -156,19 +156,19 @@
   --primary: #a78bfa;
 }
 
-/* Sneška — Warm Rose */
+/* Sneška — Soft Rose */
 [data-user="sneska"] {
-  --accent: #e0607e;
-  --accent-muted: #fde8ec;
-  --ring: #e0607e;
-  --primary: #e0607e;
+  --accent: #f28ba0;
+  --accent-muted: #fde8ee;
+  --ring: #f28ba0;
+  --primary: #f28ba0;
 }
 .dark[data-user="sneska"],
 .dark [data-user="sneska"] {
-  --accent: #e8849a;
-  --accent-muted: #5c1a2a;
-  --ring: #e8849a;
-  --primary: #e8849a;
+  --accent: #d4708a;
+  --accent-muted: #4a1528;
+  --ring: #d4708a;
+  --primary: #d4708a;
 }
 
 @layer base {
