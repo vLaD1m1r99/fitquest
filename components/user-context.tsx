@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 
 type User = "vlada" | "sneska"
 
@@ -14,7 +14,15 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export function UserProvider({ children }: { children: React.ReactNode }) {
 	const [activeUser, setActiveUser] = useState<User>("vlada")
 
-	return <UserContext.Provider value={{ activeUser, setActiveUser }}>{children}</UserContext.Provider>
+	useEffect(() => {
+		document.documentElement.setAttribute("data-user", activeUser)
+	}, [activeUser])
+
+	const switchUser = useCallback((user: User) => {
+		setActiveUser(user)
+	}, [])
+
+	return <UserContext.Provider value={{ activeUser, setActiveUser: switchUser }}>{children}</UserContext.Provider>
 }
 
 export function useActiveUser() {
