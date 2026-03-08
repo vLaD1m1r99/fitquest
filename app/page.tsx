@@ -2,10 +2,10 @@
 
 import { Dumbbell, Flame, Footprints, Heart, Moon, Scale, Target, Trophy, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import {
 	type DailyLog,
 	daysSinceStart,
@@ -28,7 +28,7 @@ import {
 } from "@/lib/data"
 
 export default function Dashboard() {
-	const { activeUser } = useActiveUser()
+	const { activeUser, displayName } = useActiveUser()
 	const [profile, setProfile] = useState<Profile | null>(null)
 	const [rpg, setRpg] = useState<RPG | null>(null)
 	const [weightLog, setWeightLog] = useState<WeightLog | null>(null)
@@ -139,12 +139,11 @@ export default function Dashboard() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-start justify-between">
-				<div>
-					<h1 className="text-4xl font-bold mb-1 text-foreground">{profile.name}</h1>
-					<p className="text-muted-foreground">Day {dayNumber} of the journey</p>
-				</div>
-				<UserToggle />
+			<div>
+				<h1 className="text-4xl font-bold mb-1 text-foreground">
+					Hey {displayName} 👋
+				</h1>
+				<p className="text-muted-foreground">Day {dayNumber} of the journey</p>
 			</div>
 
 			{/* RPG Bar Card */}
@@ -294,6 +293,45 @@ export default function Dashboard() {
 				</div>
 			</Card>
 
+			{/* Nutrition Trend Chart */}
+			{nutritionLog.days.length > 0 && (
+				<Card className="bg-card p-6">
+					<h2 className="text-lg font-bold mb-4 text-foreground">Calorie Trend (Last 7 Days)</h2>
+					<div className="h-48">
+						<ResponsiveContainer width="100%" height="100%">
+							<BarChart
+								data={nutritionLog.days.slice(-7).map(d => ({
+									date: new Date(d.date).toLocaleDateString("en-US", { weekday: "short" }),
+									protein: Math.round(d.dailyTotals.proteinG * 4),
+									carbs: Math.round(d.dailyTotals.carbsG * 4),
+									fat: Math.round(d.dailyTotals.fatG * 9),
+									target: profile.dailyCalorieTarget,
+								}))}
+							>
+								<XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="var(--color-muted-foreground)" />
+								<YAxis tick={{ fontSize: 12 }} stroke="var(--color-muted-foreground)" />
+								<Tooltip
+									contentStyle={{
+										background: "var(--color-card)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "8px",
+										fontSize: "12px",
+									}}
+								/>
+								<Bar dataKey="protein" stackId="cals" fill="var(--color-danger)" name="Protein" radius={[0, 0, 0, 0]} />
+								<Bar dataKey="carbs" stackId="cals" fill="var(--color-warning)" name="Carbs" radius={[0, 0, 0, 0]} />
+								<Bar dataKey="fat" stackId="cals" fill="var(--color-success)" name="Fat" radius={[4, 4, 0, 0]} />
+							</BarChart>
+						</ResponsiveContainer>
+					</div>
+					<div className="flex items-center justify-center gap-4 mt-3 text-xs text-muted-foreground">
+						<span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-danger inline-block" /> Protein</span>
+						<span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-warning inline-block" /> Carbs</span>
+						<span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-success inline-block" /> Fat</span>
+					</div>
+				</Card>
+			)}
+
 			{/* Bottom Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{/* Daily Vitals */}
@@ -324,7 +362,7 @@ export default function Dashboard() {
 								<Heart className="w-4 h-4 text-danger" />
 								<span className="text-sm text-muted-foreground">Mood</span>
 							</div>
-							<span className="font-semibold text-foreground">{todayDaily?.mood || "—"}/5</span>
+							<span className="font-semibold text-foreground capitalize">{todayDaily?.mood || "—"}</span>
 						</div>
 
 						<div className="flex items-center justify-between">
@@ -337,9 +375,9 @@ export default function Dashboard() {
 					</div>
 				</Card>
 
-				{/* Recent Activity */}
+				{/* Recent Workouts */}
 				<Card className="bg-card p-6">
-					<h2 className="text-lg font-bold mb-4 text-foreground">Recent Activity</h2>
+					<h2 className="text-lg font-bold mb-4 text-foreground">Recent Workouts</h2>
 
 					<div className="space-y-3">
 						{recentWorkouts.length > 0 ? (
@@ -353,7 +391,7 @@ export default function Dashboard() {
 										<div>
 											<p className="text-sm font-medium text-foreground">{session.sessionType}</p>
 											<p className="text-xs text-muted-foreground">
-												{new Date(session.date).toLocaleDateString()}
+												{new Date(session.date).toLocaleDateString()} · {session.exercises.length} exercises
 											</p>
 										</div>
 									</div>

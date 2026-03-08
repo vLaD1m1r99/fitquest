@@ -2,10 +2,16 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 
-type User = "vlada" | "sneska"
+export type User = "vlada" | "sneska"
+
+export const USER_DISPLAY_NAMES: Record<User, string> = {
+	vlada: "Vlada",
+	sneska: "Sneška",
+}
 
 interface UserContextType {
 	activeUser: User
+	displayName: string
 	setActiveUser: (user: User) => void
 }
 
@@ -22,7 +28,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 		setActiveUser(user)
 	}, [])
 
-	return <UserContext.Provider value={{ activeUser, setActiveUser: switchUser }}>{children}</UserContext.Provider>
+	const displayName = USER_DISPLAY_NAMES[activeUser]
+
+	return (
+		<UserContext.Provider value={{ activeUser, displayName, setActiveUser: switchUser }}>
+			{children}
+		</UserContext.Provider>
+	)
 }
 
 export function useActiveUser() {

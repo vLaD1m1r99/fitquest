@@ -18,7 +18,6 @@ import {
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import {
 	getNutritionLog,
 	getProfile,
@@ -188,7 +187,6 @@ export default function NutritionPage() {
 			<div className="space-y-8">
 				<div className="flex items-center justify-between">
 					<h1 className="text-4xl font-bold text-foreground">Nutrition</h1>
-					<UserToggle />
 				</div>
 				<p className="text-muted-foreground">Loading nutrition data...</p>
 			</div>
@@ -203,9 +201,8 @@ export default function NutritionPage() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div>
 				<h1 className="text-4xl font-bold text-foreground">Nutrition</h1>
-				<UserToggle />
 			</div>
 
 			{/* Timespan Filter */}

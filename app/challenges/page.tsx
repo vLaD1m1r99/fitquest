@@ -4,7 +4,6 @@ import { Award, ChevronDown, ChevronUp, Lock, Target, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import { type ChallengesData, getChallenges, getRPG, type RPG } from "@/lib/data"
 
 const categoryIcons: Record<string, string> = {
@@ -65,12 +64,9 @@ export default function ChallengesPage() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-4xl font-bold text-foreground">Quests & Rewards</h1>
-					<p className="text-muted-foreground mt-1">Complete challenges, earn XP, level up</p>
-				</div>
-				<UserToggle />
+			<div>
+				<h1 className="text-4xl font-bold text-foreground">Quests & Rewards</h1>
+				<p className="text-muted-foreground mt-1">Complete challenges, earn XP, level up</p>
 			</div>
 
 			{/* Level & XP Card */}

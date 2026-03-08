@@ -16,7 +16,6 @@ import {
 } from "recharts"
 import { Card } from "@/components/ui/card"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import {
 	estimateBodyFat,
 	getDailyLog,
@@ -359,9 +358,8 @@ export default function ProgressPage() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between mb-8">
+			<div className="mb-8">
 				<h1 className="text-4xl font-bold text-foreground">Progress</h1>
-				<UserToggle />
 			</div>
 
 			{/* Timespan Filter */}

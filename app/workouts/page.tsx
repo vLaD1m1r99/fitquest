@@ -4,7 +4,6 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import { getWorkoutLog, getWorkoutPlan, type WorkoutLog, type WorkoutPlan } from "@/lib/data"
 
 export default function WorkoutsPage() {
@@ -71,9 +70,8 @@ export default function WorkoutsPage() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div>
 				<h1 className="text-3xl font-bold">Workouts</h1>
-				<UserToggle />
 			</div>
 
 			{/* Workout Plan */}

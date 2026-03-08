@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { useActiveUser } from "@/components/user-context"
-import { UserToggle } from "@/components/user-toggle"
 import { getProfile, getRPG, type Profile, type RPG, xpProgress } from "@/lib/data"
 
 export default function ProfilePage() {
@@ -52,16 +51,15 @@ export default function ProfilePage() {
 	return (
 		<div className="space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between">
-				<h1 className="text-3xl font-bold">Profile</h1>
-				<UserToggle />
+			<div>
+				<h1 className="text-3xl font-bold text-foreground">Profile</h1>
 			</div>
 
 			{/* Character Card */}
 			<Card className="p-8 bg-card border-border">
 				<div className="flex items-start gap-8 flex-wrap">
-					<div className="w-24 h-24 rounded-full bg-rose flex items-center justify-center flex-shrink-0">
-						<span className="text-4xl font-bold text-card">{rpg.level}</span>
+					<div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+						<span className="text-4xl font-bold text-accent-foreground">{rpg.level}</span>
 					</div>
 					<div className="flex-1">
 						<h2 className="text-3xl font-bold mb-2">{profile.name}</h2>
@@ -91,12 +89,12 @@ export default function ProfilePage() {
 
 				<Card className="p-4 bg-card border-border">
 					<p className="text-xs text-muted-foreground mb-2">Total PRs</p>
-					<p className="text-2xl font-bold text-rose">{rpg.totalPRs}</p>
+					<p className="text-2xl font-bold text-accent">{rpg.totalPRs}</p>
 				</Card>
 
 				<Card className="p-4 bg-card border-border">
 					<p className="text-xs text-muted-foreground mb-2">Perfect Macro Days</p>
-					<p className="text-2xl font-bold text-gold">{rpg.perfectMacroDays}</p>
+					<p className="text-2xl font-bold text-warning">{rpg.perfectMacroDays}</p>
 				</Card>
 
 				<Card className="p-4 bg-card border-border">
@@ -106,14 +104,14 @@ export default function ProfilePage() {
 
 				<Card className="p-4 bg-card border-border">
 					<p className="text-xs text-muted-foreground mb-2">Current Streak</p>
-					<p className="text-2xl font-bold text-rose">{rpg.currentStreak}</p>
+					<p className="text-2xl font-bold text-accent">{rpg.currentStreak}</p>
 				</Card>
 			</div>
 
 			{/* XP History */}
 			<Card className="p-6 bg-card border-border">
 				<h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-					<Zap size={20} className="text-gold" />
+					<Zap size={20} className="text-warning" />
 					XP History
 				</h2>
 				{rpg.xpHistory.length > 0 ? (
@@ -127,7 +125,7 @@ export default function ProfilePage() {
 									<p className="font-semibold">{entry.reason}</p>
 									<p className="text-xs text-muted-foreground">{entry.date}</p>
 								</div>
-								<span className="font-bold text-gold">+{entry.xpGained}</span>
+								<span className="font-bold text-warning">+{entry.xpGained}</span>
 							</div>
 						))}
 					</div>
@@ -139,14 +137,14 @@ export default function ProfilePage() {
 			{/* Achievements */}
 			<Card className="p-6 bg-card border-border">
 				<h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-					<Trophy size={20} className="text-gold" />
+					<Trophy size={20} className="text-warning" />
 					Achievements
 				</h2>
 				{rpg.achievements.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						{rpg.achievements.map((achievement, idx) => (
-							<div key={idx} className="p-4 rounded-md bg-muted/30 border border-rose/30">
-								<p className="font-semibold text-rose">{achievement}</p>
+							<div key={idx} className="p-4 rounded-md bg-muted/30 border border-accent/30">
+								<p className="font-semibold text-accent">{achievement}</p>
 							</div>
 						))}
 					</div>
