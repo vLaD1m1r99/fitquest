@@ -3,6 +3,7 @@
 import { Dumbbell, LayoutDashboard, TrendingUp, User, Utensils } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { ThemeToggle } from "./theme-toggle"
 
 export function Navigation() {
 	const pathname = usePathname()
@@ -67,6 +68,9 @@ export function Navigation() {
 								</Link>
 							)
 						})}
+						<div className="ml-2 border-l border-border/50 pl-2">
+							<ThemeToggle />
+						</div>
 					</div>
 				</div>
 			</div>

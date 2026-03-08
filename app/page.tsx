@@ -1,6 +1,6 @@
 "use client"
 
-import { Flame, Trophy } from "lucide-react"
+import { Dumbbell, Flame, Footprints, Heart, Moon, Scale, Target, Trophy, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -18,6 +18,7 @@ import {
 	getTodayNutrition,
 	getWeightLog,
 	getWorkoutLog,
+	type NutritionDay,
 	type NutritionLog,
 	type Profile,
 	type RPG,
@@ -72,7 +73,7 @@ export default function Dashboard() {
 		)
 	}
 
-	if (!profile || !rpg || !weightLog || !dailyLog || !workoutLog) {
+	if (!profile || !rpg || !weightLog || !dailyLog || !workoutLog || !nutritionLog) {
 		return (
 			<div className="flex items-center justify-center min-h-screen">
 				<p>No data available</p>
@@ -83,202 +84,310 @@ export default function Dashboard() {
 	const dayNumber = daysSinceStart(profile.lastRecalculation)
 	const xpData = xpProgress(rpg)
 	const today = new Date().toISOString().split("T")[0]
-	const todayNutrition = nutritionLog ? getTodayNutrition(nutritionLog, today) : undefined
+	const todayNutrition = getTodayNutrition(nutritionLog, today)
 	const todayDaily = getTodayDailyLog(dailyLog, today)
 	const recentWorkouts = getRecentWorkouts(workoutLog, 3)
 
-	const currentCalories = todayNutrition?.dailyTotals.calories || 0
+	const caloriesConsumed = todayNutrition?.dailyTotals.calories || 0
+	const caloriesRemaining = Math.max(0, profile.dailyCalorieTarget - caloriesConsumed)
+	const caloriesProgress = Math.min(100, (caloriesConsumed / profile.dailyCalorieTarget) * 100)
+
+	const proteinConsumed = todayNutrition?.dailyTotals.proteinG || 0
+	const proteinRemaining = Math.max(0, profile.macros.proteinG - proteinConsumed)
+	const proteinProgress = Math.min(100, (proteinConsumed / profile.macros.proteinG) * 100)
+
+	const carbsConsumed = todayNutrition?.dailyTotals.carbsG || 0
+	const carbsRemaining = Math.max(0, profile.macros.carbsG - carbsConsumed)
+	const carbsProgress = Math.min(100, (carbsConsumed / profile.macros.carbsG) * 100)
+
+	const fatConsumed = todayNutrition?.dailyTotals.fatG || 0
+	const fatRemaining = Math.max(0, profile.macros.fatG - fatConsumed)
+	const fatProgress = Math.min(100, (fatConsumed / profile.macros.fatG) * 100)
+
+	const currentWeight =
+		weightLog.entries.length > 0
+			? weightLog.entries[weightLog.entries.length - 1].weightKg
+			: profile.startingWeightKg
+	const weightChange = currentWeight - profile.startingWeightKg
+
 	const currentSteps = todayDaily?.steps || 0
+	const stepsProgress = Math.min(100, (currentSteps / 10000) * 100)
+
+	const weeklyWorkouts = workoutLog.sessions.filter(s => {
+		const sessionDate = new Date(s.date)
+		const weekAgo = new Date()
+		weekAgo.setDate(weekAgo.getDate() - 7)
+		return sessionDate >= weekAgo
+	}).length
+
+	const weeklyAvgCalories =
+		nutritionLog.days.length > 0
+			? Math.round(
+					nutritionLog.days.slice(0, 7).reduce((sum, day) => sum + day.dailyTotals.calories, 0) /
+						Math.min(7, nutritionLog.days.length),
+				)
+			: 0
+
+	const weeklyAvgSteps =
+		dailyLog.entries.length > 0
+			? Math.round(
+					dailyLog.entries.slice(0, 7).reduce((sum, entry) => sum + entry.steps, 0) /
+						Math.min(7, dailyLog.entries.length),
+				)
+			: 0
 
 	return (
-		<div className="space-y-8">
-			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold">{profile.name}</h1>
-					<p className="text-muted-foreground mt-1">Day {dayNumber} of the journey</p>
-				</div>
-				<UserToggle />
-			</div>
-
-			{/* RPG Bar */}
-			<Card className="p-6 bg-card border-border">
-				<div className="flex items-center gap-6 flex-wrap">
-					{/* Level Badge */}
-					<div className="flex items-center gap-4">
-						<div className="w-16 h-16 rounded-full bg-rose flex items-center justify-center">
-							<span className="text-2xl font-bold text-card">{rpg.level}</span>
-						</div>
-						<div>
-							<p className="text-sm text-muted-foreground">Level</p>
-							<p className="text-lg font-semibold">{rpg.totalXP} XP</p>
-						</div>
-					</div>
-
-					{/* XP Progress */}
-					<div className="flex-1 min-w-48">
-						<div className="flex justify-between text-sm mb-2">
-							<span className="text-muted-foreground">XP</span>
-							<span className="text-muted-foreground">
-								{xpData.currentLevelXP} /{xpData.nextLevelXP}
-							</span>
-						</div>
-						<Progress value={xpData.progressPercent} className="h-2" />
-					</div>
-
-					{/* Streak */}
-					<div className="flex items-center gap-2">
-						<Flame size={20} className="text-gold" />
-						<div>
-							<p className="text-sm text-muted-foreground">Streak</p>
-							<p className="text-lg font-semibold">{rpg.currentStreak}</p>
-						</div>
-					</div>
-
-					{/* PRs */}
-					<div className="flex items-center gap-2">
-						<Trophy size={20} className="text-gold" />
-						<div>
-							<p className="text-sm text-muted-foreground">PRs</p>
-							<p className="text-lg font-semibold">{rpg.totalPRs}</p>
-						</div>
-					</div>
-				</div>
-			</Card>
-
-			{/* Stats Grid */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				{/* Calories */}
-				<Card className="p-6 bg-card border-border">
-					<h3 className="text-sm font-semibold text-muted-foreground mb-2">Calories Today</h3>
-					<p className="text-2xl font-bold mb-3">
-						{currentCalories} /{profile.dailyCalorieTarget}
-					</p>
-					<Progress value={(currentCalories / profile.dailyCalorieTarget) * 100} className="h-2" />
-				</Card>
-
-				{/* Current Weight */}
-				<Card className="p-6 bg-card border-border">
-					<h3 className="text-sm font-semibold text-muted-foreground mb-2">Current Weight</h3>
-					<p className="text-2xl font-bold mb-3">
-						{weightLog.entries[weightLog.entries.length - 1]?.weightKg || "—"} kg
-					</p>
-					<p className="text-xs text-muted-foreground">From {profile.startingWeightKg} kg</p>
-				</Card>
-
-				{/* Steps */}
-				<Card className="p-6 bg-card border-border">
-					<h3 className="text-sm font-semibold text-muted-foreground mb-2">Steps Today</h3>
-					<p className="text-2xl font-bold mb-3">{currentSteps} / 10000</p>
-					<Progress value={(currentSteps / 10000) * 100} className="h-2" />
-				</Card>
-
-				{/* Total Workouts */}
-				<Card className="p-6 bg-card border-border">
-					<h3 className="text-sm font-semibold text-muted-foreground mb-2">Total Workouts</h3>
-					<p className="text-2xl font-bold mb-3">{rpg.totalWorkouts}</p>
-					<p className="text-xs text-muted-foreground">Longest streak: {rpg.longestStreak}</p>
-				</Card>
-			</div>
-
-			{/* Macros Section */}
-			<Card className="p-6 bg-card border-border">
-				<h2 className="text-lg font-semibold mb-6">Today's Macros</h2>
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					{/* Protein */}
+		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+			<div className="max-w-6xl mx-auto space-y-8">
+				{/* Header */}
+				<div className="flex items-start justify-between">
 					<div>
-						<div className="flex justify-between text-sm mb-2">
-							<span className="text-muted-foreground">Protein</span>
-							<span>
-								{todayNutrition?.dailyTotals.proteinG || 0} /{profile.macros.proteinG}g
-							</span>
-						</div>
-						<Progress
-							value={((todayNutrition?.dailyTotals.proteinG || 0) / profile.macros.proteinG) * 100}
-							className="h-2 bg-card/50"
-						/>
+						<h1 className="text-4xl font-bold mb-1">{profile.name}</h1>
+						<p className="text-gray-400">Day {dayNumber} of the journey</p>
 					</div>
-
-					{/* Carbs */}
-					<div>
-						<div className="flex justify-between text-sm mb-2">
-							<span className="text-muted-foreground">Carbs</span>
-							<span>
-								{todayNutrition?.dailyTotals.carbsG || 0} /{profile.macros.carbsG}g
-							</span>
-						</div>
-						<Progress
-							value={((todayNutrition?.dailyTotals.carbsG || 0) / profile.macros.carbsG) * 100}
-							className="h-2 bg-card/50"
-						/>
-					</div>
-
-					{/* Fat */}
-					<div>
-						<div className="flex justify-between text-sm mb-2">
-							<span className="text-muted-foreground">Fat</span>
-							<span>
-								{todayNutrition?.dailyTotals.fatG || 0} /{profile.macros.fatG}g
-							</span>
-						</div>
-						<Progress
-							value={((todayNutrition?.dailyTotals.fatG || 0) / profile.macros.fatG) * 100}
-							className="h-2 bg-card/50"
-						/>
-					</div>
+					<UserToggle />
 				</div>
-			</Card>
 
-			{/* Bottom Grid */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{/* Daily Vitals */}
-				<Card className="p-6 bg-card border-border">
-					<h2 className="text-lg font-semibold mb-4">Daily Vitals</h2>
-					{todayDaily ? (
+				{/* RPG Bar Card */}
+				<Card className="bg-gradient-to-r from-slate-700 to-slate-600 border-l-4 border-l-purple-500 p-6">
+					<div className="flex items-center justify-between mb-4">
+						<div className="flex items-center gap-3">
+							<div className="bg-purple-600 rounded-lg px-3 py-1 font-bold text-lg">LV {rpg.level}</div>
+							<div>
+								<p className="font-semibold">Experience Points</p>
+								<p className="text-gray-300 text-sm">{rpg.totalXP.toLocaleString()} total</p>
+							</div>
+						</div>
+						<div className="text-right">
+							<p className="text-gray-300 text-sm">Next Level</p>
+							<p className="font-bold">{rpg.xpToNextLevel.toLocaleString()} XP</p>
+						</div>
+					</div>
+
+					<Progress value={xpData.progressPercent} className="h-3 mb-4 bg-slate-500" />
+
+					<div className="grid grid-cols-3 gap-4">
+						<div className="text-center">
+							<p className="text-gray-300 text-sm">Current Streak</p>
+							<p className="font-bold text-lg text-gold">{rpg.currentStreak} days</p>
+						</div>
+						<div className="text-center">
+							<p className="text-gray-300 text-sm">Longest Streak</p>
+							<p className="font-bold text-lg text-rose">{rpg.longestStreak} days</p>
+						</div>
+						<div className="text-center">
+							<p className="text-gray-300 text-sm">Total PRs</p>
+							<p className="font-bold text-lg text-success">{rpg.totalPRs}</p>
+						</div>
+					</div>
+				</Card>
+
+				{/* Stats Grid */}
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+					{/* Calories */}
+					<Card className="bg-slate-700 p-5">
+						<div className="flex items-center justify-between mb-3">
+							<div className="flex items-center gap-2">
+								<Flame className="w-5 h-5 text-orange-400" />
+								<span className="text-gray-300 text-sm font-medium">Calories</span>
+							</div>
+							<span className="text-orange-400 text-xs font-bold">TODAY</span>
+						</div>
+						<p className="text-2xl font-bold mb-2">{caloriesRemaining}</p>
+						<p className="text-gray-400 text-xs mb-3">
+							remaining ({caloriesConsumed}/{profile.dailyCalorieTarget})
+						</p>
+						<Progress value={caloriesProgress} className="h-2 bg-slate-600" />
+					</Card>
+
+					{/* Weight */}
+					<Card className="bg-slate-700 p-5">
+						<div className="flex items-center justify-between mb-3">
+							<div className="flex items-center gap-2">
+								<Scale className="w-5 h-5 text-blue-400" />
+								<span className="text-gray-300 text-sm font-medium">Weight</span>
+							</div>
+							<span className={`text-xs font-bold ${weightChange <= 0 ? "text-success" : "text-rose"}`}>
+								{weightChange > 0 ? "+" : ""}
+								{weightChange.toFixed(1)} kg
+							</span>
+						</div>
+						<p className="text-2xl font-bold mb-2">{currentWeight.toFixed(1)} kg</p>
+						<p className="text-gray-400 text-xs mb-3">from {profile.startingWeightKg} kg</p>
+						<div className="h-2 bg-slate-600 rounded-full overflow-hidden">
+							<div className="h-full bg-blue-500 w-1/3" />
+						</div>
+					</Card>
+
+					{/* Steps */}
+					<Card className="bg-slate-700 p-5">
+						<div className="flex items-center justify-between mb-3">
+							<div className="flex items-center gap-2">
+								<Footprints className="w-5 h-5 text-emerald-400" />
+								<span className="text-gray-300 text-sm font-medium">Steps</span>
+							</div>
+							<span className="text-emerald-400 text-xs font-bold">TODAY</span>
+						</div>
+						<p className="text-2xl font-bold mb-2">{currentSteps.toLocaleString()}</p>
+						<p className="text-gray-400 text-xs mb-3">of 10,000 goal</p>
+						<Progress value={stepsProgress} className="h-2 bg-slate-600" />
+					</Card>
+
+					{/* Workouts */}
+					<Card className="bg-slate-700 p-5">
+						<div className="flex items-center justify-between mb-3">
+							<div className="flex items-center gap-2">
+								<Dumbbell className="w-5 h-5 text-purple-400" />
+								<span className="text-gray-300 text-sm font-medium">Workouts</span>
+							</div>
+							<span className="text-purple-400 text-xs font-bold">TOTAL</span>
+						</div>
+						<p className="text-2xl font-bold mb-2">{rpg.totalWorkouts}</p>
+						<p className="text-gray-400 text-xs mb-3">sessions completed</p>
+						<div className="h-2 bg-slate-600 rounded-full overflow-hidden">
+							<div className="h-full bg-purple-500 w-2/3" />
+						</div>
+					</Card>
+				</div>
+
+				{/* Macros Card */}
+				<Card className="bg-slate-700 p-6">
+					<h2 className="text-lg font-bold mb-5">Today's Macros</h2>
+
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+						{/* Protein */}
+						<div>
+							<div className="flex items-center justify-between mb-2">
+								<span className="text-sm font-medium text-rose">Protein</span>
+								<span className="text-sm text-gray-400">
+									{proteinConsumed}/{profile.macros.proteinG}g
+								</span>
+							</div>
+							<Progress value={proteinProgress} className="h-3 mb-2 bg-slate-600" />
+							<p className="text-xs text-gray-400">{proteinRemaining.toFixed(1)}g remaining</p>
+						</div>
+
+						{/* Carbs */}
+						<div>
+							<div className="flex items-center justify-between mb-2">
+								<span className="text-sm font-medium text-gold">Carbs</span>
+								<span className="text-sm text-gray-400">
+									{carbsConsumed}/{profile.macros.carbsG}g
+								</span>
+							</div>
+							<Progress value={carbsProgress} className="h-3 mb-2 bg-slate-600" />
+							<p className="text-xs text-gray-400">{carbsRemaining.toFixed(1)}g remaining</p>
+						</div>
+
+						{/* Fat */}
+						<div>
+							<div className="flex items-center justify-between mb-2">
+								<span className="text-sm font-medium text-success">Fat</span>
+								<span className="text-sm text-gray-400">
+									{fatConsumed}/{profile.macros.fatG}g
+								</span>
+							</div>
+							<Progress value={fatProgress} className="h-3 mb-2 bg-slate-600" />
+							<p className="text-xs text-gray-400">{fatRemaining.toFixed(1)}g remaining</p>
+						</div>
+					</div>
+				</Card>
+
+				{/* Bottom Grid */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					{/* Daily Vitals */}
+					<Card className="bg-slate-700 p-6">
+						<h2 className="text-lg font-bold mb-4">Daily Vitals</h2>
+
 						<div className="space-y-4">
 							<div className="flex items-center justify-between">
-								<span className="text-sm">Sleep</span>
-								<span className="font-semibold">{todayDaily.sleepHours}h</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-sm">Energy</span>
-								<span className="font-semibold text-gold">{todayDaily.energyLevel}/5</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-sm">Mood</span>
-								<span className="font-semibold text-rose">{todayDaily.mood}</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-sm">Stress</span>
-								<span className="font-semibold">{todayDaily.stressLevel}/5</span>
-							</div>
-						</div>
-					) : (
-						<p className="text-sm text-muted-foreground">No vitals logged yet</p>
-					)}
-				</Card>
-
-				{/* Recent Activity */}
-				<Card className="p-6 bg-card border-border">
-					<h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-					{recentWorkouts.length > 0 ? (
-						<div className="space-y-3">
-							{recentWorkouts.map((workout, idx) => (
-								<div
-									key={idx}
-									className="flex items-center justify-between text-sm border-b border-border/50 pb-3"
-								>
-									<div>
-										<p className="font-medium">{workout.sessionType}</p>
-										<p className="text-xs text-muted-foreground">{workout.date}</p>
-									</div>
-									<span className="text-xs text-muted-foreground">{workout.durationMin}m</span>
+								<div className="flex items-center gap-2">
+									<Moon className="w-4 h-4 text-indigo-400" />
+									<span className="text-sm text-gray-300">Sleep</span>
 								</div>
-							))}
+								<span className="font-semibold">{todayDaily?.sleepHours.toFixed(1) || "—"} hours</span>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<Zap className="w-4 h-4 text-yellow-400" />
+									<span className="text-sm text-gray-300">Energy</span>
+								</div>
+								<span className="font-semibold text-gold">{todayDaily?.energyLevel || "—"}/10</span>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<Heart className="w-4 h-4 text-rose" />
+									<span className="text-sm text-gray-300">Mood</span>
+								</div>
+								<span className="font-semibold text-rose">{todayDaily?.mood || "—"}/10</span>
+							</div>
+
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<Target className="w-4 h-4 text-orange-400" />
+									<span className="text-sm text-gray-300">Stress</span>
+								</div>
+								<span className="font-semibold text-orange-400">
+									{todayDaily?.stressLevel || "—"}/10
+								</span>
+							</div>
 						</div>
-					) : (
-						<p className="text-sm text-muted-foreground">No workouts logged yet</p>
-					)}
+					</Card>
+
+					{/* Recent Activity */}
+					<Card className="bg-slate-700 p-6">
+						<h2 className="text-lg font-bold mb-4">Recent Activity</h2>
+
+						<div className="space-y-3">
+							{recentWorkouts.length > 0 ? (
+								recentWorkouts.map((session, index) => (
+									<div
+										key={index}
+										className="flex items-center justify-between p-3 bg-slate-600 rounded-lg"
+									>
+										<div className="flex items-center gap-3">
+											<Dumbbell className="w-4 h-4 text-purple-400" />
+											<div>
+												<p className="text-sm font-medium">{session.sessionType}</p>
+												<p className="text-xs text-gray-400">
+													{new Date(session.date).toLocaleDateString()}
+												</p>
+											</div>
+										</div>
+										<span className="text-sm font-semibold text-purple-400">
+											{session.durationMin}m
+										</span>
+									</div>
+								))
+							) : (
+								<p className="text-gray-400 text-sm">No recent workouts</p>
+							)}
+						</div>
+					</Card>
+				</div>
+
+				{/* Weekly Summary */}
+				<Card className="bg-gradient-to-r from-slate-700 to-slate-600 border-l-4 border-l-gold p-6">
+					<h2 className="text-lg font-bold mb-4">Weekly Summary</h2>
+
+					<div className="grid grid-cols-3 gap-6">
+						<div>
+							<p className="text-gray-400 text-sm mb-2">Avg Daily Calories</p>
+							<p className="text-2xl font-bold text-orange-400">{weeklyAvgCalories}</p>
+						</div>
+
+						<div>
+							<p className="text-gray-400 text-sm mb-2">Workouts This Week</p>
+							<p className="text-2xl font-bold text-purple-400">{weeklyWorkouts}</p>
+						</div>
+
+						<div>
+							<p className="text-gray-400 text-sm mb-2">Avg Daily Steps</p>
+							<p className="text-2xl font-bold text-emerald-400">{weeklyAvgSteps.toLocaleString()}</p>
+						</div>
+					</div>
 				</Card>
 			</div>
 		</div>
