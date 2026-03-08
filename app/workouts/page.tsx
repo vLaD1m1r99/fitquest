@@ -8,7 +8,7 @@ export default async function WorkoutsPage() {
 	const user = await getActiveUser()
 	const [workoutLog, workoutPlan] = await Promise.all([
 		getWorkoutLog(user),
-		getWorkoutPlan(),
+		getWorkoutPlan(user),
 	])
 
 	if (!workoutLog || !workoutPlan) {
