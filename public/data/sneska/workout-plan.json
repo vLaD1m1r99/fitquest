@@ -10,44 +10,44 @@
 		"BootyBurn": {
 			"name": "Day 1 — Booty Burn",
 			"exercises": [
-				{ "name": "FST-7 Goblet Squat", "sets": 7, "reps": "10", "rest": "45s", "notes": "10kg dumbbell, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=lRYBbchqxtI" },
-				{ "name": "Good Morning", "sets": 4, "reps": "12", "rest": "60s", "notes": "10-15kg barbell", "youtube": "https://www.youtube.com/watch?v=5DonmXxz6Qk" },
-				{ "name": "Cable Kickbacks", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5-7kg", "youtube": "https://www.youtube.com/watch?v=n-cgsNePyFo" },
-				{ "name": "Reverse Lunges", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=mJilHWIBWO8" },
-				{ "name": "Abductor Machine (Leaning Forward + Seated)", "sets": 4, "reps": "10 + 15", "rest": "60s", "notes": "Superset: leaning forward 30-50kg → seated 20-40kg", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
-				{ "name": "Glute Back Extensions", "sets": 4, "reps": "15", "rest": "60s", "notes": "Holding 10kg plate", "youtube": "https://www.youtube.com/watch?v=upxW1WlptUE" },
-				{ "name": "Hip Thrust", "sets": 4, "reps": "pyramid", "rest": "90s", "notes": "30kg x20, 40kg x15, 50kg x10, 60kg x5-10", "youtube": "https://www.youtube.com/watch?v=W86oVlnLqY4" },
-				{ "name": "Sumo Deadlift", "sets": 4, "reps": "8-12", "rest": "90s", "notes": "Olympic bar + 5kg plates each side", "youtube": "https://www.youtube.com/watch?v=e7oLkRlT2CQ" },
-				{ "name": "Banded Walking Abductors", "sets": 4, "reps": "10 steps each dir", "rest": "45s", "notes": "Resistance band", "youtube": "https://www.youtube.com/watch?v=TeyfkdXAgUg" }
+				{ "name": "FST-7 Goblet Squat", "sets": 4, "reps": "10", "notes": "10kg dumbbell, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=lRYBbchqxtI" },
+				{ "name": "Good Morning", "sets": 4, "reps": "12", "notes": "10-15kg barbell", "youtube": "https://www.youtube.com/watch?v=5DonmXxz6Qk" },
+				{ "name": "Cable Kickbacks", "sets": 4, "reps": "15 each leg", "notes": "5-7kg", "youtube": "https://www.youtube.com/watch?v=n-cgsNePyFo" },
+				{ "name": "Reverse Lunges", "sets": 4, "reps": "15 each leg", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=mJilHWIBWO8" },
+				{ "name": "Abductor Machine (Leaning Forward + Seated)", "sets": 4, "reps": "10 + 15", "notes": "Superset: leaning forward 30-50kg → seated 20-40kg", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
+				{ "name": "Glute Back Extensions", "sets": 4, "reps": "15", "notes": "Holding 10kg plate", "youtube": "https://www.youtube.com/watch?v=upxW1WlptUE" },
+				{ "name": "Hip Thrust", "sets": 4, "reps": "pyramid", "notes": "30kg x20, 40kg x15, 50kg x10, 60kg x5-10", "youtube": "https://www.youtube.com/watch?v=W86oVlnLqY4" },
+				{ "name": "Sumo Deadlift", "sets": 4, "reps": "8-12", "notes": "Olympic bar + 5kg plates each side", "youtube": "https://www.youtube.com/watch?v=e7oLkRlT2CQ" },
+				{ "name": "Banded Walking Abductors", "sets": 4, "reps": "10 steps each dir", "notes": "Resistance band", "youtube": "https://www.youtube.com/watch?v=TeyfkdXAgUg" }
 			]
 		},
 		"UpperBody": {
 			"name": "Day 2 — Upper Body",
 			"exercises": [
-				{ "name": "Squat to Overhead Press (Thrusters)", "sets": 4, "reps": "pyramid", "rest": "60s", "notes": "5kg x14, 6kg x12, 8kg x6-10, 5kg x15", "youtube": "https://www.youtube.com/watch?v=xGCASSd_31E" },
-				{ "name": "Dumbbell Lateral Raises", "sets": 4, "reps": "8-12", "rest": "45s", "notes": "3kg, thumbs pointing down", "youtube": "https://www.youtube.com/watch?v=Kl3LEzQ5Zqs" },
-				{ "name": "Triceps Overhead Extension", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "8kg dumbbell", "youtube": "https://www.youtube.com/watch?v=b_r_LW4HEcM" },
-				{ "name": "Barbell Biceps Curl", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "10kg", "youtube": "https://www.youtube.com/watch?v=54x2WF1_Suc" },
-				{ "name": "Lat Pulldowns", "sets": 4, "reps": "10", "rest": "60s", "notes": "25kg, pull to chest", "youtube": "https://www.youtube.com/watch?v=bNmvKpJSWKM" },
-				{ "name": "Straight-Arm Cable Pulldowns", "sets": 4, "reps": "12", "rest": "60s", "notes": "7.5-10kg", "youtube": "https://www.youtube.com/watch?v=hAMcfubonDc" },
-				{ "name": "Seated Cable Row", "sets": 4, "reps": "12", "rest": "60s", "notes": "30kg", "youtube": "https://www.youtube.com/watch?v=qD1WZ5pSuvk" },
-				{ "name": "Front Dumbbell Raises", "sets": 4, "reps": "10 each arm", "rest": "45s", "notes": "5kg", "youtube": "https://www.youtube.com/watch?v=9ThlTL25DH8" },
-				{ "name": "Triceps Rope Pushdowns", "sets": 4, "reps": "12", "rest": "60s", "notes": "7.5kg", "youtube": "https://www.youtube.com/watch?v=mr5Jgz67SX8" },
-				{ "name": "Rear Delt Flys", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "Machine or dumbbell", "youtube": "https://www.youtube.com/watch?v=FeERX9UwspY" },
-				{ "name": "FST-7 Incline Dumbbell Curls", "sets": 7, "reps": "5-10", "rest": "45s", "notes": "4kg, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=XhIsIcjIbCw" }
+				{ "name": "Squat to Overhead Press (Thrusters)", "sets": 4, "reps": "pyramid", "notes": "5kg x14, 6kg x12, 8kg x6-10, 5kg x15", "youtube": "https://www.youtube.com/watch?v=xGCASSd_31E" },
+				{ "name": "Dumbbell Lateral Raises", "sets": 4, "reps": "8-12", "notes": "3kg, thumbs pointing down", "youtube": "https://www.youtube.com/watch?v=Kl3LEzQ5Zqs" },
+				{ "name": "Triceps Overhead Extension", "sets": 4, "reps": "10-12", "notes": "8kg dumbbell", "youtube": "https://www.youtube.com/watch?v=b_r_LW4HEcM" },
+				{ "name": "Barbell Biceps Curl", "sets": 4, "reps": "10-12", "notes": "10kg", "youtube": "https://www.youtube.com/watch?v=54x2WF1_Suc" },
+				{ "name": "Lat Pulldowns", "sets": 4, "reps": "10", "notes": "25kg, pull to chest", "youtube": "https://www.youtube.com/watch?v=bNmvKpJSWKM" },
+				{ "name": "Straight-Arm Cable Pulldowns", "sets": 4, "reps": "12", "notes": "7.5-10kg", "youtube": "https://www.youtube.com/watch?v=hAMcfubonDc" },
+				{ "name": "Seated Cable Row", "sets": 4, "reps": "12", "notes": "30kg", "youtube": "https://www.youtube.com/watch?v=qD1WZ5pSuvk" },
+				{ "name": "Front Dumbbell Raises", "sets": 4, "reps": "10 each arm", "notes": "5kg", "youtube": "https://www.youtube.com/watch?v=9ThlTL25DH8" },
+				{ "name": "Triceps Rope Pushdowns", "sets": 4, "reps": "12", "notes": "7.5kg", "youtube": "https://www.youtube.com/watch?v=mr5Jgz67SX8" },
+				{ "name": "Rear Delt Flys", "sets": 4, "reps": "10-12", "notes": "Machine or dumbbell", "youtube": "https://www.youtube.com/watch?v=FeERX9UwspY" },
+				{ "name": "FST-7 Incline Dumbbell Curls", "sets": 4, "reps": "5-10", "notes": "4kg, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=XhIsIcjIbCw" }
 			]
 		},
 		"LegsBooty": {
 			"name": "Day 3 — Legs + Booty",
 			"exercises": [
-				{ "name": "FST-7 Lunges", "sets": 7, "reps": "10 each leg", "rest": "45s", "notes": "7kg each hand, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=whJex6mhaM4" },
-				{ "name": "Hip Thrust + Jump Squats", "sets": 4, "reps": "10 + 10", "rest": "90s", "notes": "Superset: hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
-				{ "name": "Leg Extensions", "sets": 4, "reps": "pyramid + drop", "rest": "60s", "notes": "20kg→35kg pyramid, then drop set 45→35→25→20kg", "youtube": "https://www.youtube.com/watch?v=w72YiHz15CA" },
-				{ "name": "Lying Leg Curl", "sets": 4, "reps": "20", "rest": "60s", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" },
-				{ "name": "Leg Press", "sets": 4, "reps": "10-15", "rest": "90s", "notes": "Pyramid 20→50kg", "youtube": "https://www.youtube.com/watch?v=nDh_BlnLCGc" },
-				{ "name": "Bulgarian Split Squats", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" }
+				{ "name": "FST-7 Lunges", "sets": 4, "reps": "10 each leg", "notes": "7kg each hand, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=whJex6mhaM4" },
+				{ "name": "Hip Thrust + Jump Squats", "sets": 4, "reps": "10 + 10", "notes": "Superset: hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
+				{ "name": "Leg Extensions", "sets": 4, "reps": "pyramid & drop", "notes": "20kg→35kg pyramid, then drop set 45→35→25→20kg", "youtube": "https://www.youtube.com/watch?v=w72YiHz15CA" },
+				{ "name": "Lying Leg Curl", "sets": 4, "reps": "20", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" },
+				{ "name": "Leg Press", "sets": 4, "reps": "10-15", "notes": "Pyramid 20→50kg", "youtube": "https://www.youtube.com/watch?v=nDh_BlnLCGc" },
+				{ "name": "Bulgarian Split Squats", "sets": 4, "reps": "15 each leg", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" }
 			]
 		}
 	},
-	"notes": "Advance Booty program from trainer. 3-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
+	"notes": "Advance Booty program. 3-day rotation with FST-7 technique. Treadmill cardio 2x/week (23min after Day 1 and Day 3). Progressively increase weights while maintaining proper form. Stay hydrated: 2-3L water daily."
 }
