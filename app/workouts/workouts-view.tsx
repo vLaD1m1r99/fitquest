@@ -3,7 +3,7 @@
 import { ChevronDown, ChevronUp, Clock, Dumbbell, RotateCcw, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { type WorkoutLog, type WorkoutPlan } from "@/lib/data"
+import type { WorkoutLog, WorkoutPlan } from "@/lib/data"
 
 interface WorkoutsViewProps {
 	workoutLog: WorkoutLog
@@ -31,7 +31,7 @@ function YouTubePlayer({ url }: { url: string }) {
 		<button
 			onClick={() => {
 				PlayingContext.current = isPlaying ? "" : url
-				forceUpdate((n) => n + 1)
+				forceUpdate(n => n + 1)
 				// Dispatch event so ExpandedPlayer re-renders too
 				window.dispatchEvent(new CustomEvent("yt-toggle", { detail: url }))
 			}}
