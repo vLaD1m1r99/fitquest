@@ -22,17 +22,13 @@
 		"UpperBody": {
 			"name": "Day 2 — Upper Body",
 			"exercises": [
-				{ "name": "Squat to Overhead Press (Thrusters)", "sets": 4, "reps": "pyramid", "notes": "5kg x14, 6kg x12, 8kg x6-10, 5kg x15", "youtube": "https://www.youtube.com/watch?v=xGCASSd_31E" },
-				{ "name": "Dumbbell Lateral Raises", "sets": 4, "reps": "8-12", "notes": "3kg, thumbs pointing down", "youtube": "https://www.youtube.com/watch?v=Kl3LEzQ5Zqs" },
-				{ "name": "Triceps Overhead Extension", "sets": 4, "reps": "10-12", "notes": "8kg dumbbell", "youtube": "https://www.youtube.com/watch?v=b_r_LW4HEcM" },
-				{ "name": "Barbell Biceps Curl", "sets": 4, "reps": "10-12", "notes": "10kg", "youtube": "https://www.youtube.com/watch?v=54x2WF1_Suc" },
+				{ "name": "Bench Press", "sets": 4, "reps": "10-12", "notes": "Barbell, works chest + shoulders", "youtube": "https://www.youtube.com/watch?v=4Y2ZdHCOXok" },
 				{ "name": "Lat Pulldowns", "sets": 4, "reps": "10", "notes": "25kg, pull to chest", "youtube": "https://www.youtube.com/watch?v=bNmvKpJSWKM" },
 				{ "name": "Straight-Arm Cable Pulldowns", "sets": 4, "reps": "12", "notes": "7.5-10kg", "youtube": "https://www.youtube.com/watch?v=hAMcfubonDc" },
 				{ "name": "Seated Cable Row", "sets": 4, "reps": "12", "notes": "30kg", "youtube": "https://www.youtube.com/watch?v=qD1WZ5pSuvk" },
-				{ "name": "Front Dumbbell Raises", "sets": 4, "reps": "10 each arm", "notes": "5kg", "youtube": "https://www.youtube.com/watch?v=9ThlTL25DH8" },
-				{ "name": "Triceps Rope Pushdowns", "sets": 4, "reps": "12", "notes": "7.5kg", "youtube": "https://www.youtube.com/watch?v=mr5Jgz67SX8" },
-				{ "name": "Rear Delt Flys", "sets": 4, "reps": "10-12", "notes": "Machine or dumbbell", "youtube": "https://www.youtube.com/watch?v=FeERX9UwspY" },
-				{ "name": "FST-7 Incline Dumbbell Curls", "sets": 4, "reps": "5-10", "notes": "4kg, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=XhIsIcjIbCw" }
+				{ "name": "Hyperextensions", "sets": 4, "reps": "15", "notes": "Holding 5-10kg plate", "youtube": "https://www.youtube.com/watch?v=8rXdAAwm8Rs" },
+				{ "name": "Dumbbell Lateral Raises", "sets": 4, "reps": "8-12", "notes": "3kg, thumbs pointing down", "youtube": "https://www.youtube.com/watch?v=Kl3LEzQ5Zqs" },
+				{ "name": "Skull Crushers + Biceps Curls", "sets": 4, "reps": "10-12 + 10-12", "notes": "Superset: skull crushers 8kg → barbell biceps curls 10kg", "youtube": "https://www.youtube.com/watch?v=9baX4-wEYx8" }
 			]
 		},
 		"LegsBooty": {
