@@ -15,8 +15,7 @@
 				{ "name": "Cable Kickbacks", "sets": 4, "reps": "15 each leg", "notes": "5-7kg", "youtube": "https://www.youtube.com/watch?v=n-cgsNePyFo" },
 				{ "name": "Reverse Lunges", "sets": 4, "reps": "15 each leg", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=mJilHWIBWO8" },
 				{ "name": "Abductor Machine (Leaning Forward + Seated)", "sets": 4, "reps": "10 + 15", "notes": "Superset: leaning forward 30-50kg → seated 20-40kg", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
-				{ "name": "Glute Back Extensions", "sets": 4, "reps": "15", "notes": "Holding 10kg plate", "youtube": "https://www.youtube.com/watch?v=upxW1WlptUE" },
-				{ "name": "Hip Thrust", "sets": 4, "reps": "pyramid", "notes": "30kg x20, 40kg x15, 50kg x10, 60kg x5-10", "youtube": "https://www.youtube.com/watch?v=W86oVlnLqY4" }
+				{ "name": "Glute Back Extensions", "sets": 4, "reps": "15", "notes": "Holding 10kg plate", "youtube": "https://www.youtube.com/watch?v=upxW1WlptUE" }
 			]
 		},
 		"UpperBody": {
