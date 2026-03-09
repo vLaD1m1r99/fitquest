@@ -1,9 +1,9 @@
 {
-	"currentPlan": "Advance Booty (4-Day Rotation)",
+	"currentPlan": "Advance Booty (3-Day Rotation)",
 	"startDate": "2026-03-09",
 	"schedule": {
-		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs"],
-		"frequency": "4x per week",
+		"rotation": ["BootyBurn", "UpperBody", "LegsBooty"],
+		"frequency": "3x per week",
 		"cardio": "Treadmill 23min after Day 1 and Day 3 (2x/week)"
 	},
 	"workouts": {
@@ -14,12 +14,11 @@
 				{ "name": "Good Morning", "sets": 4, "reps": "12", "rest": "60s", "notes": "10-15kg barbell", "youtube": "https://www.youtube.com/watch?v=5DonmXxz6Qk" },
 				{ "name": "Cable Kickbacks", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5-7kg", "youtube": "https://www.youtube.com/watch?v=n-cgsNePyFo" },
 				{ "name": "Reverse Lunges", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=mJilHWIBWO8" },
-				{ "name": "Abductor Machine (Leaning Forward)", "sets": 4, "reps": "10", "rest": "0s", "notes": "30-50kg, SUPERSET with seated", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
-				{ "name": "Abductor Machine (Seated)", "sets": 4, "reps": "15", "rest": "60s", "notes": "20-40kg, superset with leaning forward", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
+				{ "name": "Abductor Machine (Leaning Forward + Seated)", "sets": 4, "reps": "10 + 15", "rest": "60s", "notes": "Superset: leaning forward 30-50kg → seated 20-40kg", "youtube": "https://www.youtube.com/watch?v=tu4o4quPv2k" },
 				{ "name": "Glute Back Extensions", "sets": 4, "reps": "15", "rest": "60s", "notes": "Holding 10kg plate", "youtube": "https://www.youtube.com/watch?v=upxW1WlptUE" },
 				{ "name": "Hip Thrust", "sets": 4, "reps": "pyramid", "rest": "90s", "notes": "30kg x20, 40kg x15, 50kg x10, 60kg x5-10", "youtube": "https://www.youtube.com/watch?v=W86oVlnLqY4" },
 				{ "name": "Sumo Deadlift", "sets": 4, "reps": "8-12", "rest": "90s", "notes": "Olympic bar + 5kg plates each side", "youtube": "https://www.youtube.com/watch?v=e7oLkRlT2CQ" },
-				{ "name": "Banded Walking Abductors", "sets": 5, "reps": "10 steps each dir", "rest": "45s", "notes": "Resistance band", "youtube": "https://www.youtube.com/watch?v=TeyfkdXAgUg" }
+				{ "name": "Banded Walking Abductors", "sets": 4, "reps": "10 steps each dir", "rest": "45s", "notes": "Resistance band", "youtube": "https://www.youtube.com/watch?v=TeyfkdXAgUg" }
 			]
 		},
 		"UpperBody": {
@@ -42,23 +41,13 @@
 			"name": "Day 3 — Legs + Booty",
 			"exercises": [
 				{ "name": "FST-7 Lunges", "sets": 7, "reps": "10 each leg", "rest": "45s", "notes": "7kg each hand, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=whJex6mhaM4" },
-				{ "name": "Hip Thrust + Jump Squats (Superset)", "sets": 5, "reps": "10 + 10", "rest": "90s", "notes": "Hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
+				{ "name": "Hip Thrust + Jump Squats", "sets": 4, "reps": "10 + 10", "rest": "90s", "notes": "Superset: hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
 				{ "name": "Leg Extensions", "sets": 4, "reps": "pyramid + drop", "rest": "60s", "notes": "20kg→35kg pyramid, then drop set 45→35→25→20kg", "youtube": "https://www.youtube.com/watch?v=w72YiHz15CA" },
-				{ "name": "Lying Leg Curl", "sets": 5, "reps": "20", "rest": "60s", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" },
-				{ "name": "Leg Press", "sets": 5, "reps": "10-15", "rest": "90s", "notes": "Pyramid 20→50kg", "youtube": "https://www.youtube.com/watch?v=nDh_BlnLCGc" },
-				{ "name": "Bulgarian Split Squats", "sets": 3, "reps": "15 each leg", "rest": "60s", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" }
-			]
-		},
-		"HamstringsAbs": {
-			"name": "Day 4 — Hamstrings + Abs",
-			"exercises": [
-				{ "name": "FST-7 Sumo Deadlift", "sets": 7, "reps": "10", "rest": "45s", "notes": "25kg, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=e7oLkRlT2CQ" },
-				{ "name": "Single-Leg Romanian Deadlift", "sets": 3, "reps": "15 each leg", "rest": "60s", "notes": "7kg dumbbell", "youtube": "https://www.youtube.com/watch?v=Zfr6wizR8rs" },
-				{ "name": "Good Morning", "sets": 4, "reps": "12", "rest": "60s", "notes": "10kg barbell", "youtube": "https://www.youtube.com/watch?v=5DonmXxz6Qk" },
-				{ "name": "Step-ups", "sets": 4, "reps": "12 each leg", "rest": "60s", "notes": "Bench height", "youtube": "https://www.youtube.com/watch?v=PzDbmqL6qo8" },
-				{ "name": "Dumbbell Hamstring Curl", "sets": 4, "reps": "15", "rest": "60s", "notes": "7-10kg, lying face down on bench", "youtube": "https://www.youtube.com/watch?v=2WzXC6nzZ5U" }
+				{ "name": "Lying Leg Curl", "sets": 4, "reps": "20", "rest": "60s", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" },
+				{ "name": "Leg Press", "sets": 4, "reps": "10-15", "rest": "90s", "notes": "Pyramid 20→50kg", "youtube": "https://www.youtube.com/watch?v=nDh_BlnLCGc" },
+				{ "name": "Bulgarian Split Squats", "sets": 4, "reps": "15 each leg", "rest": "60s", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" }
 			]
 		}
 	},
-	"notes": "Advance Booty program from trainer. 4-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
+	"notes": "Advance Booty program from trainer. 3-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
 }
