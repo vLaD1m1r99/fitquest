@@ -1,15 +1,12 @@
-import { getActiveUser } from "@/lib/user"
 import { getWorkoutLog, getWorkoutPlan } from "@/lib/data"
+import { getActiveUser } from "@/lib/user"
 import WorkoutsView from "./workouts-view"
 
 export const metadata = { title: "Workouts" }
 
 export default async function WorkoutsPage() {
 	const user = await getActiveUser()
-	const [workoutLog, workoutPlan] = await Promise.all([
-		getWorkoutLog(user),
-		getWorkoutPlan(user),
-	])
+	const [workoutLog, workoutPlan] = await Promise.all([getWorkoutLog(user), getWorkoutPlan(user)])
 
 	if (!workoutLog || !workoutPlan) {
 		return (

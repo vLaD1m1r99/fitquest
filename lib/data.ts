@@ -261,6 +261,31 @@ export interface ProgressPhotosData {
 	photos: ProgressPhoto[]
 }
 
+export interface ActiveSetData {
+	weightKg: number
+	reps: number
+	completed: boolean
+}
+
+export interface ActiveExerciseData {
+	name: string
+	sets: ActiveSetData[]
+	youtube?: string
+	notes?: string
+}
+
+export interface ActiveWorkoutSession {
+	user: User
+	workoutKey: string
+	workoutName: string
+	startTime: string
+	exercises: ActiveExerciseData[]
+	overallRPE?: number
+	durationMin?: number
+	notes?: string
+	finishedAt?: string
+}
+
 export type User = "vlada" | "sneska"
 
 async function fetchData<T>(path: string): Promise<T> {

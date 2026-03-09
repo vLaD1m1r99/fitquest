@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Dumbbell, RotateCcw, X } from "lucide-react"
+import { ChevronDown, ChevronUp, Dumbbell, Play, RotateCcw, X } from "lucide-react"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import type { WorkoutLog, WorkoutPlan } from "@/lib/data"
@@ -44,7 +45,7 @@ function YouTubePlayer({ url }: { url: string }) {
 			/>
 			<div className="absolute inset-0 flex items-center justify-center">
 				<div className="w-7 h-5 bg-red-600 rounded flex items-center justify-center group-hover:bg-red-500 group-hover:scale-110 transition-all shadow">
-					<svg width="8" height="8" viewBox="0 0 10 10" fill="white">
+					<svg width="8" height="8" viewBox="0 0 10 10" fill="white" role="img" aria-label="Play">
 						<polygon points="2,0 10,5 2,10" />
 					</svg>
 				</div>
@@ -132,16 +133,25 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 	return (
 		<div className="space-y-6">
 			{/* Header */}
-			<div>
-				<h1 className="text-3xl font-bold">Workouts</h1>
-				<div className="flex items-center gap-3 mt-1">
-					<span className="text-muted-foreground">{workoutPlan.currentPlan}</span>
-					{workoutPlan.schedule?.frequency && (
-						<span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium">
-							{workoutPlan.schedule.frequency}
-						</span>
-					)}
+			<div className="flex items-start justify-between gap-4">
+				<div>
+					<h1 className="text-3xl font-bold">Workouts</h1>
+					<div className="flex items-center gap-3 mt-1">
+						<span className="text-muted-foreground">{workoutPlan.currentPlan}</span>
+						{workoutPlan.schedule?.frequency && (
+							<span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium">
+								{workoutPlan.schedule.frequency}
+							</span>
+						)}
+					</div>
 				</div>
+				<Link
+					href="/workouts/active"
+					className="flex items-center gap-2 px-5 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm hover:bg-accent/90 transition-colors flex-shrink-0"
+				>
+					<Play size={16} />
+					Start Workout
+				</Link>
 			</div>
 
 			{/* Rotation Strip */}
