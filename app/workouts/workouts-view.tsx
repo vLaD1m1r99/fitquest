@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronDown, ChevronUp, Clock, Dumbbell, RotateCcw, X } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { type WorkoutLog, type WorkoutPlan } from "@/lib/data"
 
@@ -16,39 +16,26 @@ function getYouTubeId(url: string): string | null {
 	return match ? match[1] : null
 }
 
-/** Inline YouTube thumbnail that expands to an iframe player on click */
+/** Global state for which video is currently playing (by URL) */
+const PlayingContext = { current: "" }
+
+/** Small thumbnail that sits to the right of exercise info */
 function YouTubePlayer({ url }: { url: string }) {
-	const [playing, setPlaying] = useState(false)
 	const videoId = getYouTubeId(url)
+	const [, forceUpdate] = useState(0)
 	if (!videoId) return null
 
-	if (playing) {
-		return (
-			<div className="relative mt-2 rounded-lg overflow-hidden bg-black aspect-video max-w-sm">
-				<iframe
-					src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-					allowFullScreen
-					className="absolute inset-0 w-full h-full"
-					title="Exercise form video"
-				/>
-				<button
-					onClick={(e) => {
-						e.stopPropagation()
-						setPlaying(false)
-					}}
-					className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 hover:bg-black/90 flex items-center justify-center text-white transition-colors"
-				>
-					<X size={14} />
-				</button>
-			</div>
-		)
-	}
+	const isPlaying = PlayingContext.current === url
 
 	return (
 		<button
-			onClick={() => setPlaying(true)}
-			className="relative mt-2 rounded-lg overflow-hidden bg-black group cursor-pointer w-36 h-20 flex-shrink-0"
+			onClick={() => {
+				PlayingContext.current = isPlaying ? "" : url
+				forceUpdate((n) => n + 1)
+				// Dispatch event so ExpandedPlayer re-renders too
+				window.dispatchEvent(new CustomEvent("yt-toggle", { detail: url }))
+			}}
+			className="relative rounded-lg overflow-hidden bg-black group cursor-pointer w-20 h-14 flex-shrink-0"
 		>
 			<img
 				src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
@@ -56,13 +43,56 @@ function YouTubePlayer({ url }: { url: string }) {
 				className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
 			/>
 			<div className="absolute inset-0 flex items-center justify-center">
-				<div className="w-8 h-6 bg-red-600 rounded-md flex items-center justify-center group-hover:bg-red-500 group-hover:scale-110 transition-all shadow">
-					<svg width="10" height="10" viewBox="0 0 10 10" fill="white">
+				<div className="w-7 h-5 bg-red-600 rounded flex items-center justify-center group-hover:bg-red-500 group-hover:scale-110 transition-all shadow">
+					<svg width="8" height="8" viewBox="0 0 10 10" fill="white">
 						<polygon points="2,0 10,5 2,10" />
 					</svg>
 				</div>
 			</div>
 		</button>
+	)
+}
+
+/** Expanded iframe player — renders below the exercise card when active */
+function ExpandedPlayer({ url }: { url: string }) {
+	const videoId = getYouTubeId(url)
+	const [playing, setPlaying] = useState(false)
+
+	// Listen for toggle events from the thumbnail
+	useEffect(() => {
+		const handler = (e: Event) => {
+			const detail = (e as CustomEvent).detail
+			if (detail === url) {
+				setPlaying(PlayingContext.current === url)
+			} else {
+				setPlaying(false)
+			}
+		}
+		window.addEventListener("yt-toggle", handler)
+		return () => window.removeEventListener("yt-toggle", handler)
+	}, [url])
+
+	if (!videoId || !playing) return null
+
+	return (
+		<div className="relative mt-3 ml-10 rounded-lg overflow-hidden bg-black aspect-video max-w-md">
+			<iframe
+				src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+				allowFullScreen
+				className="absolute inset-0 w-full h-full"
+				title="Exercise form video"
+			/>
+			<button
+				onClick={() => {
+					PlayingContext.current = ""
+					setPlaying(false)
+				}}
+				className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 hover:bg-black/90 flex items-center justify-center text-white transition-colors"
+			>
+				<X size={14} />
+			</button>
+		</div>
 	)
 }
 
@@ -199,47 +229,52 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 											{idx + 1}
 										</div>
 
-										{/* Exercise content */}
-										<div className="flex-1 min-w-0">
-											<div className="flex items-center gap-2 flex-wrap">
-												<h3 className="font-semibold text-sm">{exercise.name}</h3>
-												{isFST7 && (
-													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 uppercase tracking-wide flex-shrink-0">
-														FST-7
+										{/* Exercise content + YouTube side by side */}
+										<div className="flex-1 min-w-0 flex items-start justify-between gap-3">
+											<div className="flex-1 min-w-0">
+												<div className="flex items-center gap-2 flex-wrap">
+													<h3 className="font-semibold text-sm">{exercise.name}</h3>
+													{isFST7 && (
+														<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 uppercase tracking-wide flex-shrink-0">
+															FST-7
+														</span>
+													)}
+													{isSuperset && (
+														<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 uppercase tracking-wide flex-shrink-0">
+															Superset
+														</span>
+													)}
+												</div>
+
+												{/* Sets / Reps / Rest */}
+												<div className="flex items-center gap-2 mt-1.5 text-xs flex-wrap">
+													<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
+														{exercise.sets} sets
 													</span>
-												)}
-												{isSuperset && (
-													<span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 uppercase tracking-wide flex-shrink-0">
-														Superset
+													<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
+														{exercise.reps}
 													</span>
+													<span className="flex items-center gap-1 text-muted-foreground">
+														<Clock size={11} />
+														{exercise.rest} rest
+													</span>
+												</div>
+
+												{/* Notes */}
+												{exercise.notes && (
+													<p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+														{exercise.notes}
+													</p>
 												)}
 											</div>
 
-											{/* Sets / Reps / Rest */}
-											<div className="flex items-center gap-2 mt-1.5 text-xs flex-wrap">
-												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
-													{exercise.sets} sets
-												</span>
-												<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
-													{exercise.reps}
-												</span>
-												<span className="flex items-center gap-1 text-muted-foreground">
-													<Clock size={11} />
-													{exercise.rest} rest
-												</span>
-											</div>
-
-											{/* Notes */}
-											{exercise.notes && (
-												<p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-													{exercise.notes}
-												</p>
-											)}
-
-											{/* YouTube embedded mini-player */}
+											{/* YouTube thumbnail on the right */}
 											{exercise.youtube && <YouTubePlayer url={exercise.youtube} />}
 										</div>
 									</div>
+
+									{/* Expanded YouTube player below the card */}
+									{exercise.youtube && <ExpandedPlayer url={exercise.youtube} />}
 								</div>
 							)
 						})}

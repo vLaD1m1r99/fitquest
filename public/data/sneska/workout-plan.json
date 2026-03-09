@@ -2,7 +2,7 @@
 	"currentPlan": "Advance Booty (4-Day Rotation)",
 	"startDate": "2026-03-09",
 	"schedule": {
-		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs", "Abs"],
+		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs"],
 		"frequency": "4x per week",
 		"cardio": "Treadmill 23min after Day 1 and Day 3 (2x/week)",
 		"abs": "Abs routine 2x/week after training"
@@ -60,16 +60,6 @@
 				{ "name": "Dumbbell Hamstring Curl", "sets": 4, "reps": "15", "rest": "60s", "notes": "7-10kg, lying face down on bench", "youtube": "https://www.youtube.com/watch?v=2WzXC6nzZ5U" }
 			]
 		},
-		"Abs": {
-			"name": "Abs Routine (2x/week)",
-			"exercises": [
-				{ "name": "Plank", "sets": 4, "reps": "60s hold", "rest": "30s", "youtube": "https://www.youtube.com/watch?v=v25dawSzRTM" },
-				{ "name": "Leg Raises", "sets": 4, "reps": "15", "rest": "30s", "youtube": "https://www.youtube.com/watch?v=2n4UqRIJyk4" },
-				{ "name": "Cross Leg Raises", "sets": 3, "reps": "15 each side", "rest": "30s", "youtube": "https://www.youtube.com/watch?v=2n4UqRIJyk4" },
-				{ "name": "Bicycle Sit-ups", "sets": 4, "reps": "15", "rest": "30s", "youtube": "https://www.youtube.com/watch?v=_I2Fiy7ueNw" },
-				{ "name": "Russian Twists", "sets": 4, "reps": "20", "rest": "30s", "notes": "With small weight", "youtube": "https://www.youtube.com/watch?v=aRUMRbl7KS4" }
-			]
-		}
 	},
 	"notes": "Advance Booty program from trainer. 4-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Abs 2x/week after training. Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
 }
