@@ -4,8 +4,7 @@
 	"schedule": {
 		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs"],
 		"frequency": "4x per week",
-		"cardio": "Treadmill 23min after Day 1 and Day 3 (2x/week)",
-		"abs": "Abs routine 2x/week after training"
+		"cardio": "Treadmill 23min after Day 1 and Day 3 (2x/week)"
 	},
 	"workouts": {
 		"BootyBurn": {
@@ -59,7 +58,7 @@
 				{ "name": "Step-ups", "sets": 4, "reps": "12 each leg", "rest": "60s", "notes": "Bench height", "youtube": "https://www.youtube.com/watch?v=PzDbmqL6qo8" },
 				{ "name": "Dumbbell Hamstring Curl", "sets": 4, "reps": "15", "rest": "60s", "notes": "7-10kg, lying face down on bench", "youtube": "https://www.youtube.com/watch?v=2WzXC6nzZ5U" }
 			]
-		},
+		}
 	},
-	"notes": "Advance Booty program from trainer. 4-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Abs 2x/week after training. Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
+	"notes": "Advance Booty program from trainer. 4-day rotation with FST-7 technique (7 sets, 45s rest for fascial stretching). Treadmill cardio 2x/week (23min after Day 1 and Day 3). Program designed for 4 weeks — progressively increase weights while maintaining proper form. Weights listed are starting guidelines. Stay hydrated: 2-3L water daily."
 }
