@@ -2,7 +2,7 @@
 	"currentPlan": "Advance Booty (4-Day Rotation)",
 	"startDate": "2026-03-09",
 	"schedule": {
-		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs"],
+		"rotation": ["BootyBurn", "UpperBody", "LegsBooty", "HamstringsAbs", "Abs"],
 		"frequency": "4x per week",
 		"cardio": "Treadmill 23min after Day 1 and Day 3 (2x/week)",
 		"abs": "Abs routine 2x/week after training"

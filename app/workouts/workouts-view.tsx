@@ -48,29 +48,25 @@ function YouTubePlayer({ url }: { url: string }) {
 	return (
 		<button
 			onClick={() => setPlaying(true)}
-			className="relative mt-2 rounded-lg overflow-hidden bg-black/5 hover:bg-black/10 transition-colors group cursor-pointer w-full"
+			className="relative mt-3 rounded-xl overflow-hidden bg-black group cursor-pointer w-full aspect-video"
 		>
-			<div className="flex items-center gap-3 px-3 py-2">
-				{/* Thumbnail */}
-				<div className="relative flex-shrink-0 w-20 h-[45px] rounded overflow-hidden bg-muted">
-					<img
-						src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-						alt="Video thumbnail"
-						className="w-full h-full object-cover"
-					/>
-					{/* Play overlay */}
-					<div className="absolute inset-0 flex items-center justify-center">
-						<div className="w-8 h-6 bg-red-600 rounded-md flex items-center justify-center group-hover:bg-red-500 transition-colors">
-							<svg width="10" height="10" viewBox="0 0 10 10" fill="white">
-								<polygon points="2,0 10,5 2,10" />
-							</svg>
-						</div>
-					</div>
+			{/* Full-width thumbnail */}
+			<img
+				src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+				alt="Video thumbnail"
+				className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+			/>
+			{/* Big play button overlay */}
+			<div className="absolute inset-0 flex items-center justify-center">
+				<div className="w-14 h-10 bg-red-600 rounded-xl flex items-center justify-center group-hover:bg-red-500 group-hover:scale-110 transition-all shadow-lg">
+					<svg width="18" height="18" viewBox="0 0 10 10" fill="white">
+						<polygon points="2,0 10,5 2,10" />
+					</svg>
 				</div>
-				{/* Label */}
-				<span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-					Watch form video
-				</span>
+			</div>
+			{/* Bottom label */}
+			<div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
+				<span className="text-xs text-white/90 font-medium">Watch form video</span>
 			</div>
 		</button>
 	)
