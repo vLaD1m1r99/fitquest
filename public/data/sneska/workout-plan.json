@@ -34,12 +34,12 @@
 		"LegsBooty": {
 			"name": "Day 3 — Legs + Booty",
 			"exercises": [
-				{ "name": "FST-7 Lunges", "sets": 4, "reps": "10 each leg", "notes": "7kg each hand, FST-7 technique", "youtube": "https://www.youtube.com/watch?v=whJex6mhaM4" },
-				{ "name": "Hip Thrust + Jump Squats", "sets": 4, "reps": "10 + 10", "notes": "Superset: hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
-				{ "name": "Leg Extensions", "sets": 4, "reps": "pyramid & drop", "notes": "20kg→35kg pyramid, then drop set 45→35→25→20kg", "youtube": "https://www.youtube.com/watch?v=w72YiHz15CA" },
-				{ "name": "Lying Leg Curl", "sets": 4, "reps": "20", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" },
 				{ "name": "Leg Press", "sets": 4, "reps": "10-15", "notes": "Pyramid 20→50kg", "youtube": "https://www.youtube.com/watch?v=nDh_BlnLCGc" },
-				{ "name": "Bulgarian Split Squats", "sets": 4, "reps": "15 each leg", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" }
+				{ "name": "Bulgarian Split Squats", "sets": 4, "reps": "15 each leg", "notes": "5kg dumbbells", "youtube": "https://www.youtube.com/watch?v=or1frhkjBDc" },
+				{ "name": "Hip Thrust + Jump Squats", "sets": 4, "reps": "10 + 10", "notes": "Superset: hip thrust 30kg (5s hold at top) + bodyweight jump squats", "youtube": "https://www.youtube.com/watch?v=1S6ImvCXfko" },
+				{ "name": "Elevated Lunges", "sets": 4, "reps": "10 each leg", "notes": "7kg each hand, front foot on platform for deeper glute stretch", "youtube": "https://www.youtube.com/watch?v=31FQwz9wx_s" },
+				{ "name": "Leg Extensions", "sets": 4, "reps": "pyramid & drop", "notes": "20kg→35kg pyramid, then drop set 45→35→25→20kg", "youtube": "https://www.youtube.com/watch?v=w72YiHz15CA" },
+				{ "name": "Lying Leg Curl", "sets": 4, "reps": "20", "notes": "25kg", "youtube": "https://www.youtube.com/watch?v=uNPWyzhzbBI" }
 			]
 		}
 	},
