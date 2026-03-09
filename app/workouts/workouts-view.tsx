@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Clock, Dumbbell, RotateCcw, X } from "lucide-react"
+import { ChevronDown, ChevronUp, Dumbbell, RotateCcw, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import type { WorkoutLog, WorkoutPlan } from "@/lib/data"
@@ -210,8 +210,7 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 					<div className="divide-y divide-border/30">
 						{activeWorkout.exercises.map((exercise, idx) => {
 							const isFST7 = exercise.name.toLowerCase().includes("fst-7") || exercise.sets === 7
-							const isSuperset =
-								exercise.notes?.toLowerCase().includes("superset") || exercise.reps.includes("+")
+							const isSuperset = exercise.notes?.toLowerCase().includes("superset") ?? false
 
 							return (
 								<div key={idx} className="p-4 hover:bg-muted/10 transition-colors">
@@ -246,17 +245,13 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 													)}
 												</div>
 
-												{/* Sets / Reps / Rest */}
+												{/* Sets / Reps */}
 												<div className="flex items-center gap-2 mt-1.5 text-xs flex-wrap">
 													<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
 														{exercise.sets} sets
 													</span>
 													<span className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded font-medium">
 														{exercise.reps}
-													</span>
-													<span className="flex items-center gap-1 text-muted-foreground">
-														<Clock size={11} />
-														{exercise.rest} rest
 													</span>
 												</div>
 
