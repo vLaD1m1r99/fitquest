@@ -3,21 +3,21 @@
   "gender": "male",
   "age": 27,
   "heightCm": 177,
-  "currentWeightKg": 90.4,
-  "startingWeightKg": 90.4,
+  "currentWeightKg": 92.6,
+  "startingWeightKg": 92.6,
   "goalWeightKg": null,
-  "bmr": 1880,
-  "tdee": 2914,
-  "dailyCalorieTarget": 2414,
+  "bmr": 1902,
+  "tdee": 2948,
+  "dailyCalorieTarget": 2448,
   "macros": {
-    "proteinG": 199,
-    "fatG": 67,
-    "carbsG": 254
+    "proteinG": 204,
+    "fatG": 68,
+    "carbsG": 255
   },
   "deficit": 500,
   "activityFactor": 1.55,
   "supplements": ["Creatine 5g/day", "Whey protein"],
   "restrictions": [],
-  "lastRecalculation": "2026-03-09",
+  "lastRecalculation": "2026-03-10",
   "notes": ""
 }

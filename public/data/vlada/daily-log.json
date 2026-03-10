@@ -1,11 +1,30 @@
 {
-	"entries": [
-		{
-			"date": "2026-03-09",
-			"workout": null,
-			"steps": null,
-			"notes": "Sick day — feeling terrible, no training, taking meds. No food logged.",
-			"sick": true
-		}
-	]
+  "entries": [
+    {
+      "date": "2026-03-09",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick day — feeling terrible, no training, taking meds. No food logged."
+    },
+    {
+      "date": "2026-03-10",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Still sick — day 2, resting and recovering."
+    }
+  ]
 }
