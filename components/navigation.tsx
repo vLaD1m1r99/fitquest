@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, Dumbbell, LayoutDashboard, Menu, Target, TrendingUp, Utensils } from "lucide-react"
+import { Calendar, ChevronDown, Dumbbell, LayoutDashboard, Menu, Target, TrendingUp, Utensils } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useRef, useState, useTransition } from "react"
@@ -30,6 +30,7 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 		{ href: "/", label: "Dashboard", icon: LayoutDashboard },
 		{ href: "/nutrition", label: "Nutrition", icon: Utensils },
 		{ href: "/workouts", label: "Workouts", icon: Dumbbell },
+		{ href: "/calendar", label: "Calendar", icon: Calendar },
 		{ href: "/progress", label: "Progress", icon: TrendingUp },
 		{ href: "/challenges", label: "Quests", icon: Target },
 	]
