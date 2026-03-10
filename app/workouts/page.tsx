@@ -1,4 +1,4 @@
-import { getWorkoutLog, getWorkoutPlan } from "@/lib/data"
+import { getWorkoutPlan } from "@/lib/data"
 import { getActiveUser } from "@/lib/user"
 import WorkoutsView from "./workouts-view"
 
@@ -6,9 +6,9 @@ export const metadata = { title: "Workouts" }
 
 export default async function WorkoutsPage() {
 	const user = await getActiveUser()
-	const [workoutLog, workoutPlan] = await Promise.all([getWorkoutLog(user), getWorkoutPlan(user)])
+	const workoutPlan = await getWorkoutPlan(user)
 
-	if (!workoutLog || !workoutPlan) {
+	if (!workoutPlan) {
 		return (
 			<div className="flex items-center justify-center min-h-screen">
 				<p>No data available</p>
@@ -16,5 +16,5 @@ export default async function WorkoutsPage() {
 		)
 	}
 
-	return <WorkoutsView workoutLog={workoutLog} workoutPlan={workoutPlan} />
+	return <WorkoutsView workoutPlan={workoutPlan} />
 }

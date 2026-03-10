@@ -1,13 +1,12 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Dumbbell, Play, RotateCcw, X } from "lucide-react"
+import { Dumbbell, Play, RotateCcw, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import type { WorkoutLog, WorkoutPlan } from "@/lib/data"
+import type { WorkoutPlan } from "@/lib/data"
 
 interface WorkoutsViewProps {
-	workoutLog: WorkoutLog
 	workoutPlan: WorkoutPlan
 }
 
@@ -97,26 +96,9 @@ function ExpandedPlayer({ url }: { url: string }) {
 	)
 }
 
-export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewProps) {
+export default function WorkoutsView({ workoutPlan }: WorkoutsViewProps) {
 	const rotation = workoutPlan.schedule?.rotation || Object.keys(workoutPlan.workouts)
 	const [activeTab, setActiveTab] = useState(rotation[0] || "")
-	const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set())
-	const [expandedExercises, setExpandedExercises] = useState<Set<string>>(new Set())
-
-	const toggleSession = (key: string) => {
-		const next = new Set(expandedSessions)
-		if (next.has(key)) next.delete(key)
-		else next.add(key)
-		setExpandedSessions(next)
-	}
-
-	const toggleExercise = (key: string) => {
-		const next = new Set(expandedExercises)
-		if (next.has(key)) next.delete(key)
-		else next.add(key)
-		setExpandedExercises(next)
-	}
-
 	const activeWorkout = workoutPlan.workouts[activeTab]
 
 	const totalSets = (key: string) => {
@@ -133,25 +115,26 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 	return (
 		<div className="space-y-6">
 			{/* Header */}
-			<div className="flex items-start justify-between gap-4">
-				<div>
-					<h1 className="text-3xl font-bold">Workouts</h1>
-					<div className="flex items-center gap-3 mt-1">
-						<span className="text-muted-foreground">{workoutPlan.currentPlan}</span>
-						{workoutPlan.schedule?.frequency && (
-							<span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium">
-								{workoutPlan.schedule.frequency}
-							</span>
-						)}
-					</div>
+			<div className="space-y-3">
+				<div className="flex items-center justify-between gap-3">
+					<h1 className="text-2xl sm:text-3xl font-bold">Workouts</h1>
+					<Link
+						href="/workouts/active"
+						className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm hover:bg-accent/90 transition-colors flex-shrink-0"
+					>
+						<Play size={16} />
+						<span className="hidden sm:inline">Start Workout</span>
+						<span className="sm:hidden">Start</span>
+					</Link>
 				</div>
-				<Link
-					href="/workouts/active"
-					className="flex items-center gap-2 px-5 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm hover:bg-accent/90 transition-colors flex-shrink-0"
-				>
-					<Play size={16} />
-					Start Workout
-				</Link>
+				<div className="flex items-center gap-3">
+					<span className="text-sm text-muted-foreground">{workoutPlan.currentPlan}</span>
+					{workoutPlan.schedule?.frequency && (
+						<span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium">
+							{workoutPlan.schedule.frequency}
+						</span>
+					)}
+				</div>
 			</div>
 
 			{/* Rotation Strip */}
@@ -293,81 +276,6 @@ export default function WorkoutsView({ workoutLog, workoutPlan }: WorkoutsViewPr
 					<p className="text-sm text-muted-foreground leading-relaxed">{workoutPlan.notes}</p>
 				</Card>
 			)}
-
-			{/* Recent Workouts Log */}
-			<Card className="p-5 bg-card border-border">
-				<h2 className="text-lg font-semibold mb-4">Recent Workouts</h2>
-				{workoutLog.sessions.length > 0 ? (
-					<div className="space-y-2">
-						{[...workoutLog.sessions]
-							.reverse()
-							.slice(0, 10)
-							.map((session, idx) => (
-								<div key={idx}>
-									<button
-										onClick={() => toggleSession(`log-${idx}`)}
-										className="w-full flex items-center justify-between p-3 rounded-md bg-muted/30 hover:bg-muted/50 transition-colors text-left"
-									>
-										<div>
-											<p className="font-semibold text-sm">{session.sessionType}</p>
-											<p className="text-xs text-muted-foreground">
-												{session.date} · {session.durationMin}m · {session.exercises.length}{" "}
-												exercises · RPE {session.overallRPE}
-											</p>
-										</div>
-										{expandedSessions.has(`log-${idx}`) ? (
-											<ChevronUp size={16} />
-										) : (
-											<ChevronDown size={16} />
-										)}
-									</button>
-									{expandedSessions.has(`log-${idx}`) && (
-										<div className="mt-2 ml-4 space-y-3 border-l-2 border-border/50 pl-4">
-											{session.exercises.map((exercise, exIdx) => (
-												<div key={exIdx}>
-													<button
-														onClick={() => toggleExercise(`log-${idx}-${exIdx}`)}
-														className="w-full flex items-center justify-between text-left"
-													>
-														<p className="font-semibold text-xs">{exercise.name}</p>
-														{expandedExercises.has(`log-${idx}-${exIdx}`) ? (
-															<ChevronUp size={14} />
-														) : (
-															<ChevronDown size={14} />
-														)}
-													</button>
-													{expandedExercises.has(`log-${idx}-${exIdx}`) && (
-														<div className="mt-1 space-y-1">
-															{exercise.sets.map((set, setIdx) => (
-																<div
-																	key={setIdx}
-																	className="flex items-center gap-3 text-xs text-muted-foreground"
-																>
-																	<span className="w-12">Set {setIdx + 1}</span>
-																	<span>
-																		{set.reps} reps @ {set.weightKg}kg
-																	</span>
-																	<span className="text-accent">RPE {set.rpe}</span>
-																</div>
-															))}
-														</div>
-													)}
-												</div>
-											))}
-											{session.notes && (
-												<p className="text-xs text-muted-foreground italic pt-2 border-t border-border/30">
-													{session.notes}
-												</p>
-											)}
-										</div>
-									)}
-								</div>
-							))}
-					</div>
-				) : (
-					<p className="text-sm text-muted-foreground">No workouts logged yet</p>
-				)}
-			</Card>
 		</div>
 	)
 }
