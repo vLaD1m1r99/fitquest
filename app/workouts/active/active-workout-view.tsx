@@ -1,14 +1,22 @@
 "use client"
 
-import { Check, ChevronLeft, Minus, Play, Plus, Square, Timer } from "lucide-react"
+import { Check, ChevronLeft, Flame, Minus, Play, Plus, Square, Timer, Trophy, Zap } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
-import type { ActiveExerciseData, ActiveSetData, ActiveWorkoutSession, User, WorkoutPlan } from "@/lib/data"
+import type { ActiveExerciseData, ActiveSetData, ActiveWorkoutSession, User, WorkoutLog, WorkoutPlan } from "@/lib/data"
 
 const LS_KEY = "fitquest_active_workout"
 const LS_COMPLETED_KEY = "fitquest_completed_workouts"
+
+const PR_MESSAGES = [
+	{ icon: Trophy, text: "NEW PR! Beast mode!", color: "text-yellow-400" },
+	{ icon: Flame, text: "Stronger than last time!", color: "text-orange-400" },
+	{ icon: Zap, text: "Level up! More weight!", color: "text-blue-400" },
+	{ icon: Trophy, text: "PR crushed!", color: "text-yellow-400" },
+	{ icon: Flame, text: "You're on fire!", color: "text-orange-400" },
+]
 
 /** Parse a reps string like "10-12", "15 each leg", "pyramid" into a default number */
 function parseDefaultReps(repsStr: string): number {
@@ -16,42 +24,105 @@ function parseDefaultReps(repsStr: string): number {
 	return match ? Number.parseInt(match[1], 10) : 10
 }
 
-/** Get last used weight for an exercise from completed workouts in localStorage */
-function getLastWeight(exerciseName: string, user: string): number {
-	if (typeof window === "undefined") return 0
+/** Get last used weight for an exercise — check server workout log first, then localStorage */
+function getLastWeight(
+	exerciseName: string,
+	user: string,
+	serverLog: WorkoutLog,
+): { weightKg: number; reps: number } | null {
+	// Check server workout log (most authoritative) — search backwards for most recent
+	for (let i = serverLog.sessions.length - 1; i >= 0; i--) {
+		const session = serverLog.sessions[i]
+		const ex = session.exercises.find(e => e.name === exerciseName)
+		if (ex) {
+			const bestSet = ex.sets.reduce((best, s) => (s.weightKg > best.weightKg ? s : best), ex.sets[0])
+			if (bestSet && bestSet.weightKg > 0) {
+				return { weightKg: bestSet.weightKg, reps: bestSet.reps }
+			}
+		}
+	}
+
+	// Fallback to localStorage completed workouts
+	if (typeof window === "undefined") return null
 	try {
 		const raw = localStorage.getItem(LS_COMPLETED_KEY)
-		if (!raw) return 0
+		if (!raw) return null
 		const completed: ActiveWorkoutSession[] = JSON.parse(raw)
-		// Search backwards (most recent first)
 		for (let i = completed.length - 1; i >= 0; i--) {
 			if (completed[i].user !== user) continue
 			const ex = completed[i].exercises.find(e => e.name === exerciseName)
 			if (ex) {
-				const lastSet = ex.sets.find(s => s.completed && s.weightKg > 0)
-				if (lastSet) return lastSet.weightKg
+				const bestSet = ex.sets.reduce((best, s) => (s.weightKg > best.weightKg ? s : best), ex.sets[0])
+				if (bestSet && bestSet.weightKg > 0) {
+					return { weightKg: bestSet.weightKg, reps: bestSet.reps }
+				}
 			}
 		}
 	} catch (_) {
 		/* ignore */
 	}
-	return 0
+	return null
+}
+
+/** Get the best weight ever done for an exercise (for PR detection) */
+function getBestWeight(exerciseName: string, user: string, serverLog: WorkoutLog): number {
+	let best = 0
+
+	// Check server log
+	for (const session of serverLog.sessions) {
+		const ex = session.exercises.find(e => e.name === exerciseName)
+		if (ex) {
+			for (const s of ex.sets) {
+				if (s.weightKg > best) best = s.weightKg
+			}
+		}
+	}
+
+	// Check localStorage
+	if (typeof window !== "undefined") {
+		try {
+			const raw = localStorage.getItem(LS_COMPLETED_KEY)
+			if (raw) {
+				const completed: ActiveWorkoutSession[] = JSON.parse(raw)
+				for (const session of completed) {
+					if (session.user !== user) continue
+					const ex = session.exercises.find(e => e.name === exerciseName)
+					if (ex) {
+						for (const s of ex.sets) {
+							if (s.weightKg > best) best = s.weightKg
+						}
+					}
+				}
+			}
+		} catch (_) {
+			/* ignore */
+		}
+	}
+	return best
 }
 
 /** Build initial exercise data from a workout template */
-function buildExercises(workoutKey: string, plan: WorkoutPlan, user: string): ActiveExerciseData[] {
+function buildExercises(
+	workoutKey: string,
+	plan: WorkoutPlan,
+	user: string,
+	serverLog: WorkoutLog,
+): ActiveExerciseData[] {
 	const template = plan.workouts[workoutKey]
 	if (!template) return []
-	return template.exercises.map(ex => ({
-		name: ex.name,
-		youtube: ex.youtube,
-		notes: ex.notes,
-		sets: Array.from({ length: ex.sets }, () => ({
-			weightKg: getLastWeight(ex.name, user),
-			reps: parseDefaultReps(ex.reps),
-			completed: false,
-		})),
-	}))
+	return template.exercises.map(ex => {
+		const last = getLastWeight(ex.name, user, serverLog)
+		return {
+			name: ex.name,
+			youtube: ex.youtube,
+			notes: ex.notes,
+			sets: Array.from({ length: ex.sets }, () => ({
+				weightKg: last?.weightKg ?? 0,
+				reps: last?.reps ?? parseDefaultReps(ex.reps),
+				completed: false,
+			})),
+		}
+	})
 }
 
 /** Format elapsed seconds as MM:SS */
@@ -62,13 +133,28 @@ function formatTime(seconds: number): string {
 }
 
 /** Increment/decrement button */
-function StepButton({ onClick, icon, label }: { onClick: () => void; icon: "plus" | "minus"; label: string }) {
+function StepButton({
+	onClick,
+	icon,
+	label,
+	disabled,
+}: {
+	onClick: () => void
+	icon: "plus" | "minus"
+	label: string
+	disabled?: boolean
+}) {
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			aria-label={label}
-			className="w-11 h-11 rounded-lg bg-muted/50 hover:bg-muted active:bg-muted/80 flex items-center justify-center text-foreground transition-colors flex-shrink-0"
+			disabled={disabled}
+			className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
+				disabled
+					? "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
+					: "bg-muted/50 hover:bg-muted active:bg-muted/80 text-foreground"
+			}`}
 		>
 			{icon === "plus" ? <Plus size={18} /> : <Minus size={18} />}
 		</button>
@@ -79,10 +165,11 @@ function StepButton({ onClick, icon, label }: { onClick: () => void; icon: "plus
 
 interface Props {
 	workoutPlan: WorkoutPlan
+	workoutLog: WorkoutLog
 	user: User
 }
 
-export function ActiveWorkoutView({ workoutPlan, user }: Props) {
+export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const router = useRouter()
 	const rotation = workoutPlan.schedule?.rotation || Object.keys(workoutPlan.workouts)
 
@@ -94,6 +181,9 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 	const [finishNotes, setFinishNotes] = useState("")
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+	// PR celebration state: track which exercises have shown a PR
+	const [prCelebrations, setPrCelebrations] = useState<Record<number, string | null>>({})
+
 	// Hydrate from localStorage on mount
 	useEffect(() => {
 		try {
@@ -103,7 +193,6 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 				if (parsed.user === user && !parsed.finishedAt) {
 					setSession(parsed)
 					setPhase("active")
-					// Restore elapsed time
 					const startMs = new Date(parsed.startTime).getTime()
 					setElapsed(Math.floor((Date.now() - startMs) / 1000))
 				}
@@ -131,6 +220,16 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 		}
 	}, [session, phase])
 
+	// Compute best weights for PR detection (memoised once per session start)
+	const bestWeights = useMemo(() => {
+		if (!session) return {}
+		const map: Record<string, number> = {}
+		for (const ex of session.exercises) {
+			map[ex.name] = getBestWeight(ex.name, user, workoutLog)
+		}
+		return map
+	}, [session, user, workoutLog])
+
 	// ─── Actions ──────────────────────────────────────────
 
 	const startWorkout = useCallback(
@@ -142,14 +241,15 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 				workoutKey: key,
 				workoutName: template.name,
 				startTime: new Date().toISOString(),
-				exercises: buildExercises(key, workoutPlan, user),
+				exercises: buildExercises(key, workoutPlan, user, workoutLog),
 			}
 			setSession(newSession)
 			setPhase("active")
 			setElapsed(0)
+			setPrCelebrations({})
 			localStorage.setItem(LS_KEY, JSON.stringify(newSession))
 		},
-		[workoutPlan, user],
+		[workoutPlan, workoutLog, user],
 	)
 
 	const updateSet = useCallback((exIdx: number, setIdx: number, field: keyof ActiveSetData, delta: number) => {
@@ -163,14 +263,33 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 		})
 	}, [])
 
-	const toggleSetComplete = useCallback((exIdx: number, setIdx: number) => {
-		setSession(prev => {
-			if (!prev) return prev
-			const next = structuredClone(prev)
-			next.exercises[exIdx].sets[setIdx].completed = !next.exercises[exIdx].sets[setIdx].completed
-			return next
-		})
-	}, [])
+	const toggleSetComplete = useCallback(
+		(exIdx: number, setIdx: number) => {
+			setSession(prev => {
+				if (!prev) return prev
+				const next = structuredClone(prev)
+				const set = next.exercises[exIdx].sets[setIdx]
+				set.completed = !set.completed
+
+				// Check for PR when completing a set (not uncompleting)
+				if (set.completed) {
+					const exName = next.exercises[exIdx].name
+					const prevBest = bestWeights[exName] ?? 0
+					if (set.weightKg > prevBest && set.weightKg > 0) {
+						const msgIdx = Math.floor(Math.random() * PR_MESSAGES.length)
+						setPrCelebrations(prev => ({ ...prev, [exIdx]: PR_MESSAGES[msgIdx].text }))
+						// Auto-clear after 3 seconds
+						setTimeout(() => {
+							setPrCelebrations(prev => ({ ...prev, [exIdx]: null }))
+						}, 3000)
+					}
+				}
+
+				return next
+			})
+		},
+		[bestWeights],
+	)
 
 	const finishWorkout = useCallback(() => {
 		if (!session) return
@@ -181,7 +300,6 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 			notes: finishNotes,
 			finishedAt: new Date().toISOString(),
 		}
-		// Save to completed list
 		try {
 			const raw = localStorage.getItem(LS_COMPLETED_KEY)
 			const completed: ActiveWorkoutSession[] = raw ? JSON.parse(raw) : []
@@ -190,7 +308,6 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 		} catch (_) {
 			/* ignore */
 		}
-		// Clear active session
 		localStorage.removeItem(LS_KEY)
 		setSession(null)
 		setPhase("pick")
@@ -364,6 +481,9 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 			{/* Exercise cards */}
 			{session.exercises.map((exercise, exIdx) => {
 				const exCompleted = exercise.sets.every(s => s.completed)
+				const prMsg = prCelebrations[exIdx]
+				const previousBest = bestWeights[exercise.name] ?? 0
+
 				return (
 					<Card key={exIdx} className={`overflow-hidden transition-all ${exCompleted ? "opacity-60" : ""}`}>
 						{/* Exercise header */}
@@ -380,12 +500,25 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 								</div>
 								<div>
 									<h3 className="font-semibold text-sm">{exercise.name}</h3>
+									{previousBest > 0 && (
+										<p className="text-[10px] text-muted-foreground mt-0.5">
+											Previous best: {previousBest}kg
+										</p>
+									)}
 									{exercise.notes && (
 										<p className="text-xs text-muted-foreground mt-0.5">{exercise.notes}</p>
 									)}
 								</div>
 							</div>
 						</div>
+
+						{/* PR Celebration Banner */}
+						{prMsg && (
+							<div className="mx-4 mb-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center gap-2 animate-pulse">
+								<Trophy size={16} className="text-yellow-400 flex-shrink-0" />
+								<span className="text-sm font-bold text-yellow-400">{prMsg}</span>
+							</div>
+						)}
 
 						{/* Sets */}
 						<div className="px-4 pb-4 space-y-2">
@@ -400,8 +533,8 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 							{exercise.sets.map((set, setIdx) => (
 								<div
 									key={setIdx}
-									className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center ${
-										set.completed ? "opacity-50" : ""
+									className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center transition-all ${
+										set.completed ? "opacity-40" : ""
 									}`}
 								>
 									{/* Set number */}
@@ -415,6 +548,7 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 											onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
 											icon="minus"
 											label="Decrease weight"
+											disabled={set.completed}
 										/>
 										<span className="w-14 text-center text-sm font-bold tabular-nums">
 											{set.weightKg}
@@ -423,6 +557,7 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 											onClick={() => updateSet(exIdx, setIdx, "weightKg", 2.5)}
 											icon="plus"
 											label="Increase weight"
+											disabled={set.completed}
 										/>
 									</div>
 
@@ -432,6 +567,7 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 											onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
 											icon="minus"
 											label="Decrease reps"
+											disabled={set.completed}
 										/>
 										<span className="w-8 text-center text-sm font-bold tabular-nums">
 											{set.reps}
@@ -440,6 +576,7 @@ export function ActiveWorkoutView({ workoutPlan, user }: Props) {
 											onClick={() => updateSet(exIdx, setIdx, "reps", 1)}
 											icon="plus"
 											label="Increase reps"
+											disabled={set.completed}
 										/>
 									</div>
 

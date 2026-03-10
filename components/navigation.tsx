@@ -1,10 +1,11 @@
 "use client"
 
-import { ChevronDown, Dumbbell, LayoutDashboard, Target, TrendingUp, Utensils } from "lucide-react"
+import { ChevronDown, Dumbbell, LayoutDashboard, Menu, Target, TrendingUp, Utensils } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useRef, useState, useTransition } from "react"
 import { switchUser } from "@/app/actions"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { USER_DISPLAY_NAMES, type User } from "@/lib/data"
 import { ThemeToggle } from "./theme-toggle"
 
@@ -12,6 +13,7 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 	const pathname = usePathname()
 	const router = useRouter()
 	const [userMenuOpen, setUserMenuOpen] = useState(false)
+	const [mobileOpen, setMobileOpen] = useState(false)
 	const [isPending, startTransition] = useTransition()
 	const menuRef = useRef<HTMLDivElement>(null)
 
@@ -34,6 +36,7 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 
 	const handleSwitchUser = () => {
 		setUserMenuOpen(false)
+		setMobileOpen(false)
 		startTransition(async () => {
 			await switchUser(otherUser)
 			router.refresh()
@@ -49,7 +52,8 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 						<span>FitQuest</span>
 					</Link>
 
-					<div className="flex items-center gap-1 sm:gap-2">
+					{/* Desktop nav */}
+					<div className="hidden md:flex items-center gap-1 sm:gap-2">
 						{navItems.map(item => {
 							const Icon = item.icon
 							const active = isActive(item.href)
@@ -64,7 +68,7 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 									}`}
 								>
 									<Icon size={18} />
-									<span className="hidden sm:inline">{item.label}</span>
+									<span>{item.label}</span>
 								</Link>
 							)
 						})}
@@ -109,8 +113,74 @@ export function Navigation({ activeUser }: { activeUser: User }) {
 							</div>
 						</div>
 					</div>
+
+					{/* Mobile: user badge + theme + hamburger */}
+					<div className="flex md:hidden items-center gap-2">
+						<span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-accent/15 text-accent">
+							{isPending ? "..." : displayName}
+						</span>
+						<ThemeToggle />
+						<button
+							onClick={() => setMobileOpen(true)}
+							className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-foreground"
+							aria-label="Open menu"
+						>
+							<Menu size={22} />
+						</button>
+					</div>
 				</div>
 			</div>
+
+			{/* Mobile Sheet */}
+			<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+				<SheetContent side="right" className="w-[280px] p-0">
+					<SheetHeader className="border-b border-border/50 px-5 py-4">
+						<SheetTitle className="text-accent font-bold flex items-center gap-2">
+							<span>⚡</span> FitQuest
+						</SheetTitle>
+					</SheetHeader>
+
+					<div className="flex flex-col py-2">
+						{navItems.map(item => {
+							const Icon = item.icon
+							const active = isActive(item.href)
+							return (
+								<SheetClose key={item.href} render={<span />}>
+									<Link
+										href={item.href}
+										onClick={() => setMobileOpen(false)}
+										className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium transition-all ${
+											active
+												? "bg-accent/10 text-accent border-r-2 border-accent"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+										}`}
+									>
+										<Icon size={20} />
+										{item.label}
+									</Link>
+								</SheetClose>
+							)
+						})}
+					</div>
+
+					{/* User switcher at bottom of sheet */}
+					<div className="mt-auto border-t border-border/50 p-4">
+						<p className="text-xs text-muted-foreground mb-2">Switch user</p>
+						<div className="flex gap-2">
+							<span className="flex-1 px-3 py-2.5 rounded-lg text-sm font-medium text-center bg-accent/15 text-accent">
+								{displayName}
+							</span>
+							<button
+								onClick={handleSwitchUser}
+								disabled={isPending}
+								className="flex-1 px-3 py-2.5 rounded-lg text-sm font-medium text-center bg-muted/40 text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+							>
+								{USER_DISPLAY_NAMES[otherUser]}
+							</button>
+						</div>
+					</div>
+				</SheetContent>
+			</Sheet>
 		</nav>
 	)
 }

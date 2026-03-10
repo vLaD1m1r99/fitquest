@@ -1,4 +1,4 @@
-import { getWorkoutPlan } from "@/lib/data"
+import { getWorkoutLog, getWorkoutPlan } from "@/lib/data"
 import { getActiveUser } from "@/lib/user"
 import { ActiveWorkoutView } from "./active-workout-view"
 
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default async function ActiveWorkoutPage() {
 	const user = await getActiveUser()
-	const workoutPlan = await getWorkoutPlan(user)
+	const [workoutPlan, workoutLog] = await Promise.all([getWorkoutPlan(user), getWorkoutLog(user)])
 
-	return <ActiveWorkoutView workoutPlan={workoutPlan} user={user} />
+	return <ActiveWorkoutView workoutPlan={workoutPlan} workoutLog={workoutLog} user={user} />
 }
