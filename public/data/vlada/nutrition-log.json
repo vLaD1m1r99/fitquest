@@ -1,1 +1,48 @@
-{ "days": [] }
+{
+  "days": [
+    {
+      "date": "2026-03-17",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "mealName": "Oatmeal Breakfast (2/3 batch)",
+          "items": [
+            { "food": "Oats", "portionG": 60, "calories": 234, "proteinG": 10, "carbsG": 40, "fatG": 4 },
+            { "food": "Whey Protein", "portionG": 32, "calories": 128, "proteinG": 26, "carbsG": 2, "fatG": 1 },
+            { "food": "Pineapple Ring", "portionG": 20, "calories": 16, "proteinG": 0, "carbsG": 4, "fatG": 0 },
+            { "food": "Homemade Raspberry Chia Jam", "portionG": 20, "calories": 15, "proteinG": 0, "carbsG": 3, "fatG": 0 },
+            { "food": "Banana", "portionG": 80, "calories": 71, "proteinG": 1, "carbsG": 18, "fatG": 0 },
+            { "food": "Kiki Puter (Peanut Butter)", "portionG": 27, "calories": 157, "proteinG": 5, "carbsG": 4, "fatG": 14 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "Benlian Corn & Rice Chips (Salted)", "portionG": 50, "calories": 204, "proteinG": 4, "carbsG": 42, "fatG": 3 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "food": "Chicken Breast (baked)", "portionG": 250, "calories": 413, "proteinG": 78, "carbsG": 0, "fatG": 9 },
+            { "food": "Baked Sweet Potato", "portionG": 350, "calories": 315, "proteinG": 7, "carbsG": 72, "fatG": 1 },
+            { "food": "Mixed Salad", "portionG": 200, "calories": 150, "proteinG": 3, "carbsG": 15, "fatG": 8 },
+            { "food": "Coca Cola Zero", "portionG": 990, "calories": 0, "proteinG": 0, "carbsG": 0, "fatG": 0 }
+          ]
+        }
+      ],
+      "dailyTotals": {
+        "calories": 1703,
+        "proteinG": 134,
+        "carbsG": 200,
+        "fatG": 40
+      },
+      "remaining": {
+        "calories": 745,
+        "proteinG": 70,
+        "carbsG": 55,
+        "fatG": 28
+      }
+    }
+  ]
+}
