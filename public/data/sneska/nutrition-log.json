@@ -1,1 +1,56 @@
-{ "days": [] }
+{
+  "days": [
+    {
+      "date": "2026-03-17",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "food": "Oats", "portionG": 30, "calories": 117, "proteinG": 5, "carbsG": 20, "fatG": 2 },
+            { "food": "Whey Protein", "portionG": 16, "calories": 64, "proteinG": 13, "carbsG": 1, "fatG": 1 },
+            { "food": "Pineapple Ring", "portionG": 10, "calories": 8, "proteinG": 0, "carbsG": 2, "fatG": 0 },
+            { "food": "Jam", "portionG": 10, "calories": 26, "proteinG": 0, "carbsG": 7, "fatG": 0 },
+            { "food": "Banana", "portionG": 40, "calories": 36, "proteinG": 0, "carbsG": 9, "fatG": 0 },
+            { "food": "Kiki Puter (Peanut Butter)", "portionG": 13, "calories": 78, "proteinG": 3, "carbsG": 2, "fatG": 7 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "food": "Egg Whites", "portionG": 66, "calories": 34, "proteinG": 7, "carbsG": 1, "fatG": 0 },
+            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
+            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 82, "proteinG": 7, "carbsG": 9, "fatG": 1 },
+            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "Oven-Baked Yogurt w/ Herbs", "portionG": 50, "calories": 55, "proteinG": 4, "carbsG": 2, "fatG": 3 }
+          ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "food": "Baked Sweet Potato", "portionG": 250, "calories": 225, "proteinG": 5, "carbsG": 52, "fatG": 0 },
+            { "food": "Chicken Breast (baked)", "portionG": 150, "calories": 248, "proteinG": 46, "carbsG": 0, "fatG": 6 },
+            { "food": "Milk 2.8%", "portionG": 100, "calories": 52, "proteinG": 3, "carbsG": 5, "fatG": 3 },
+            { "food": "Mixed Salad", "portionG": 150, "calories": 100, "proteinG": 2, "carbsG": 12, "fatG": 5 }
+          ]
+        }
+      ],
+      "dailyTotals": {
+        "calories": 1353,
+        "proteinG": 106,
+        "carbsG": 146,
+        "fatG": 36
+      },
+      "remaining": {
+        "calories": 182,
+        "proteinG": 29,
+        "carbsG": 6,
+        "fatG": 7
+      }
+    }
+  ]
+}
