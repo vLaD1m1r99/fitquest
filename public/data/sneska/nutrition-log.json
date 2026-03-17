@@ -26,7 +26,7 @@
         {
           "mealType": "snack",
           "items": [
-            { "food": "Oven-Baked Yogurt w/ Herbs", "portionG": 50, "calories": 55, "proteinG": 4, "carbsG": 2, "fatG": 3 }
+            { "food": "Oven Baked Chips (Yogurt & Herbs)", "portionG": 50, "calories": 220, "proteinG": 3, "carbsG": 37, "fatG": 7 }
           ]
         },
         {
@@ -40,16 +40,16 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1353,
-        "proteinG": 106,
-        "carbsG": 146,
-        "fatG": 36
+        "calories": 1518,
+        "proteinG": 105,
+        "carbsG": 181,
+        "fatG": 40
       },
       "remaining": {
-        "calories": 182,
-        "proteinG": 29,
-        "carbsG": 6,
-        "fatG": 7
+        "calories": 17,
+        "proteinG": 30,
+        "carbsG": -29,
+        "fatG": 3
       }
     }
   ]
