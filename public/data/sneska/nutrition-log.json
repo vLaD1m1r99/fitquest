@@ -9,13 +9,14 @@
             { "food": "Oats", "portionG": 30, "calories": 117, "proteinG": 5, "carbsG": 20, "fatG": 2 },
             { "food": "Whey Protein", "portionG": 16, "calories": 64, "proteinG": 13, "carbsG": 1, "fatG": 1 },
             { "food": "Pineapple Ring", "portionG": 10, "calories": 8, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Jam", "portionG": 10, "calories": 26, "proteinG": 0, "carbsG": 7, "fatG": 0 },
+            { "food": "Homemade Raspberry Chia Jam", "portionG": 10, "calories": 7, "proteinG": 0, "carbsG": 2, "fatG": 0 },
             { "food": "Banana", "portionG": 40, "calories": 36, "proteinG": 0, "carbsG": 9, "fatG": 0 },
             { "food": "Kiki Puter (Peanut Butter)", "portionG": 13, "calories": 78, "proteinG": 3, "carbsG": 2, "fatG": 7 }
           ]
         },
         {
           "mealType": "lunch",
+          "mealName": "Half-Tortilla Egg Meal",
           "items": [
             { "food": "Egg Whites", "portionG": 66, "calories": 34, "proteinG": 7, "carbsG": 1, "fatG": 0 },
             { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
@@ -40,15 +41,15 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1518,
+        "calories": 1499,
         "proteinG": 105,
-        "carbsG": 181,
+        "carbsG": 176,
         "fatG": 40
       },
       "remaining": {
-        "calories": 17,
+        "calories": 36,
         "proteinG": 30,
-        "carbsG": -29,
+        "carbsG": -24,
         "fatG": 3
       }
     }

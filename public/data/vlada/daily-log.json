@@ -11,7 +11,7 @@
       "sickness": true,
       "workoutCompleted": false,
       "missedWorkoutReason": "Sick",
-      "notes": "Sick day — feeling terrible, no training, taking meds. No food logged."
+      "notes": "Sick day — feeling terrible, no training, on meds."
     },
     {
       "date": "2026-03-10",
@@ -24,7 +24,98 @@
       "sickness": true,
       "workoutCompleted": false,
       "missedWorkoutReason": "Sick",
-      "notes": "Still sick — day 2, resting and recovering."
+      "notes": "Still sick — day 2, resting, on meds."
+    },
+    {
+      "date": "2026-03-11",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 3, on meds, resting."
+    },
+    {
+      "date": "2026-03-12",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 4, on meds, resting."
+    },
+    {
+      "date": "2026-03-13",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 5, on meds, resting."
+    },
+    {
+      "date": "2026-03-14",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 6, on meds, resting."
+    },
+    {
+      "date": "2026-03-15",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 7, on meds, still recovering."
+    },
+    {
+      "date": "2026-03-16",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 8, on meds, still recovering."
+    },
+    {
+      "date": "2026-03-17",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "poor",
+      "energyLevel": 1,
+      "mood": "bad",
+      "stressLevel": 3,
+      "sickness": true,
+      "workoutCompleted": false,
+      "missedWorkoutReason": "Sick",
+      "notes": "Sick — day 9, on meds. Hoping to start training tomorrow."
     }
   ]
 }
