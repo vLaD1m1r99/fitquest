@@ -42,27 +42,27 @@
         },
         {
           "mealType": "snack",
-          "mealName": "Ovsene Palačinke Very Berry (restaurant)",
+          "mealName": "Ovsene Palačinke Very Berry (3/4 portion)",
           "items": [
-            { "food": "Oat Pancakes (4 pcs)", "portionG": 200, "calories": 320, "proteinG": 12, "carbsG": 44, "fatG": 10 },
-            { "food": "Domaći Krem (house spread)", "portionG": 35, "calories": 140, "proteinG": 2, "carbsG": 14, "fatG": 8 },
-            { "food": "Red Berry Mix", "portionG": 50, "calories": 25, "proteinG": 0, "carbsG": 5, "fatG": 0 },
-            { "food": "Almonds", "portionG": 15, "calories": 90, "proteinG": 3, "carbsG": 2, "fatG": 8 },
-            { "food": "Honey", "portionG": 15, "calories": 45, "proteinG": 0, "carbsG": 12, "fatG": 0 }
+            { "food": "Oat Pancakes (3 pcs)", "portionG": 150, "calories": 240, "proteinG": 9, "carbsG": 33, "fatG": 8 },
+            { "food": "Domaći Krem (house spread)", "portionG": 26, "calories": 105, "proteinG": 2, "carbsG": 11, "fatG": 6 },
+            { "food": "Red Berry Mix", "portionG": 38, "calories": 19, "proteinG": 0, "carbsG": 4, "fatG": 0 },
+            { "food": "Almonds", "portionG": 11, "calories": 68, "proteinG": 2, "carbsG": 2, "fatG": 6 },
+            { "food": "Honey", "portionG": 11, "calories": 34, "proteinG": 0, "carbsG": 9, "fatG": 0 }
           ]
         }
       ],
       "dailyTotals": {
-        "calories": 2119,
-        "proteinG": 122,
-        "carbsG": 253,
-        "fatG": 66
+        "calories": 1964,
+        "proteinG": 118,
+        "carbsG": 234,
+        "fatG": 60
       },
       "remaining": {
-        "calories": -584,
-        "proteinG": 13,
-        "carbsG": -101,
-        "fatG": -23
+        "calories": -429,
+        "proteinG": 17,
+        "carbsG": -82,
+        "fatG": -17
       }
     }
   ]
