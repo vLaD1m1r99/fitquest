@@ -816,13 +816,12 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 							</div>
 						)}
 
-						{/* Sets */}
+						{/* Sets — tap row to complete, tap set# to change type */}
 						<div className="px-4 pb-3 space-y-2">
-							<div className="grid grid-cols-[2.5rem_1fr_1fr_2.5rem] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
+							<div className="grid grid-cols-[2.5rem_1fr_1fr] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
 								<span className="text-center">Set</span>
 								<span className="text-center">Weight (kg)</span>
 								<span className="text-center">Reps</span>
-								<span className="text-center">✓</span>
 							</div>
 
 							{exercise.sets.map((set, setIdx) => {
@@ -830,35 +829,48 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 								return (
 									<div
 										key={setIdx}
-										className={`grid grid-cols-[2.5rem_1fr_1fr_2.5rem] gap-2 items-center transition-all rounded-lg py-1.5 px-1 ${
+										role="button"
+										tabIndex={0}
+										onClick={() => toggleSetComplete(exIdx, setIdx)}
+										onKeyDown={e => {
+											if (e.key === "Enter" || e.key === " ") toggleSetComplete(exIdx, setIdx)
+										}}
+										className={`grid grid-cols-[2.5rem_1fr_1fr] gap-2 items-center transition-all rounded-lg py-2 px-1 cursor-pointer ${
 											set.completed
-												? "bg-green-500/10 border border-green-500/20"
-												: "border border-transparent"
+												? "bg-green-500/15 border-2 border-green-500/30"
+												: "hover:bg-muted/20 border-2 border-transparent"
 										}`}
 									>
-										{/* Set number — tap to cycle type (normal → DROP → MYO) */}
+										{/* Set number — tap to cycle type (stopPropagation) */}
 										<button
 											type="button"
-											onClick={() => cycleSetType(exIdx, setIdx)}
+											onClick={e => {
+												e.stopPropagation()
+												cycleSetType(exIdx, setIdx)
+											}}
 											className="flex flex-col items-center gap-0.5"
 											aria-label="Change set type"
 										>
-											<span
-												className={`text-xs font-medium ${set.completed ? "text-green-400" : "text-muted-foreground"}`}
-											>
-												{setIdx + 1}
-											</span>
-											{typeInfo.label ? (
+											{set.completed ? (
+												<Check size={16} className="text-green-400" />
+											) : (
+												<span className="text-xs font-medium text-muted-foreground">
+													{setIdx + 1}
+												</span>
+											)}
+											{typeInfo.label && (
 												<span className={`text-[8px] font-bold px-1 rounded ${typeInfo.color}`}>
 													{typeInfo.label}
 												</span>
-											) : (
-												<span className="text-[7px] text-muted-foreground/50">tap</span>
 											)}
 										</button>
 
 										{/* Weight */}
-										<div className="flex items-center justify-center gap-1">
+										<div
+											className="flex items-center justify-center gap-1"
+											onClick={e => e.stopPropagation()}
+											onKeyDown={e => e.stopPropagation()}
+										>
 											<StepButton
 												onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
 												icon="minus"
@@ -879,7 +891,11 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 										</div>
 
 										{/* Reps */}
-										<div className="flex items-center justify-center gap-1">
+										<div
+											className="flex items-center justify-center gap-1"
+											onClick={e => e.stopPropagation()}
+											onKeyDown={e => e.stopPropagation()}
+										>
 											<StepButton
 												onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
 												icon="minus"
@@ -898,20 +914,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 												disabled={set.completed}
 											/>
 										</div>
-
-										{/* Complete toggle */}
-										<button
-											type="button"
-											onClick={() => toggleSetComplete(exIdx, setIdx)}
-											className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
-												set.completed
-													? "bg-green-500/20 text-green-400"
-													: "bg-muted/30 text-muted-foreground hover:bg-accent/20 hover:text-accent"
-											}`}
-											aria-label={set.completed ? "Undo set" : "Complete set"}
-										>
-											{set.completed ? <Check size={18} /> : <Check size={16} />}
-										</button>
 									</div>
 								)
 							})}
