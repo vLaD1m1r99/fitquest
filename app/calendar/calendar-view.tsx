@@ -362,6 +362,25 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 						(sum, ex) => sum + ex.sets.reduce((s, set) => s + set.weightKg * set.reps, 0),
 						0,
 					)
+
+					// Find previous session with same sessionType
+					let previousVolume: number | null = null
+					for (let i = workoutLog.sessions.length - 1; i >= 0; i--) {
+						const s = workoutLog.sessions[i]
+						if (s.sessionType === session.sessionType && s.date < selectedDate) {
+							previousVolume = s.exercises.reduce(
+								(sum, ex) => sum + ex.sets.reduce((st, set) => st + set.weightKg * set.reps, 0),
+								0,
+							)
+							break
+						}
+					}
+
+					const volumeChange = previousVolume ? ((totalVolume - previousVolume) / previousVolume) * 100 : null
+					const volumeComparisonColor =
+						volumeChange !== null ? (volumeChange >= 0 ? "text-green-400" : "text-red-400") : ""
+					const volumeComparisonSign = volumeChange !== null ? (volumeChange >= 0 ? "+" : "") : ""
+
 					return (
 						<Card key={idx} className="p-4 space-y-4">
 							<div className="flex items-center justify-between">
@@ -382,6 +401,14 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 								<span className="font-medium text-foreground">
 									{totalVolume.toLocaleString()}kg volume
 								</span>
+								{volumeChange !== null && (
+									<span
+										className={`font-semibold ${volumeComparisonColor} bg-opacity-10 px-2 py-1 rounded`}
+									>
+										Volume: {volumeComparisonSign}
+										{volumeChange.toFixed(1)}% vs last
+									</span>
+								)}
 							</div>
 
 							{/* Exercise details */}
@@ -438,6 +465,18 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 									)}
 									className="h-1.5 bg-muted"
 								/>
+								<div className="text-[10px] mt-1">
+									{(() => {
+										const diff = selectedNutrition.dailyTotals.proteinG - profile.macros.proteinG
+										const isOver = diff > 0
+										return (
+											<span className={isOver ? "text-red-400" : "text-green-400"}>
+												{isOver ? "+" : ""}
+												{diff.toFixed(0)}g {isOver ? "over" : "under"}
+											</span>
+										)
+									})()}
+								</div>
 							</div>
 							<div>
 								<div className="flex justify-between text-[10px] mb-1">
@@ -451,6 +490,18 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 									)}
 									className="h-1.5 bg-muted"
 								/>
+								<div className="text-[10px] mt-1">
+									{(() => {
+										const diff = selectedNutrition.dailyTotals.carbsG - profile.macros.carbsG
+										const isOver = diff > 0
+										return (
+											<span className={isOver ? "text-red-400" : "text-green-400"}>
+												{isOver ? "+" : ""}
+												{diff.toFixed(0)}g {isOver ? "over" : "under"}
+											</span>
+										)
+									})()}
+								</div>
 							</div>
 							<div>
 								<div className="flex justify-between text-[10px] mb-1">
@@ -464,7 +515,34 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 									)}
 									className="h-1.5 bg-muted"
 								/>
+								<div className="text-[10px] mt-1">
+									{(() => {
+										const diff = selectedNutrition.dailyTotals.fatG - profile.macros.fatG
+										const isOver = diff > 0
+										return (
+											<span className={isOver ? "text-red-400" : "text-green-400"}>
+												{isOver ? "+" : ""}
+												{diff.toFixed(0)}g {isOver ? "over" : "under"}
+											</span>
+										)
+									})()}
+								</div>
 							</div>
+						</div>
+
+						{/* Calories summary */}
+						<div className="flex items-center gap-4 text-xs text-muted-foreground">
+							<span>Target: {profile.dailyCalorieTarget} cal</span>
+							{(() => {
+								const caloriesDiff = selectedNutrition.dailyTotals.calories - profile.dailyCalorieTarget
+								const isOver = caloriesDiff > 0
+								return (
+									<span className={`font-semibold ${isOver ? "text-red-400" : "text-green-400"}`}>
+										{isOver ? "+" : ""}
+										{caloriesDiff} cal {isOver ? "over target" : "under target"}
+									</span>
+								)
+							})()}
 						</div>
 
 						{selectedNutrition.meals.map((meal, mIdx) => (

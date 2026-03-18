@@ -22,23 +22,76 @@ import type {
 	ActiveExerciseData,
 	ActiveSetData,
 	ActiveWorkoutSession,
+	DailyLogEntry,
 	ExerciseSet,
+	SetType,
 	User,
 	WorkoutLog,
 	WorkoutPlan,
 	WorkoutSession,
 } from "@/lib/data"
-import { EXERCISE_DB, getSwapSuggestions, getWeightNote } from "@/lib/exercises"
+import {
+	EXERCISE_DB,
+	getExercisesByMuscle,
+	getSwapSuggestions,
+	getWeightNote,
+	MUSCLE_GROUP_LABELS,
+	type MuscleGroup,
+} from "@/lib/exercises"
 
 const LS_KEY = "fitquest_active_workout"
 
-const PR_MESSAGES = [
-	{ text: "NEW PR! Beast mode!" },
-	{ text: "Stronger than last time!" },
-	{ text: "Level up! More weight!" },
-	{ text: "PR crushed!" },
-	{ text: "You're on fire!" },
-]
+/** Personalized messages based on user, mood, period etc */
+function getPrMessage(user: User, dailyEntry?: { mood?: string; menstrualFlow?: string | null }): string {
+	const isSneska = user === "sneska"
+	const onPeriod = isSneska && dailyEntry?.menstrualFlow && dailyEntry.menstrualFlow !== "none"
+	const lowMood = dailyEntry?.mood === "bad" || dailyEntry?.mood === "neutral"
+
+	if (onPeriod) {
+		const msgs = [
+			"PR on your period?! Absolute queen!",
+			"Stronger than cramps! You're unstoppable!",
+			"New record AND dealing with period? Legend!",
+			"Your body is fighting AND winning. PR!",
+		]
+		return msgs[Math.floor(Math.random() * msgs.length)]
+	}
+
+	if (lowMood) {
+		const msgs = [
+			"Tough day but you still showed up AND hit a PR!",
+			"Bad mood? Doesn't matter — PR secured!",
+			"Turned a rough day into a record breaker!",
+		]
+		return msgs[Math.floor(Math.random() * msgs.length)]
+	}
+
+	if (isSneska) {
+		const msgs = [
+			"NEW PR! You're getting stronger!",
+			"Look at you go! New personal record!",
+			"Stronger every session — PR crushed!",
+			"Queen of the gym! New PR!",
+		]
+		return msgs[Math.floor(Math.random() * msgs.length)]
+	}
+
+	const msgs = [
+		"NEW PR! Beast mode activated!",
+		"Stronger than last time! Let's go!",
+		"PR crushed! Keep pushing!",
+		"New record! The grind is paying off!",
+		"Weight goes up, body fat goes down! PR!",
+	]
+	return msgs[Math.floor(Math.random() * msgs.length)]
+}
+
+const SET_TYPE_LABELS: Record<string, { label: string; color: string }> = {
+	normal: { label: "", color: "" },
+	dropset: { label: "DROP", color: "text-orange-400 bg-orange-500/10" },
+	myorep: { label: "MYO", color: "text-purple-400 bg-purple-500/10" },
+	warmup: { label: "W/UP", color: "text-blue-400 bg-blue-500/10" },
+}
 
 function parseDefaultReps(repsStr: string): number {
 	const match = repsStr.match(/(\d+)/)
@@ -172,9 +225,10 @@ interface Props {
 	workoutPlan: WorkoutPlan
 	workoutLog: WorkoutLog
 	user: User
+	todayDailyEntry?: DailyLogEntry | null
 }
 
-export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
+export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEntry }: Props) {
 	const router = useRouter()
 	const rotation = workoutPlan.schedule?.rotation || Object.keys(workoutPlan.workouts)
 
@@ -191,6 +245,7 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const [swapMenuIdx, setSwapMenuIdx] = useState<number | null>(null)
 	const [addMenuOpen, setAddMenuOpen] = useState(false)
 	const [addSearch, setAddSearch] = useState("")
+	const [addCategory, setAddCategory] = useState<MuscleGroup | null>(null)
 
 	/** Calculate elapsed from real clock time, not tick count */
 	const recalcElapsed = useCallback(() => {
@@ -316,8 +371,8 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 					const exName = next.exercises[exIdx].name
 					const prevBest = bestWeights[exName] ?? 0
 					if (set.weightKg > prevBest && set.weightKg > 0) {
-						const msgIdx = Math.floor(Math.random() * PR_MESSAGES.length)
-						setPrCelebrations(prev => ({ ...prev, [exIdx]: PR_MESSAGES[msgIdx].text }))
+						const msg = getPrMessage(user, todayDailyEntry ?? undefined)
+						setPrCelebrations(prev => ({ ...prev, [exIdx]: msg }))
 						setTimeout(() => {
 							setPrCelebrations(prev => ({ ...prev, [exIdx]: null }))
 						}, 3000)
@@ -330,16 +385,19 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		[bestWeights],
 	)
 
-	/** Add a set to an exercise (for drop sets / myoreps) */
-	const addSet = useCallback((exIdx: number) => {
+	/** Add a set to an exercise with optional type */
+	const addSet = useCallback((exIdx: number, setType: SetType = "normal") => {
 		setSession(prev => {
 			if (!prev) return prev
 			const next = structuredClone(prev)
 			const lastSet = next.exercises[exIdx].sets[next.exercises[exIdx].sets.length - 1]
+			const newWeight =
+				setType === "dropset" && lastSet ? Math.max(0, lastSet.weightKg - 5) : lastSet ? lastSet.weightKg : 0
 			next.exercises[exIdx].sets.push({
-				weightKg: lastSet ? lastSet.weightKg : 0,
+				weightKg: newWeight,
 				reps: lastSet ? lastSet.reps : 10,
 				completed: false,
+				setType,
 			})
 			return next
 		})
@@ -586,14 +644,17 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const totalSets = session.exercises.reduce((s, e) => s + e.sets.length, 0)
 	const completedSets = session.exercises.reduce((s, e) => s + e.sets.filter(st => st.completed).length, 0)
 
-	const filteredAddExercises =
-		addSearch.length > 0
-			? EXERCISE_DB.filter(
-					e =>
-						e.name.toLowerCase().includes(addSearch.toLowerCase()) &&
-						!session.exercises.some(se => se.name === e.name),
-				).slice(0, 8)
-			: []
+	const filteredAddExercises = (() => {
+		const existing = new Set(session.exercises.map(e => e.name))
+		let pool = EXERCISE_DB.filter(e => !existing.has(e.name))
+		if (addCategory) {
+			pool = pool.filter(e => e.muscleGroups.includes(addCategory))
+		}
+		if (addSearch.length > 0) {
+			pool = pool.filter(e => e.name.toLowerCase().includes(addSearch.toLowerCase()))
+		}
+		return pool.slice(0, 12)
+	})()
 
 	return (
 		<div className="space-y-4 pb-24">
@@ -731,89 +792,119 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 
 						{/* Sets */}
 						<div className="px-4 pb-3 space-y-2">
-							<div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
+							<div className="grid grid-cols-[2.5rem_1fr_1fr] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
 								<span>Set</span>
 								<span className="text-center">Weight (kg)</span>
 								<span className="text-center">Reps</span>
-								<span />
 							</div>
 
-							{exercise.sets.map((set, setIdx) => (
-								<div
-									key={setIdx}
-									className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center transition-all ${
-										set.completed ? "opacity-40" : ""
-									}`}
-								>
-									<span className="text-xs font-medium text-muted-foreground text-center">
-										{setIdx + 1}
-									</span>
-
-									<div className="flex items-center justify-center gap-1">
-										<StepButton
-											onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
-											icon="minus"
-											label="Decrease weight"
-											disabled={set.completed}
-										/>
-										<span className="w-14 text-center text-sm font-bold tabular-nums">
-											{set.weightKg}
-										</span>
-										<StepButton
-											onClick={() => updateSet(exIdx, setIdx, "weightKg", 2.5)}
-											icon="plus"
-											label="Increase weight"
-											disabled={set.completed}
-										/>
-									</div>
-
-									<div className="flex items-center justify-center gap-1">
-										<StepButton
-											onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
-											icon="minus"
-											label="Decrease reps"
-											disabled={set.completed}
-										/>
-										<span className="w-8 text-center text-sm font-bold tabular-nums">
-											{set.reps}
-										</span>
-										<StepButton
-											onClick={() => updateSet(exIdx, setIdx, "reps", 1)}
-											icon="plus"
-											label="Increase reps"
-											disabled={set.completed}
-										/>
-									</div>
-
+							{exercise.sets.map((set, setIdx) => {
+								const typeInfo = SET_TYPE_LABELS[set.setType || "normal"]
+								return (
 									<button
+										key={setIdx}
 										type="button"
 										onClick={() => toggleSetComplete(exIdx, setIdx)}
-										className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
+										className={`grid grid-cols-[2.5rem_1fr_1fr] gap-2 items-center transition-all w-full rounded-lg py-1.5 px-1 ${
 											set.completed
-												? "bg-green-500/20 text-green-400"
-												: "bg-muted/30 text-muted-foreground hover:bg-muted/50"
+												? "bg-green-500/10 border border-green-500/20"
+												: "hover:bg-muted/30 border border-transparent"
 										}`}
 									>
-										{set.completed ? <Check size={16} /> : <Square size={14} />}
-									</button>
-								</div>
-							))}
+										{/* Set number + type badge */}
+										<div className="flex flex-col items-center gap-0.5">
+											<span
+												className={`text-xs font-medium ${set.completed ? "text-green-400" : "text-muted-foreground"}`}
+											>
+												{set.completed ? "\u2713" : setIdx + 1}
+											</span>
+											{typeInfo.label && (
+												<span className={`text-[8px] font-bold px-1 rounded ${typeInfo.color}`}>
+													{typeInfo.label}
+												</span>
+											)}
+										</div>
 
-							{/* Add/Remove set buttons */}
-							<div className="flex gap-2 pt-1">
+										{/* Weight */}
+										<div
+											className="flex items-center justify-center gap-1"
+											onClick={e => e.stopPropagation()}
+										>
+											<StepButton
+												onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
+												icon="minus"
+												label="Decrease weight"
+												disabled={set.completed}
+											/>
+											<span
+												className={`w-14 text-center text-sm font-bold tabular-nums ${set.completed ? "text-green-400" : ""}`}
+											>
+												{set.weightKg}
+											</span>
+											<StepButton
+												onClick={() => updateSet(exIdx, setIdx, "weightKg", 2.5)}
+												icon="plus"
+												label="Increase weight"
+												disabled={set.completed}
+											/>
+										</div>
+
+										{/* Reps */}
+										<div
+											className="flex items-center justify-center gap-1"
+											onClick={e => e.stopPropagation()}
+										>
+											<StepButton
+												onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
+												icon="minus"
+												label="Decrease reps"
+												disabled={set.completed}
+											/>
+											<span
+												className={`w-8 text-center text-sm font-bold tabular-nums ${set.completed ? "text-green-400" : ""}`}
+											>
+												{set.reps}
+											</span>
+											<StepButton
+												onClick={() => updateSet(exIdx, setIdx, "reps", 1)}
+												icon="plus"
+												label="Increase reps"
+												disabled={set.completed}
+											/>
+										</div>
+									</button>
+								)
+							})}
+
+							{/* Add set buttons with type selection */}
+							<div className="flex gap-1.5 pt-1 flex-wrap">
 								<button
 									type="button"
-									onClick={() => addSet(exIdx)}
-									className="flex-1 py-2 rounded-lg text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-1"
+									onClick={() => addSet(exIdx, "normal")}
+									className="flex-1 min-w-[80px] py-2 rounded-lg text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-1"
 								>
 									<Plus size={12} />
-									Add Set
+									Set
+								</button>
+								<button
+									type="button"
+									onClick={() => addSet(exIdx, "dropset")}
+									className="py-2 px-3 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors"
+								>
+									Drop
+								</button>
+								<button
+									type="button"
+									onClick={() => addSet(exIdx, "myorep")}
+									className="py-2 px-3 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors"
+								>
+									Myo
 								</button>
 								{exercise.sets.length > 1 && (
 									<button
 										type="button"
 										onClick={() => removeLastSet(exIdx)}
-										className="py-2 px-3 rounded-lg text-xs font-medium bg-muted/30 text-muted-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1"
+										className="py-2 px-3 rounded-lg text-xs font-medium bg-muted/30 text-muted-foreground hover:bg-muted/50 transition-colors"
 									>
 										<Minus size={12} />
 									</button>
@@ -835,6 +926,7 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 								onClick={() => {
 									setAddMenuOpen(false)
 									setAddSearch("")
+									setAddCategory(null)
 								}}
 								className="text-xs text-muted-foreground hover:text-foreground"
 							>
@@ -849,25 +941,43 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 							className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
 							autoFocus
 						/>
-						{filteredAddExercises.length > 0 && (
+						{/* Muscle group category chips */}
+						<div className="flex flex-wrap gap-1.5">
+							{(Object.keys(MUSCLE_GROUP_LABELS) as MuscleGroup[]).map(mg => (
+								<button
+									key={mg}
+									type="button"
+									onClick={() => setAddCategory(addCategory === mg ? null : mg)}
+									className={`px-2.5 py-1 rounded-full text-[10px] font-medium transition-all ${
+										addCategory === mg
+											? "bg-accent text-accent-foreground"
+											: "bg-muted/40 text-muted-foreground hover:bg-muted/60"
+									}`}
+								>
+									{MUSCLE_GROUP_LABELS[mg]}
+								</button>
+							))}
+						</div>
+						{/* Results */}
+						{(filteredAddExercises.length > 0 || addCategory) && (
 							<div className="space-y-1 max-h-60 overflow-y-auto">
 								{filteredAddExercises.map(ex => (
 									<button
 										key={ex.name}
 										type="button"
 										onClick={() => addExercise(ex.name)}
-										className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted/50 text-sm transition-colors"
+										className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border/50"
 									>
-										<span className="font-medium">{ex.name}</span>
-										<span className="text-[10px] text-muted-foreground ml-2">
-											{ex.muscleGroups.join(", ")} · {ex.weightNote}
+										<span className="text-sm font-medium block">{ex.name}</span>
+										<span className="text-[10px] text-muted-foreground">
+											{ex.equipment} · {ex.muscleGroups.join(", ")} · {ex.weightNote}
 										</span>
 									</button>
 								))}
+								{filteredAddExercises.length === 0 && (
+									<p className="text-xs text-muted-foreground text-center py-2">No exercises found</p>
+								)}
 							</div>
-						)}
-						{addSearch.length > 0 && filteredAddExercises.length === 0 && (
-							<p className="text-xs text-muted-foreground text-center py-2">No exercises found</p>
 						)}
 					</div>
 				) : (

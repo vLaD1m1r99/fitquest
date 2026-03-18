@@ -252,7 +252,137 @@ export const EXERCISE_DB: ExerciseInfo[] = [
 	{ name: "Cable Crunches", muscleGroups: ["core"], equipment: "cable", weightNote: "Stack weight" },
 	{ name: "Ab Wheel Rollouts", muscleGroups: ["core"], equipment: "bodyweight", weightNote: "Bodyweight" },
 	{ name: "Russian Twists", muscleGroups: ["core"], equipment: "dumbbell", weightNote: "Single weight" },
+	{ name: "Crunches", muscleGroups: ["core"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Leg Raises", muscleGroups: ["core"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Dead Bug", muscleGroups: ["core"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Mountain Climbers", muscleGroups: ["core"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Pallof Press", muscleGroups: ["core"], equipment: "cable", weightNote: "Stack weight" },
+
+	// ─── ADDITIONAL CHEST ──────────────
+	{
+		name: "Incline Machine Press",
+		muscleGroups: ["chest", "shoulders"],
+		equipment: "machine",
+		weightNote: "Stack weight",
+	},
+	{
+		name: "Decline Bench Press",
+		muscleGroups: ["chest", "triceps"],
+		equipment: "barbell",
+		weightNote: "Include bar (20kg)",
+	},
+	{ name: "Pec Deck Machine", muscleGroups: ["chest"], equipment: "machine", weightNote: "Stack weight" },
+	{
+		name: "Dumbbell Pullover",
+		muscleGroups: ["chest", "back"],
+		equipment: "dumbbell",
+		weightNote: "Single dumbbell",
+	},
+
+	// ─── ADDITIONAL BACK ───────────────
+	{ name: "Cable Row (Single Arm)", muscleGroups: ["back"], equipment: "cable", weightNote: "Stack weight" },
+	{ name: "Meadows Row", muscleGroups: ["back"], equipment: "barbell", weightNote: "Plates only" },
+	{ name: "Machine Row", muscleGroups: ["back"], equipment: "machine", weightNote: "Stack weight" },
+	{
+		name: "Rack Pulls",
+		muscleGroups: ["back", "hamstrings"],
+		equipment: "barbell",
+		weightNote: "Include bar (20kg)",
+	},
+	{ name: "Pendlay Row", muscleGroups: ["back", "biceps"], equipment: "barbell", weightNote: "Include bar (20kg)" },
+
+	// ─── ADDITIONAL SHOULDERS ──────────
+	{ name: "Arnold Press", muscleGroups: ["shoulders"], equipment: "dumbbell", weightNote: "Per dumbbell" },
+	{ name: "Machine Lateral Raise", muscleGroups: ["shoulders"], equipment: "machine", weightNote: "Stack weight" },
+	{ name: "Upright Row", muscleGroups: ["shoulders"], equipment: "barbell", weightNote: "Include bar (20kg)" },
+	{
+		name: "Rear Delt Fly Machine",
+		muscleGroups: ["shoulders", "back"],
+		equipment: "machine",
+		weightNote: "Stack weight",
+	},
+	{ name: "Shrugs", muscleGroups: ["shoulders"], equipment: "dumbbell", weightNote: "Per dumbbell" },
+	{ name: "Barbell Shrugs", muscleGroups: ["shoulders"], equipment: "barbell", weightNote: "Include bar (20kg)" },
+
+	// ─── ADDITIONAL ARMS ───────────────
+	{ name: "Bayesian Curls (Cable)", muscleGroups: ["biceps"], equipment: "cable", weightNote: "Stack weight" },
+	{ name: "Spider Curls", muscleGroups: ["biceps"], equipment: "dumbbell", weightNote: "Per dumbbell" },
+	{ name: "Reverse Curls", muscleGroups: ["biceps"], equipment: "barbell", weightNote: "Include bar (EZ=10kg)" },
+	{
+		name: "Cable Overhead Triceps Extension",
+		muscleGroups: ["triceps"],
+		equipment: "cable",
+		weightNote: "Stack weight",
+	},
+	{ name: "Diamond Push-Ups", muscleGroups: ["triceps", "chest"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Kickbacks", muscleGroups: ["triceps"], equipment: "dumbbell", weightNote: "Per dumbbell" },
+
+	// ─── ADDITIONAL LEGS ───────────────
+	{ name: "Smith Machine Squat", muscleGroups: ["quads", "glutes"], equipment: "smith", weightNote: "Plates only" },
+	{ name: "Front Squat", muscleGroups: ["quads"], equipment: "barbell", weightNote: "Include bar (20kg)" },
+	{ name: "Sissy Squat", muscleGroups: ["quads"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Step-Ups", muscleGroups: ["quads", "glutes"], equipment: "dumbbell", weightNote: "Per dumbbell" },
+	{ name: "Wall Sit", muscleGroups: ["quads"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Sumo Squat", muscleGroups: ["quads", "glutes"], equipment: "dumbbell", weightNote: "Single dumbbell" },
+	{ name: "Nordic Hamstring Curl", muscleGroups: ["hamstrings"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{
+		name: "Single-Leg Romanian Deadlift",
+		muscleGroups: ["hamstrings", "glutes"],
+		equipment: "dumbbell",
+		weightNote: "Per dumbbell",
+	},
+	{ name: "Leg Curl (Single Leg)", muscleGroups: ["hamstrings"], equipment: "machine", weightNote: "Stack weight" },
+	{ name: "Smith Machine Hip Thrust", muscleGroups: ["glutes"], equipment: "smith", weightNote: "Plates only" },
+	{ name: "Frog Pumps", muscleGroups: ["glutes"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Donkey Kicks", muscleGroups: ["glutes"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Fire Hydrants", muscleGroups: ["glutes"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{ name: "Calf Press (Leg Press)", muscleGroups: ["calves"], equipment: "machine", weightNote: "Plates on machine" },
+
+	// ─── CARDIO / CONDITIONING ─────────
+	{ name: "Treadmill", muscleGroups: ["quads", "calves"], equipment: "machine", weightNote: "Time/distance" },
+	{
+		name: "Stair Climber",
+		muscleGroups: ["quads", "glutes", "calves"],
+		equipment: "machine",
+		weightNote: "Time/distance",
+	},
+	{ name: "Rowing Machine", muscleGroups: ["back", "biceps"], equipment: "machine", weightNote: "Time/distance" },
+	{ name: "Battle Ropes", muscleGroups: ["shoulders", "core"], equipment: "bodyweight", weightNote: "Time-based" },
+	{ name: "Jump Squats", muscleGroups: ["quads", "glutes"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{
+		name: "Box Jumps",
+		muscleGroups: ["quads", "glutes", "calves"],
+		equipment: "bodyweight",
+		weightNote: "Bodyweight",
+	},
+	{ name: "Burpees", muscleGroups: ["compound", "core"], equipment: "bodyweight", weightNote: "Bodyweight" },
+	{
+		name: "Kettlebell Swings",
+		muscleGroups: ["glutes", "hamstrings", "core"],
+		equipment: "dumbbell",
+		weightNote: "Single KB",
+	},
 ]
+
+/** All unique muscle group names for category browsing */
+export const MUSCLE_GROUP_LABELS: Record<MuscleGroup, string> = {
+	chest: "Chest",
+	back: "Back",
+	shoulders: "Shoulders",
+	biceps: "Biceps",
+	triceps: "Triceps",
+	quads: "Quads",
+	hamstrings: "Hamstrings",
+	glutes: "Glutes",
+	calves: "Calves",
+	core: "Core",
+	compound: "Compound",
+}
+
+/** Get exercises filtered by muscle group */
+export function getExercisesByMuscle(muscle: MuscleGroup): ExerciseInfo[] {
+	return EXERCISE_DB.filter(e => e.muscleGroups.includes(muscle))
+}
 
 /** Get exercises that share at least one muscle group with the given exercise */
 export function getSwapSuggestions(exerciseName: string, limit = 5): ExerciseInfo[] {

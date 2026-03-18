@@ -263,10 +263,13 @@ export interface ProgressPhotosData {
 	photos: ProgressPhoto[]
 }
 
+export type SetType = "normal" | "dropset" | "myorep" | "warmup"
+
 export interface ActiveSetData {
 	weightKg: number
 	reps: number
 	completed: boolean
+	setType?: SetType
 }
 
 export interface ActiveExerciseData {
