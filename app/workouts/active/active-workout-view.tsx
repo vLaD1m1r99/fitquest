@@ -385,20 +385,30 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 		[bestWeights],
 	)
 
-	/** Add a set to an exercise with optional type */
-	const addSet = useCallback((exIdx: number, setType: SetType = "normal") => {
+	/** Add a regular set to an exercise */
+	const addSet = useCallback((exIdx: number) => {
 		setSession(prev => {
 			if (!prev) return prev
 			const next = structuredClone(prev)
 			const lastSet = next.exercises[exIdx].sets[next.exercises[exIdx].sets.length - 1]
-			const newWeight =
-				setType === "dropset" && lastSet ? Math.max(0, lastSet.weightKg - 5) : lastSet ? lastSet.weightKg : 0
 			next.exercises[exIdx].sets.push({
-				weightKg: newWeight,
+				weightKg: lastSet ? lastSet.weightKg : 0,
 				reps: lastSet ? lastSet.reps : 10,
 				completed: false,
-				setType,
 			})
+			return next
+		})
+	}, [])
+
+	/** Toggle set type (normal → dropset → myorep → normal) */
+	const cycleSetType = useCallback((exIdx: number, setIdx: number) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			const set = next.exercises[exIdx].sets[setIdx]
+			const cycle: (SetType | undefined)[] = [undefined, "dropset", "myorep"]
+			const currentIdx = cycle.indexOf(set.setType)
+			set.setType = cycle[(currentIdx + 1) % cycle.length]
 			return next
 		})
 	}, [])
@@ -422,23 +432,28 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 		})
 	}, [])
 
-	/** Swap an exercise for another */
-	const swapExercise = useCallback((exIdx: number, newName: string) => {
-		setSession(prev => {
-			if (!prev) return prev
-			const next = structuredClone(prev)
-			next.exercises[exIdx].name = newName
-			next.exercises[exIdx].notes = ""
-			next.exercises[exIdx].youtube = undefined
-			// Reset sets weights to 0 since it's a new exercise
-			for (const set of next.exercises[exIdx].sets) {
-				set.weightKg = 0
-				set.completed = false
-			}
-			return next
-		})
-		setSwapMenuIdx(null)
-	}, [])
+	/** Swap an exercise for another — pre-fill from history */
+	const swapExercise = useCallback(
+		(exIdx: number, newName: string) => {
+			setSession(prev => {
+				if (!prev) return prev
+				const next = structuredClone(prev)
+				const last = getLastPerformance(newName, workoutLog)
+				next.exercises[exIdx].name = newName
+				next.exercises[exIdx].notes = ""
+				next.exercises[exIdx].youtube = undefined
+				for (const set of next.exercises[exIdx].sets) {
+					set.weightKg = last?.weightKg ?? 0
+					set.reps = last?.reps ?? 10
+					set.completed = false
+					set.setType = undefined
+				}
+				return next
+			})
+			setSwapMenuIdx(null)
+		},
+		[workoutLog],
+	)
 
 	/** Delete an exercise from the session */
 	const deleteExercise = useCallback((exIdx: number) => {
@@ -451,20 +466,31 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 		})
 	}, [])
 
-	/** Add a new exercise to the session */
-	const addExercise = useCallback((name: string) => {
-		setSession(prev => {
-			if (!prev) return prev
-			const next = structuredClone(prev)
-			next.exercises.push({
-				name,
-				sets: [{ weightKg: 0, reps: 10, completed: false }],
+	/** Add a new exercise — pre-fill from history, default 3 sets */
+	const addExercise = useCallback(
+		(name: string) => {
+			setSession(prev => {
+				if (!prev) return prev
+				const next = structuredClone(prev)
+				const last = getLastPerformance(name, workoutLog)
+				const weight = last?.weightKg ?? 0
+				const reps = last?.reps ?? 10
+				next.exercises.push({
+					name,
+					sets: Array.from({ length: 3 }, () => ({
+						weightKg: weight,
+						reps,
+						completed: false,
+					})),
+				})
+				return next
 			})
-			return next
-		})
-		setAddMenuOpen(false)
-		setAddSearch("")
-	}, [])
+			setAddMenuOpen(false)
+			setAddSearch("")
+			setAddCategory(null)
+		},
+		[workoutLog],
+	)
 
 	const finishWorkout = useCallback(async () => {
 		if (!session) return
@@ -801,35 +827,37 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 							{exercise.sets.map((set, setIdx) => {
 								const typeInfo = SET_TYPE_LABELS[set.setType || "normal"]
 								return (
-									<button
+									<div
 										key={setIdx}
-										type="button"
-										onClick={() => toggleSetComplete(exIdx, setIdx)}
-										className={`grid grid-cols-[2.5rem_1fr_1fr] gap-2 items-center transition-all w-full rounded-lg py-1.5 px-1 ${
+										className={`grid grid-cols-[2.5rem_1fr_1fr_2.5rem] gap-2 items-center transition-all rounded-lg py-1.5 px-1 ${
 											set.completed
 												? "bg-green-500/10 border border-green-500/20"
-												: "hover:bg-muted/30 border border-transparent"
+												: "border border-transparent"
 										}`}
 									>
-										{/* Set number + type badge */}
-										<div className="flex flex-col items-center gap-0.5">
+										{/* Set number — tap to cycle type (normal → DROP → MYO) */}
+										<button
+											type="button"
+											onClick={() => cycleSetType(exIdx, setIdx)}
+											className="flex flex-col items-center gap-0.5"
+											aria-label="Change set type"
+										>
 											<span
 												className={`text-xs font-medium ${set.completed ? "text-green-400" : "text-muted-foreground"}`}
 											>
-												{set.completed ? "\u2713" : setIdx + 1}
+												{setIdx + 1}
 											</span>
-											{typeInfo.label && (
+											{typeInfo.label ? (
 												<span className={`text-[8px] font-bold px-1 rounded ${typeInfo.color}`}>
 													{typeInfo.label}
 												</span>
+											) : (
+												<span className="text-[7px] text-muted-foreground/50">tap</span>
 											)}
-										</div>
+										</button>
 
 										{/* Weight */}
-										<div
-											className="flex items-center justify-center gap-1"
-											onClick={e => e.stopPropagation()}
-										>
+										<div className="flex items-center justify-center gap-1">
 											<StepButton
 												onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
 												icon="minus"
@@ -850,10 +878,7 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 										</div>
 
 										{/* Reps */}
-										<div
-											className="flex items-center justify-center gap-1"
-											onClick={e => e.stopPropagation()}
-										>
+										<div className="flex items-center justify-center gap-1">
 											<StepButton
 												onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
 												icon="minus"
@@ -872,33 +897,33 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 												disabled={set.completed}
 											/>
 										</div>
-									</button>
+
+										{/* Complete toggle */}
+										<button
+											type="button"
+											onClick={() => toggleSetComplete(exIdx, setIdx)}
+											className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
+												set.completed
+													? "bg-green-500/20 text-green-400"
+													: "bg-muted/30 text-muted-foreground hover:bg-accent/20 hover:text-accent"
+											}`}
+											aria-label={set.completed ? "Undo set" : "Complete set"}
+										>
+											{set.completed ? <Check size={18} /> : <Check size={16} />}
+										</button>
+									</div>
 								)
 							})}
 
-							{/* Add set buttons with type selection */}
-							<div className="flex gap-1.5 pt-1 flex-wrap">
+							{/* Add / Remove set */}
+							<div className="flex gap-2 pt-1">
 								<button
 									type="button"
-									onClick={() => addSet(exIdx, "normal")}
-									className="flex-1 min-w-[80px] py-2 rounded-lg text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-1"
+									onClick={() => addSet(exIdx)}
+									className="flex-1 py-2 rounded-lg text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-1"
 								>
 									<Plus size={12} />
-									Set
-								</button>
-								<button
-									type="button"
-									onClick={() => addSet(exIdx, "dropset")}
-									className="py-2 px-3 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors"
-								>
-									Drop
-								</button>
-								<button
-									type="button"
-									onClick={() => addSet(exIdx, "myorep")}
-									className="py-2 px-3 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors"
-								>
-									Myo
+									Add Set
 								</button>
 								{exercise.sets.length > 1 && (
 									<button
