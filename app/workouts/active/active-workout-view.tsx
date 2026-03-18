@@ -818,10 +818,11 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user, todayDailyEnt
 
 						{/* Sets */}
 						<div className="px-4 pb-3 space-y-2">
-							<div className="grid grid-cols-[2.5rem_1fr_1fr] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
-								<span>Set</span>
+							<div className="grid grid-cols-[2.5rem_1fr_1fr_2.5rem] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
+								<span className="text-center">Set</span>
 								<span className="text-center">Weight (kg)</span>
 								<span className="text-center">Reps</span>
+								<span className="text-center">✓</span>
 							</div>
 
 							{exercise.sets.map((set, setIdx) => {
