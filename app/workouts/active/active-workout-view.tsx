@@ -186,11 +186,21 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const [saving, setSaving] = useState(false)
 	const [saveError, setSaveError] = useState<string | null>(null)
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+	const startTimeRef = useRef<string | null>(null)
 	const [prCelebrations, setPrCelebrations] = useState<Record<number, string | null>>({})
 	const [swapMenuIdx, setSwapMenuIdx] = useState<number | null>(null)
 	const [addMenuOpen, setAddMenuOpen] = useState(false)
 	const [addSearch, setAddSearch] = useState("")
 
+	/** Calculate elapsed from real clock time, not tick count */
+	const recalcElapsed = useCallback(() => {
+		if (startTimeRef.current) {
+			const startMs = new Date(startTimeRef.current).getTime()
+			setElapsed(Math.floor((Date.now() - startMs) / 1000))
+		}
+	}, [])
+
+	// Hydrate from localStorage on mount
 	useEffect(() => {
 		try {
 			const saved = localStorage.getItem(LS_KEY)
@@ -199,24 +209,37 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				if (parsed.user === user && !parsed.finishedAt) {
 					setSession(parsed)
 					setPhase("active")
-					const startMs = new Date(parsed.startTime).getTime()
-					setElapsed(Math.floor((Date.now() - startMs) / 1000))
+					startTimeRef.current = parsed.startTime
+					recalcElapsed()
 				}
 			}
 		} catch (_) {
 			/* ignore */
 		}
-	}, [user])
+	}, [user, recalcElapsed])
 
+	// Clock-based timer: recalculates from startTime every second
+	// Survives phone lock because it uses real clock, not tick count
 	useEffect(() => {
 		if (phase === "active") {
-			timerRef.current = setInterval(() => setElapsed(e => e + 1), 1000)
+			timerRef.current = setInterval(recalcElapsed, 1000)
 			return () => {
 				if (timerRef.current) clearInterval(timerRef.current)
 			}
 		}
 		if (timerRef.current) clearInterval(timerRef.current)
-	}, [phase])
+	}, [phase, recalcElapsed])
+
+	// Recalculate elapsed when tab regains focus (phone unlock, tab switch)
+	useEffect(() => {
+		const handleVisibility = () => {
+			if (document.visibilityState === "visible" && phase === "active") {
+				recalcElapsed()
+			}
+		}
+		document.addEventListener("visibilitychange", handleVisibility)
+		return () => document.removeEventListener("visibilitychange", handleVisibility)
+	}, [phase, recalcElapsed])
 
 	useEffect(() => {
 		if (session && phase === "active") {
@@ -259,6 +282,7 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				startTime: new Date().toISOString(),
 				exercises: buildExercises(key, workoutPlan, workoutLog),
 			}
+			startTimeRef.current = newSession.startTime
 			setSession(newSession)
 			setPhase("active")
 			setElapsed(0)
