@@ -147,6 +147,8 @@ export interface DailyLogEntry {
 	workoutCompleted: boolean
 	missedWorkoutReason: string
 	notes: string
+	menstrualFlow?: "none" | "light" | "medium" | "heavy" | null
+	menstrualDay?: number | null
 }
 
 export interface DailyLog {

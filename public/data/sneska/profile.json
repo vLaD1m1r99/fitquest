@@ -3,21 +3,21 @@
   "gender": "female",
   "age": 28,
   "heightCm": 160,
-  "currentWeightKg": 61.4,
+  "currentWeightKg": 60.8,
   "startingWeightKg": 61.4,
   "goalWeightKg": null,
-  "bmr": 1313,
-  "tdee": 2035,
-  "dailyCalorieTarget": 1535,
+  "bmr": 1307,
+  "tdee": 2026,
+  "dailyCalorieTarget": 1526,
   "macros": {
-    "proteinG": 135,
-    "fatG": 43,
-    "carbsG": 152
+    "proteinG": 134,
+    "fatG": 42,
+    "carbsG": 153
   },
   "deficit": 500,
   "activityFactor": 1.55,
   "supplements": ["Creatine 5g/day", "Whey protein"],
   "restrictions": ["mushrooms"],
-  "lastRecalculation": "2026-03-10",
-  "notes": "Does not eat mushrooms. Primary meat: chicken."
+  "lastRecalculation": "2026-03-18",
+  "notes": "Does not eat mushrooms. Primary meat: chicken. Menstrual cycle tracked in daily log."
 }

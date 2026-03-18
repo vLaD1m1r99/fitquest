@@ -116,6 +116,19 @@
       "workoutCompleted": false,
       "missedWorkoutReason": "Sick",
       "notes": "Sick — day 9, on meds. Hoping to start training tomorrow."
+    },
+    {
+      "date": "2026-03-18",
+      "steps": 0,
+      "sleepHours": 0,
+      "sleepQuality": "fair",
+      "energyLevel": 2,
+      "mood": "neutral",
+      "stressLevel": 2,
+      "sickness": false,
+      "workoutCompleted": true,
+      "missedWorkoutReason": "",
+      "notes": "First workout back after 9 days sick. Push Day. Still recovering but getting better every day."
     }
   ]
 }

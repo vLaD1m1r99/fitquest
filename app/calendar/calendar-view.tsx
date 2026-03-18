@@ -132,9 +132,16 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 	}
 
 	const hasData = (dateStr: string) =>
-		workoutsByDate.has(dateStr) || nutritionByDate.has(dateStr) || dailyByDate.has(dateStr)
+		workoutsByDate.has(dateStr) ||
+		nutritionByDate.has(dateStr) ||
+		dailyByDate.has(dateStr) ||
+		weightByDate.has(dateStr)
 
 	const hasSick = (dateStr: string) => dailyByDate.get(dateStr)?.sickness === true
+	const hasPeriod = (dateStr: string) => {
+		const entry = dailyByDate.get(dateStr)
+		return entry?.menstrualFlow != null && entry.menstrualFlow !== "none"
+	}
 
 	return (
 		<div className="space-y-6">
@@ -185,6 +192,7 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 						const isSelected = dateStr === selectedDate
 						const dayHasData = hasData(dateStr)
 						const dayIsSick = hasSick(dateStr)
+						const dayHasPeriod = hasPeriod(dateStr)
 						const dayHasWorkout = workoutsByDate.has(dateStr)
 						const dayHasNutrition = nutritionByDate.has(dateStr)
 
@@ -223,6 +231,11 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 												className={`w-1 h-1 rounded-full ${isSelected ? "bg-accent-foreground/70" : "bg-red-400"}`}
 											/>
 										)}
+										{dayHasPeriod && (
+											<span
+												className={`w-1 h-1 rounded-full ${isSelected ? "bg-accent-foreground/70" : "bg-pink-400"}`}
+											/>
+										)}
 									</div>
 								)}
 							</button>
@@ -239,6 +252,9 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 					</span>
 					<span className="flex items-center gap-1">
 						<span className="w-1.5 h-1.5 rounded-full bg-red-400" /> Sick
+					</span>
+					<span className="flex items-center gap-1">
+						<span className="w-1.5 h-1.5 rounded-full bg-pink-400" /> Period
 					</span>
 				</div>
 			</Card>
@@ -273,6 +289,13 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 							<div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm">
 								<AlertCircle size={14} />
 								Sick day
+							</div>
+						)}
+
+						{selectedDaily.menstrualFlow && selectedDaily.menstrualFlow !== "none" && (
+							<div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-pink-500/10 text-pink-400 text-sm">
+								<Heart size={14} />
+								Period — Day {selectedDaily.menstrualDay || "?"} ({selectedDaily.menstrualFlow} flow)
 							</div>
 						)}
 

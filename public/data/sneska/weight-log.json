@@ -5,6 +5,12 @@
       "weightKg": 61.4,
       "weeklyAvgKg": null,
       "notes": "Starting weight"
+    },
+    {
+      "date": "2026-03-18",
+      "weightKg": 60.8,
+      "weeklyAvgKg": null,
+      "notes": "Post-sickness weigh-in, resuming training"
     }
   ]
 }
