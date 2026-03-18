@@ -64,37 +64,48 @@ function getBestWeight(exerciseName: string, serverLog: WorkoutLog): number {
 }
 
 /**
- * Suggest next weight based on last performance:
- * - RPE <= 7 and all reps hit → +2.5kg (progressive overload)
- * - RPE 8 → same weight, try +1 rep
- * - RPE 9-10 → same weight, consolidate
- * - No history → 0 (user enters manually)
+ * Suggest next weight based on progressive overload:
+ * 1. If hit top of rep range AND RPE <= 7 → +2.5kg, drop to bottom of range
+ * 2. If RPE <= 8 but not at top of range → same weight, +1 rep
+ * 3. If RPE 9-10 → same weight, same reps (consolidate)
+ * 4. No history → 0 (user enters manually)
  */
 function getSuggestedWeight(
 	exerciseName: string,
 	serverLog: WorkoutLog,
+	targetRepsStr?: string,
 ): { weightKg: number; reps: number; hint: string } | null {
 	const last = getLastPerformance(exerciseName, serverLog)
 	if (!last) return null
 
-	if (last.rpe <= 7) {
+	// Parse rep range from plan (e.g. "8-12" → min=8, max=12)
+	const rangeMatch = targetRepsStr?.match(/(\d+)\s*[-–]\s*(\d+)/)
+	const maxReps = rangeMatch ? Number.parseInt(rangeMatch[2], 10) : null
+	const minReps = rangeMatch ? Number.parseInt(rangeMatch[1], 10) : null
+
+	// Only suggest +2.5kg if at TOP of rep range AND it felt easy (RPE <= 7)
+	if (maxReps && minReps && last.reps >= maxReps && last.rpe <= 7) {
 		return {
 			weightKg: last.weightKg + 2.5,
-			reps: last.reps,
-			hint: `Last: ${last.weightKg}kg — go heavier!`,
+			reps: minReps,
+			hint: `Maxed ${last.reps} reps @ ${last.weightKg}kg — go up!`,
 		}
 	}
-	if (last.rpe === 8) {
+
+	// RPE was manageable but not at top of range yet → add a rep
+	if (last.rpe <= 8) {
 		return {
 			weightKg: last.weightKg,
 			reps: last.reps + 1,
-			hint: `Last: ${last.weightKg}kg RPE${last.rpe} — add a rep`,
+			hint: `Last: ${last.weightKg}kg ×${last.reps} RPE${last.rpe} — add a rep`,
 		}
 	}
+
+	// RPE 9-10 → consolidate, same weight and reps
 	return {
 		weightKg: last.weightKg,
 		reps: last.reps,
-		hint: `Last: ${last.weightKg}kg RPE${last.rpe} — match it`,
+		hint: `Last: ${last.weightKg}kg ×${last.reps} RPE${last.rpe} — match it`,
 	}
 }
 
@@ -103,7 +114,7 @@ function buildExercises(workoutKey: string, plan: WorkoutPlan, serverLog: Workou
 	const template = plan.workouts[workoutKey]
 	if (!template) return []
 	return template.exercises.map(ex => {
-		const suggestion = getSuggestedWeight(ex.name, serverLog)
+		const suggestion = getSuggestedWeight(ex.name, serverLog, ex.reps)
 		return {
 			name: ex.name,
 			youtube: ex.youtube,
@@ -220,16 +231,19 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		return map
 	}, [session, workoutLog])
 
-	// Weight suggestions per exercise
+	// Weight suggestions per exercise (with rep ranges from plan)
 	const suggestions = useMemo(() => {
 		if (!session) return {}
+		const workoutKey = session.workoutKey
+		const template = workoutPlan.workouts[workoutKey]
 		const map: Record<string, string> = {}
 		for (const ex of session.exercises) {
-			const sug = getSuggestedWeight(ex.name, workoutLog)
+			const planEx = template?.exercises.find(e => e.name === ex.name)
+			const sug = getSuggestedWeight(ex.name, workoutLog, planEx?.reps)
 			if (sug) map[ex.name] = sug.hint
 		}
 		return map
-	}, [session, workoutLog])
+	}, [session, workoutLog, workoutPlan])
 
 	const startWorkout = useCallback(
 		(key: string) => {
