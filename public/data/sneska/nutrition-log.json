@@ -107,19 +107,27 @@
             { "food": "JoYa Soja Vanilla Milk", "portionG": 150, "calories": 86, "proteinG": 5, "carbsG": 11, "fatG": 3 },
             { "food": "Oven Baked Chips (Yogurt & Herbs)", "portionG": 30, "calories": 132, "proteinG": 2, "carbsG": 22, "fatG": 4 }
           ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "food": "Chicken Breast (baked)", "portionG": 150, "calories": 248, "proteinG": 46, "carbsG": 0, "fatG": 6 },
+            { "food": "Oven Potato Fries", "portionG": 200, "calories": 240, "proteinG": 4, "carbsG": 44, "fatG": 4 },
+            { "food": "Cabbage Salad", "portionG": 100, "calories": 50, "proteinG": 1, "carbsG": 6, "fatG": 3 }
+          ]
         }
       ],
       "dailyTotals": {
-        "calories": 1084,
-        "proteinG": 79,
-        "carbsG": 103,
-        "fatG": 34
+        "calories": 1622,
+        "proteinG": 130,
+        "carbsG": 153,
+        "fatG": 47
       },
       "remaining": {
-        "calories": 442,
-        "proteinG": 55,
-        "carbsG": 50,
-        "fatG": 8
+        "calories": -96,
+        "proteinG": 4,
+        "carbsG": 0,
+        "fatG": -5
       }
     }
   ]

@@ -90,19 +90,27 @@
             { "food": "Kiselo Mleko 2.8%", "portionG": 200, "calories": 110, "proteinG": 7, "carbsG": 8, "fatG": 6 },
             { "food": "Chicken Salami (piletina salama)", "portionG": 100, "calories": 160, "proteinG": 14, "carbsG": 2, "fatG": 10 }
           ]
+        },
+        {
+          "mealType": "dinner",
+          "items": [
+            { "food": "Chicken Breast (baked)", "portionG": 275, "calories": 454, "proteinG": 85, "carbsG": 0, "fatG": 10 },
+            { "food": "Oven Potato Fries", "portionG": 275, "calories": 330, "proteinG": 6, "carbsG": 61, "fatG": 5 },
+            { "food": "Cabbage Salad", "portionG": 150, "calories": 100, "proteinG": 2, "carbsG": 12, "fatG": 5 }
+          ]
         }
       ],
       "dailyTotals": {
-        "calories": 1386,
-        "proteinG": 112,
-        "carbsG": 112,
-        "fatG": 51
+        "calories": 2270,
+        "proteinG": 205,
+        "carbsG": 185,
+        "fatG": 71
       },
       "remaining": {
-        "calories": 1034,
-        "proteinG": 88,
-        "carbsG": 142,
-        "fatG": 16
+        "calories": 150,
+        "proteinG": -5,
+        "carbsG": 69,
+        "fatG": -4
       }
     }
   ]

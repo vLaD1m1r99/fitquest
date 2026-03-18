@@ -356,40 +356,63 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 					</Card>
 				)}
 
-				{/* Workouts */}
-				{selectedWorkouts.map((session, idx) => (
-					<Card key={idx} className="p-4 space-y-3">
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-2 text-sm font-semibold">
-								<Dumbbell size={16} className="text-accent" />
-								{session.sessionType}
-							</div>
-							<div className="flex items-center gap-3 text-xs text-muted-foreground">
-								<span>{session.durationMin}m</span>
-								<span className="text-accent font-bold">RPE {session.overallRPE}</span>
-							</div>
-						</div>
-
-						<div className="space-y-2">
-							{session.exercises.map((ex, exIdx) => (
-								<div
-									key={exIdx}
-									className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0"
-								>
-									<span className="text-sm">{ex.name}</span>
-									<div className="flex items-center gap-3 text-xs text-muted-foreground">
-										<span>{ex.sets.length} sets</span>
-										<span className="font-medium text-foreground">
-											{Math.max(...ex.sets.map(s => s.weightKg))}kg
-										</span>
-									</div>
+				{/* Workouts — full detail */}
+				{selectedWorkouts.map((session, idx) => {
+					const totalVolume = session.exercises.reduce(
+						(sum, ex) => sum + ex.sets.reduce((s, set) => s + set.weightKg * set.reps, 0),
+						0,
+					)
+					return (
+						<Card key={idx} className="p-4 space-y-4">
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2 text-sm font-semibold">
+									<Dumbbell size={16} className="text-accent" />
+									{session.sessionType}
 								</div>
-							))}
-						</div>
+								<div className="flex items-center gap-3 text-xs text-muted-foreground">
+									<span>{session.durationMin}m</span>
+									<span className="text-accent font-bold">RPE {session.overallRPE}</span>
+								</div>
+							</div>
 
-						{session.notes && <p className="text-xs text-muted-foreground italic">{session.notes}</p>}
-					</Card>
-				))}
+							{/* Volume summary */}
+							<div className="flex items-center gap-4 text-xs text-muted-foreground">
+								<span>{session.exercises.length} exercises</span>
+								<span>{session.exercises.reduce((s, e) => s + e.sets.length, 0)} total sets</span>
+								<span className="font-medium text-foreground">
+									{totalVolume.toLocaleString()}kg volume
+								</span>
+							</div>
+
+							{/* Exercise details */}
+							<div className="space-y-3">
+								{session.exercises.map((ex, exIdx) => (
+									<div key={exIdx} className="space-y-1">
+										<div className="flex items-center justify-between">
+											<span className="text-sm font-medium">{ex.name}</span>
+											<span className="text-xs text-muted-foreground">
+												best: {Math.max(...ex.sets.map(s => s.weightKg))}kg
+											</span>
+										</div>
+										{/* Individual sets */}
+										<div className="flex flex-wrap gap-1.5">
+											{ex.sets.map((set, sIdx) => (
+												<span
+													key={sIdx}
+													className="text-[11px] px-2 py-0.5 rounded bg-muted/40 text-foreground"
+												>
+													{set.weightKg}kg × {set.reps}
+												</span>
+											))}
+										</div>
+									</div>
+								))}
+							</div>
+
+							{session.notes && <p className="text-xs text-muted-foreground italic">{session.notes}</p>}
+						</Card>
+					)
+				})}
 
 				{/* Nutrition */}
 				{selectedNutrition && (
@@ -447,15 +470,17 @@ export function CalendarView({ profile, weightLog, dailyLog, workoutLog, nutriti
 						{selectedNutrition.meals.map((meal, mIdx) => (
 							<div key={mIdx}>
 								<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-									{meal.mealType}
+									{(meal as any).mealName || meal.mealType}
 								</p>
 								<div className="space-y-1">
 									{meal.items.map((item, iIdx) => (
-										<div key={iIdx} className="flex items-center justify-between text-xs">
-											<span>
+										<div key={iIdx} className="flex items-center justify-between text-xs gap-2">
+											<span className="truncate">
 												{item.food} ({item.portionG}g)
 											</span>
-											<span className="text-muted-foreground">{item.calories} cal</span>
+											<span className="text-muted-foreground whitespace-nowrap">
+												{item.calories}cal · {item.proteinG}P · {item.carbsG}C · {item.fatG}F
+											</span>
 										</div>
 									))}
 								</div>
