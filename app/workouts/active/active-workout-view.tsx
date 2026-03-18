@@ -5,10 +5,18 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Card } from "@/components/ui/card"
-import type { ActiveExerciseData, ActiveSetData, ActiveWorkoutSession, User, WorkoutLog, WorkoutPlan } from "@/lib/data"
+import type {
+	ActiveExerciseData,
+	ActiveSetData,
+	ActiveWorkoutSession,
+	ExerciseSet,
+	User,
+	WorkoutLog,
+	WorkoutPlan,
+	WorkoutSession,
+} from "@/lib/data"
 
 const LS_KEY = "fitquest_active_workout"
-const LS_COMPLETED_KEY = "fitquest_completed_workouts"
 
 const PR_MESSAGES = [
 	{ icon: Trophy, text: "NEW PR! Beast mode!", color: "text-yellow-400" },
@@ -18,57 +26,32 @@ const PR_MESSAGES = [
 	{ icon: Flame, text: "You're on fire!", color: "text-orange-400" },
 ]
 
-/** Parse a reps string like "10-12", "15 each leg", "pyramid" into a default number */
 function parseDefaultReps(repsStr: string): number {
 	const match = repsStr.match(/(\d+)/)
 	return match ? Number.parseInt(match[1], 10) : 10
 }
 
-/** Get last used weight for an exercise — check server workout log first, then localStorage */
-function getLastWeight(
+/** Get last performance for an exercise from the server log */
+function getLastPerformance(
 	exerciseName: string,
-	user: string,
 	serverLog: WorkoutLog,
-): { weightKg: number; reps: number } | null {
-	// Check server workout log (most authoritative) — search backwards for most recent
+): { weightKg: number; reps: number; rpe: number } | null {
 	for (let i = serverLog.sessions.length - 1; i >= 0; i--) {
 		const session = serverLog.sessions[i]
 		const ex = session.exercises.find(e => e.name === exerciseName)
-		if (ex) {
+		if (ex && ex.sets.length > 0) {
 			const bestSet = ex.sets.reduce((best, s) => (s.weightKg > best.weightKg ? s : best), ex.sets[0])
 			if (bestSet && bestSet.weightKg > 0) {
-				return { weightKg: bestSet.weightKg, reps: bestSet.reps }
+				return { weightKg: bestSet.weightKg, reps: bestSet.reps, rpe: bestSet.rpe || session.overallRPE }
 			}
 		}
-	}
-
-	// Fallback to localStorage completed workouts
-	if (typeof window === "undefined") return null
-	try {
-		const raw = localStorage.getItem(LS_COMPLETED_KEY)
-		if (!raw) return null
-		const completed: ActiveWorkoutSession[] = JSON.parse(raw)
-		for (let i = completed.length - 1; i >= 0; i--) {
-			if (completed[i].user !== user) continue
-			const ex = completed[i].exercises.find(e => e.name === exerciseName)
-			if (ex) {
-				const bestSet = ex.sets.reduce((best, s) => (s.weightKg > best.weightKg ? s : best), ex.sets[0])
-				if (bestSet && bestSet.weightKg > 0) {
-					return { weightKg: bestSet.weightKg, reps: bestSet.reps }
-				}
-			}
-		}
-	} catch (_) {
-		/* ignore */
 	}
 	return null
 }
 
-/** Get the best weight ever done for an exercise (for PR detection) */
-function getBestWeight(exerciseName: string, user: string, serverLog: WorkoutLog): number {
+/** Get best weight ever for PR detection */
+function getBestWeight(exerciseName: string, serverLog: WorkoutLog): number {
 	let best = 0
-
-	// Check server log
 	for (const session of serverLog.sessions) {
 		const ex = session.exercises.find(e => e.name === exerciseName)
 		if (ex) {
@@ -77,62 +60,73 @@ function getBestWeight(exerciseName: string, user: string, serverLog: WorkoutLog
 			}
 		}
 	}
-
-	// Check localStorage
-	if (typeof window !== "undefined") {
-		try {
-			const raw = localStorage.getItem(LS_COMPLETED_KEY)
-			if (raw) {
-				const completed: ActiveWorkoutSession[] = JSON.parse(raw)
-				for (const session of completed) {
-					if (session.user !== user) continue
-					const ex = session.exercises.find(e => e.name === exerciseName)
-					if (ex) {
-						for (const s of ex.sets) {
-							if (s.weightKg > best) best = s.weightKg
-						}
-					}
-				}
-			}
-		} catch (_) {
-			/* ignore */
-		}
-	}
 	return best
 }
 
-/** Build initial exercise data from a workout template */
-function buildExercises(
-	workoutKey: string,
-	plan: WorkoutPlan,
-	user: string,
+/**
+ * Suggest next weight based on last performance:
+ * - RPE <= 7 and all reps hit → +2.5kg (progressive overload)
+ * - RPE 8 → same weight, try +1 rep
+ * - RPE 9-10 → same weight, consolidate
+ * - No history → 0 (user enters manually)
+ */
+function getSuggestedWeight(
+	exerciseName: string,
 	serverLog: WorkoutLog,
-): ActiveExerciseData[] {
+): { weightKg: number; reps: number; hint: string } | null {
+	const last = getLastPerformance(exerciseName, serverLog)
+	if (!last) return null
+
+	if (last.rpe <= 7) {
+		return {
+			weightKg: last.weightKg + 2.5,
+			reps: last.reps,
+			hint: `Last: ${last.weightKg}kg — go heavier!`,
+		}
+	}
+	if (last.rpe === 8) {
+		return {
+			weightKg: last.weightKg,
+			reps: last.reps + 1,
+			hint: `Last: ${last.weightKg}kg RPE${last.rpe} — add a rep`,
+		}
+	}
+	return {
+		weightKg: last.weightKg,
+		reps: last.reps,
+		hint: `Last: ${last.weightKg}kg RPE${last.rpe} — match it`,
+	}
+}
+
+/** Build initial exercise data with smart suggestions */
+function buildExercises(workoutKey: string, plan: WorkoutPlan, serverLog: WorkoutLog): ActiveExerciseData[] {
 	const template = plan.workouts[workoutKey]
 	if (!template) return []
 	return template.exercises.map(ex => {
-		const last = getLastWeight(ex.name, user, serverLog)
+		const suggestion = getSuggestedWeight(ex.name, serverLog)
 		return {
 			name: ex.name,
 			youtube: ex.youtube,
 			notes: ex.notes,
 			sets: Array.from({ length: ex.sets }, () => ({
-				weightKg: last?.weightKg ?? 0,
-				reps: last?.reps ?? parseDefaultReps(ex.reps),
+				weightKg: suggestion?.weightKg ?? 0,
+				reps: suggestion?.reps ?? parseDefaultReps(ex.reps),
 				completed: false,
 			})),
 		}
 	})
 }
 
-/** Format elapsed seconds as MM:SS */
 function formatTime(seconds: number): string {
 	const m = Math.floor(seconds / 60)
 	const s = seconds % 60
 	return `${m}:${s.toString().padStart(2, "0")}`
 }
 
-/** Increment/decrement button */
+function toDateStr(d: Date): string {
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
 function StepButton({
 	onClick,
 	icon,
@@ -173,15 +167,14 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const router = useRouter()
 	const rotation = workoutPlan.schedule?.rotation || Object.keys(workoutPlan.workouts)
 
-	// Session state
 	const [session, setSession] = useState<ActiveWorkoutSession | null>(null)
 	const [phase, setPhase] = useState<"pick" | "active" | "finish">("pick")
 	const [elapsed, setElapsed] = useState(0)
 	const [rpe, setRpe] = useState(7)
 	const [finishNotes, setFinishNotes] = useState("")
+	const [saving, setSaving] = useState(false)
+	const [saveError, setSaveError] = useState<string | null>(null)
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-	// PR celebration state: track which exercises have shown a PR
 	const [prCelebrations, setPrCelebrations] = useState<Record<number, string | null>>({})
 
 	// Hydrate from localStorage on mount
@@ -202,7 +195,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		}
 	}, [user])
 
-	// Timer tick
 	useEffect(() => {
 		if (phase === "active") {
 			timerRef.current = setInterval(() => setElapsed(e => e + 1), 1000)
@@ -213,24 +205,31 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		if (timerRef.current) clearInterval(timerRef.current)
 	}, [phase])
 
-	// Persist session to localStorage on every change
 	useEffect(() => {
 		if (session && phase === "active") {
 			localStorage.setItem(LS_KEY, JSON.stringify(session))
 		}
 	}, [session, phase])
 
-	// Compute best weights for PR detection (memoised once per session start)
 	const bestWeights = useMemo(() => {
 		if (!session) return {}
 		const map: Record<string, number> = {}
 		for (const ex of session.exercises) {
-			map[ex.name] = getBestWeight(ex.name, user, workoutLog)
+			map[ex.name] = getBestWeight(ex.name, workoutLog)
 		}
 		return map
-	}, [session, user, workoutLog])
+	}, [session, workoutLog])
 
-	// ─── Actions ──────────────────────────────────────────
+	// Weight suggestions per exercise
+	const suggestions = useMemo(() => {
+		if (!session) return {}
+		const map: Record<string, string> = {}
+		for (const ex of session.exercises) {
+			const sug = getSuggestedWeight(ex.name, workoutLog)
+			if (sug) map[ex.name] = sug.hint
+		}
+		return map
+	}, [session, workoutLog])
 
 	const startWorkout = useCallback(
 		(key: string) => {
@@ -241,12 +240,13 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				workoutKey: key,
 				workoutName: template.name,
 				startTime: new Date().toISOString(),
-				exercises: buildExercises(key, workoutPlan, user, workoutLog),
+				exercises: buildExercises(key, workoutPlan, workoutLog),
 			}
 			setSession(newSession)
 			setPhase("active")
 			setElapsed(0)
 			setPrCelebrations({})
+			setSaveError(null)
 			localStorage.setItem(LS_KEY, JSON.stringify(newSession))
 		},
 		[workoutPlan, workoutLog, user],
@@ -271,14 +271,12 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				const set = next.exercises[exIdx].sets[setIdx]
 				set.completed = !set.completed
 
-				// Check for PR when completing a set (not uncompleting)
 				if (set.completed) {
 					const exName = next.exercises[exIdx].name
 					const prevBest = bestWeights[exName] ?? 0
 					if (set.weightKg > prevBest && set.weightKg > 0) {
 						const msgIdx = Math.floor(Math.random() * PR_MESSAGES.length)
 						setPrCelebrations(prev => ({ ...prev, [exIdx]: PR_MESSAGES[msgIdx].text }))
-						// Auto-clear after 3 seconds
 						setTimeout(() => {
 							setPrCelebrations(prev => ({ ...prev, [exIdx]: null }))
 						}, 3000)
@@ -291,28 +289,60 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		[bestWeights],
 	)
 
-	const finishWorkout = useCallback(() => {
+	/** Save workout to GitHub via API */
+	const finishWorkout = useCallback(async () => {
 		if (!session) return
-		const finished: ActiveWorkoutSession = {
-			...session,
+		setSaving(true)
+		setSaveError(null)
+
+		const durationMin = Math.round(elapsed / 60)
+
+		// Convert to WorkoutSession format for the log
+		const workoutSession: WorkoutSession = {
+			date: toDateStr(new Date(session.startTime)),
+			sessionType: session.workoutName,
+			exercises: session.exercises.map(ex => ({
+				name: ex.name,
+				sets: ex.sets
+					.filter(s => s.completed)
+					.map(
+						(s): ExerciseSet => ({
+							reps: s.reps,
+							weightKg: s.weightKg,
+							rpe: rpe,
+						}),
+					),
+			})),
 			overallRPE: rpe,
-			durationMin: Math.round(elapsed / 60),
+			durationMin,
 			notes: finishNotes,
-			finishedAt: new Date().toISOString(),
 		}
+
 		try {
-			const raw = localStorage.getItem(LS_COMPLETED_KEY)
-			const completed: ActiveWorkoutSession[] = raw ? JSON.parse(raw) : []
-			completed.push(finished)
-			localStorage.setItem(LS_COMPLETED_KEY, JSON.stringify(completed))
-		} catch (_) {
-			/* ignore */
+			const res = await fetch("/api/save-workout", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ user, session: workoutSession }),
+			})
+
+			if (!res.ok) {
+				const data = await res.json()
+				throw new Error(data.error || "Failed to save")
+			}
+
+			// Success — clean up localStorage and redirect
+			localStorage.removeItem(LS_KEY)
+			setSession(null)
+			setPhase("pick")
+			router.push("/workouts")
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : "Unknown error"
+			setSaveError(msg)
+			// Don't redirect — let user retry or see the error
+		} finally {
+			setSaving(false)
 		}
-		localStorage.removeItem(LS_KEY)
-		setSession(null)
-		setPhase("pick")
-		router.push("/workouts")
-	}, [session, rpe, elapsed, finishNotes, router])
+	}, [session, rpe, elapsed, finishNotes, user, router])
 
 	const cancelWorkout = useCallback(() => {
 		localStorage.removeItem(LS_KEY)
@@ -372,7 +402,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 					{session.workoutName} · {formatTime(elapsed)}
 				</p>
 
-				{/* RPE selector */}
 				<div>
 					<span className="text-sm font-medium block mb-2">How hard was it? (RPE)</span>
 					<div className="flex gap-1.5 flex-wrap">
@@ -393,7 +422,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 					</div>
 				</div>
 
-				{/* Notes */}
 				<div>
 					<label htmlFor="finish-notes" className="text-sm font-medium block mb-2">
 						Notes (optional)
@@ -408,20 +436,28 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 					/>
 				</div>
 
+				{saveError && (
+					<div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+						Failed to save: {saveError}
+					</div>
+				)}
+
 				<div className="flex gap-3">
 					<button
 						type="button"
 						onClick={() => setPhase("active")}
-						className="flex-1 py-3 rounded-xl bg-muted/40 hover:bg-muted/60 font-medium text-sm transition-colors"
+						disabled={saving}
+						className="flex-1 py-3 rounded-xl bg-muted/40 hover:bg-muted/60 font-medium text-sm transition-colors disabled:opacity-50"
 					>
 						Back
 					</button>
 					<button
 						type="button"
 						onClick={finishWorkout}
-						className="flex-1 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm transition-colors hover:bg-accent/90"
+						disabled={saving}
+						className="flex-1 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm transition-colors hover:bg-accent/90 disabled:opacity-50"
 					>
-						Save Workout
+						{saving ? "Saving..." : "Save Workout"}
 					</button>
 				</div>
 			</div>
@@ -437,7 +473,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 
 	return (
 		<div className="space-y-4 pb-24">
-			{/* Sticky header */}
 			<div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm py-3 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-border/50">
 				<div className="flex items-center justify-between">
 					<div>
@@ -469,7 +504,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 						</button>
 					</div>
 				</div>
-				{/* Progress bar */}
 				<div className="mt-2 h-1.5 rounded-full bg-muted/30 overflow-hidden">
 					<div
 						className="h-full bg-accent rounded-full transition-all duration-300"
@@ -478,15 +512,14 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				</div>
 			</div>
 
-			{/* Exercise cards */}
 			{session.exercises.map((exercise, exIdx) => {
 				const exCompleted = exercise.sets.every(s => s.completed)
 				const prMsg = prCelebrations[exIdx]
 				const previousBest = bestWeights[exercise.name] ?? 0
+				const hint = suggestions[exercise.name]
 
 				return (
 					<Card key={exIdx} className={`overflow-hidden transition-all ${exCompleted ? "opacity-60" : ""}`}>
-						{/* Exercise header */}
 						<div className="p-4 pb-2 flex items-start justify-between gap-2">
 							<div className="flex items-center gap-2">
 								<div
@@ -500,7 +533,8 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 								</div>
 								<div>
 									<h3 className="font-semibold text-sm">{exercise.name}</h3>
-									{previousBest > 0 && (
+									{hint && <p className="text-[10px] text-accent mt-0.5">{hint}</p>}
+									{!hint && previousBest > 0 && (
 										<p className="text-[10px] text-muted-foreground mt-0.5">
 											Previous best: {previousBest}kg
 										</p>
@@ -512,7 +546,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 							</div>
 						</div>
 
-						{/* PR Celebration Banner */}
 						{prMsg && (
 							<div className="mx-4 mb-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center gap-2 animate-pulse">
 								<Trophy size={16} className="text-yellow-400 flex-shrink-0" />
@@ -520,9 +553,7 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 							</div>
 						)}
 
-						{/* Sets */}
 						<div className="px-4 pb-4 space-y-2">
-							{/* Header row */}
 							<div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
 								<span>Set</span>
 								<span className="text-center">Weight (kg)</span>
@@ -537,12 +568,10 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 										set.completed ? "opacity-40" : ""
 									}`}
 								>
-									{/* Set number */}
 									<span className="text-xs font-medium text-muted-foreground text-center">
 										{setIdx + 1}
 									</span>
 
-									{/* Weight control */}
 									<div className="flex items-center justify-center gap-1">
 										<StepButton
 											onClick={() => updateSet(exIdx, setIdx, "weightKg", -2.5)}
@@ -561,7 +590,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 										/>
 									</div>
 
-									{/* Reps control */}
 									<div className="flex items-center justify-center gap-1">
 										<StepButton
 											onClick={() => updateSet(exIdx, setIdx, "reps", -1)}
@@ -580,7 +608,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 										/>
 									</div>
 
-									{/* Complete toggle */}
 									<button
 										type="button"
 										onClick={() => toggleSetComplete(exIdx, setIdx)}
