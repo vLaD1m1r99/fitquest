@@ -1,6 +1,19 @@
 "use client"
 
-import { Check, ChevronLeft, Flame, Minus, Play, Plus, Square, Timer, Trophy, Zap } from "lucide-react"
+import {
+	Check,
+	ChevronLeft,
+	Flame,
+	Minus,
+	Play,
+	Plus,
+	RefreshCw,
+	Square,
+	Timer,
+	Trash2,
+	Trophy,
+	Zap,
+} from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -15,15 +28,16 @@ import type {
 	WorkoutPlan,
 	WorkoutSession,
 } from "@/lib/data"
+import { EXERCISE_DB, getSwapSuggestions, getWeightNote } from "@/lib/exercises"
 
 const LS_KEY = "fitquest_active_workout"
 
 const PR_MESSAGES = [
-	{ icon: Trophy, text: "NEW PR! Beast mode!", color: "text-yellow-400" },
-	{ icon: Flame, text: "Stronger than last time!", color: "text-orange-400" },
-	{ icon: Zap, text: "Level up! More weight!", color: "text-blue-400" },
-	{ icon: Trophy, text: "PR crushed!", color: "text-yellow-400" },
-	{ icon: Flame, text: "You're on fire!", color: "text-orange-400" },
+	{ text: "NEW PR! Beast mode!" },
+	{ text: "Stronger than last time!" },
+	{ text: "Level up! More weight!" },
+	{ text: "PR crushed!" },
+	{ text: "You're on fire!" },
 ]
 
 function parseDefaultReps(repsStr: string): number {
@@ -31,7 +45,6 @@ function parseDefaultReps(repsStr: string): number {
 	return match ? Number.parseInt(match[1], 10) : 10
 }
 
-/** Get last performance for an exercise from the server log */
 function getLastPerformance(
 	exerciseName: string,
 	serverLog: WorkoutLog,
@@ -49,7 +62,6 @@ function getLastPerformance(
 	return null
 }
 
-/** Get best weight ever for PR detection */
 function getBestWeight(exerciseName: string, serverLog: WorkoutLog): number {
 	let best = 0
 	for (const session of serverLog.sessions) {
@@ -63,13 +75,6 @@ function getBestWeight(exerciseName: string, serverLog: WorkoutLog): number {
 	return best
 }
 
-/**
- * Suggest next weight based on progressive overload:
- * 1. If hit top of rep range AND RPE <= 7 → +2.5kg, drop to bottom of range
- * 2. If RPE <= 8 but not at top of range → same weight, +1 rep
- * 3. If RPE 9-10 → same weight, same reps (consolidate)
- * 4. No history → 0 (user enters manually)
- */
 function getSuggestedWeight(
 	exerciseName: string,
 	serverLog: WorkoutLog,
@@ -78,12 +83,10 @@ function getSuggestedWeight(
 	const last = getLastPerformance(exerciseName, serverLog)
 	if (!last) return null
 
-	// Parse rep range from plan (e.g. "8-12" → min=8, max=12)
 	const rangeMatch = targetRepsStr?.match(/(\d+)\s*[-–]\s*(\d+)/)
 	const maxReps = rangeMatch ? Number.parseInt(rangeMatch[2], 10) : null
 	const minReps = rangeMatch ? Number.parseInt(rangeMatch[1], 10) : null
 
-	// Only suggest +2.5kg if at TOP of rep range AND it felt easy (RPE <= 7)
 	if (maxReps && minReps && last.reps >= maxReps && last.rpe <= 7) {
 		return {
 			weightKg: last.weightKg + 2.5,
@@ -92,7 +95,6 @@ function getSuggestedWeight(
 		}
 	}
 
-	// RPE was manageable but not at top of range yet → add a rep
 	if (last.rpe <= 8) {
 		return {
 			weightKg: last.weightKg,
@@ -101,7 +103,6 @@ function getSuggestedWeight(
 		}
 	}
 
-	// RPE 9-10 → consolidate, same weight and reps
 	return {
 		weightKg: last.weightKg,
 		reps: last.reps,
@@ -109,7 +110,6 @@ function getSuggestedWeight(
 	}
 }
 
-/** Build initial exercise data with smart suggestions */
 function buildExercises(workoutKey: string, plan: WorkoutPlan, serverLog: WorkoutLog): ActiveExerciseData[] {
 	const template = plan.workouts[workoutKey]
 	if (!template) return []
@@ -187,8 +187,10 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const [saveError, setSaveError] = useState<string | null>(null)
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 	const [prCelebrations, setPrCelebrations] = useState<Record<number, string | null>>({})
+	const [swapMenuIdx, setSwapMenuIdx] = useState<number | null>(null)
+	const [addMenuOpen, setAddMenuOpen] = useState(false)
+	const [addSearch, setAddSearch] = useState("")
 
-	// Hydrate from localStorage on mount
 	useEffect(() => {
 		try {
 			const saved = localStorage.getItem(LS_KEY)
@@ -231,7 +233,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		return map
 	}, [session, workoutLog])
 
-	// Weight suggestions per exercise (with rep ranges from plan)
 	const suggestions = useMemo(() => {
 		if (!session) return {}
 		const workoutKey = session.workoutKey
@@ -244,6 +245,8 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		}
 		return map
 	}, [session, workoutLog, workoutPlan])
+
+	// ─── Actions ──────────────────────────────────────────
 
 	const startWorkout = useCallback(
 		(key: string) => {
@@ -303,7 +306,84 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		[bestWeights],
 	)
 
-	/** Save workout to GitHub via API */
+	/** Add a set to an exercise (for drop sets / myoreps) */
+	const addSet = useCallback((exIdx: number) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			const lastSet = next.exercises[exIdx].sets[next.exercises[exIdx].sets.length - 1]
+			next.exercises[exIdx].sets.push({
+				weightKg: lastSet ? lastSet.weightKg : 0,
+				reps: lastSet ? lastSet.reps : 10,
+				completed: false,
+			})
+			return next
+		})
+	}, [])
+
+	/** Remove the last uncompleted set from an exercise */
+	const removeLastSet = useCallback((exIdx: number) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			const sets = next.exercises[exIdx].sets
+			if (sets.length <= 1) return prev
+			// Remove last uncompleted set, or last set if all completed
+			const lastUncompletedIdx = sets
+				.map((s, i) => ({ s, i }))
+				.reverse()
+				.find(x => !x.s.completed)?.i
+			if (lastUncompletedIdx !== undefined) {
+				sets.splice(lastUncompletedIdx, 1)
+			}
+			return next
+		})
+	}, [])
+
+	/** Swap an exercise for another */
+	const swapExercise = useCallback((exIdx: number, newName: string) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			next.exercises[exIdx].name = newName
+			next.exercises[exIdx].notes = ""
+			next.exercises[exIdx].youtube = undefined
+			// Reset sets weights to 0 since it's a new exercise
+			for (const set of next.exercises[exIdx].sets) {
+				set.weightKg = 0
+				set.completed = false
+			}
+			return next
+		})
+		setSwapMenuIdx(null)
+	}, [])
+
+	/** Delete an exercise from the session */
+	const deleteExercise = useCallback((exIdx: number) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			if (next.exercises.length <= 1) return prev
+			next.exercises.splice(exIdx, 1)
+			return next
+		})
+	}, [])
+
+	/** Add a new exercise to the session */
+	const addExercise = useCallback((name: string) => {
+		setSession(prev => {
+			if (!prev) return prev
+			const next = structuredClone(prev)
+			next.exercises.push({
+				name,
+				sets: [{ weightKg: 0, reps: 10, completed: false }],
+			})
+			return next
+		})
+		setAddMenuOpen(false)
+		setAddSearch("")
+	}, [])
+
 	const finishWorkout = useCallback(async () => {
 		if (!session) return
 		setSaving(true)
@@ -311,7 +391,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 
 		const durationMin = Math.round(elapsed / 60)
 
-		// Convert to WorkoutSession format for the log
 		const workoutSession: WorkoutSession = {
 			date: toDateStr(new Date(session.startTime)),
 			sessionType: session.workoutName,
@@ -344,7 +423,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				throw new Error(data.error || "Failed to save")
 			}
 
-			// Success — clean up localStorage and redirect
 			localStorage.removeItem(LS_KEY)
 			setSession(null)
 			setPhase("pick")
@@ -352,7 +430,6 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : "Unknown error"
 			setSaveError(msg)
-			// Don't redirect — let user retry or see the error
 		} finally {
 			setSaving(false)
 		}
@@ -485,8 +562,18 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 	const totalSets = session.exercises.reduce((s, e) => s + e.sets.length, 0)
 	const completedSets = session.exercises.reduce((s, e) => s + e.sets.filter(st => st.completed).length, 0)
 
+	const filteredAddExercises =
+		addSearch.length > 0
+			? EXERCISE_DB.filter(
+					e =>
+						e.name.toLowerCase().includes(addSearch.toLowerCase()) &&
+						!session.exercises.some(se => se.name === e.name),
+				).slice(0, 8)
+			: []
+
 	return (
 		<div className="space-y-4 pb-24">
+			{/* Sticky header */}
 			<div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm py-3 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-border/50">
 				<div className="flex items-center justify-between">
 					<div>
@@ -526,40 +613,91 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 				</div>
 			</div>
 
+			{/* Exercise cards */}
 			{session.exercises.map((exercise, exIdx) => {
 				const exCompleted = exercise.sets.every(s => s.completed)
 				const prMsg = prCelebrations[exIdx]
 				const previousBest = bestWeights[exercise.name] ?? 0
 				const hint = suggestions[exercise.name]
+				const weightNote = getWeightNote(exercise.name)
+				const isSwapOpen = swapMenuIdx === exIdx
+				const swapOptions = isSwapOpen ? getSwapSuggestions(exercise.name) : []
 
 				return (
 					<Card key={exIdx} className={`overflow-hidden transition-all ${exCompleted ? "opacity-60" : ""}`}>
-						<div className="p-4 pb-2 flex items-start justify-between gap-2">
-							<div className="flex items-center gap-2">
-								<div
-									className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-										exCompleted
-											? "bg-green-500/20 text-green-400"
-											: "bg-muted/50 text-muted-foreground"
-									}`}
-								>
-									{exCompleted ? <Check size={14} /> : exIdx + 1}
+						{/* Exercise header */}
+						<div className="p-4 pb-2">
+							<div className="flex items-start justify-between gap-2">
+								<div className="flex items-center gap-2 flex-1 min-w-0">
+									<div
+										className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+											exCompleted
+												? "bg-green-500/20 text-green-400"
+												: "bg-muted/50 text-muted-foreground"
+										}`}
+									>
+										{exCompleted ? <Check size={14} /> : exIdx + 1}
+									</div>
+									<div className="min-w-0">
+										<h3 className="font-semibold text-sm truncate">{exercise.name}</h3>
+										{hint && <p className="text-[10px] text-accent mt-0.5">{hint}</p>}
+										{!hint && previousBest > 0 && (
+											<p className="text-[10px] text-muted-foreground mt-0.5">
+												Previous best: {previousBest}kg
+											</p>
+										)}
+										{weightNote && <p className="text-[10px] text-blue-400 mt-0.5">{weightNote}</p>}
+									</div>
 								</div>
-								<div>
-									<h3 className="font-semibold text-sm">{exercise.name}</h3>
-									{hint && <p className="text-[10px] text-accent mt-0.5">{hint}</p>}
-									{!hint && previousBest > 0 && (
-										<p className="text-[10px] text-muted-foreground mt-0.5">
-											Previous best: {previousBest}kg
-										</p>
-									)}
-									{exercise.notes && (
-										<p className="text-xs text-muted-foreground mt-0.5">{exercise.notes}</p>
-									)}
+								{/* Swap & Delete buttons */}
+								<div className="flex gap-1 flex-shrink-0">
+									<button
+										type="button"
+										onClick={() => setSwapMenuIdx(isSwapOpen ? null : exIdx)}
+										className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+										aria-label="Swap exercise"
+									>
+										<RefreshCw size={14} />
+									</button>
+									<button
+										type="button"
+										onClick={() => deleteExercise(exIdx)}
+										className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-colors"
+										aria-label="Remove exercise"
+									>
+										<Trash2 size={14} />
+									</button>
 								</div>
 							</div>
+
+							{/* Swap menu */}
+							{isSwapOpen && (
+								<div className="mt-2 p-3 rounded-lg bg-muted/30 border border-border space-y-1">
+									<p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-2">
+										Swap with:
+									</p>
+									{swapOptions.map(opt => (
+										<button
+											key={opt.name}
+											type="button"
+											onClick={() => swapExercise(exIdx, opt.name)}
+											className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted/50 text-sm transition-colors"
+										>
+											<span className="font-medium">{opt.name}</span>
+											<span className="text-[10px] text-muted-foreground ml-2">
+												{opt.equipment} · {opt.weightNote}
+											</span>
+										</button>
+									))}
+								</div>
+							)}
+
+							{exercise.notes && (
+								<p className="text-xs text-muted-foreground mt-1 ml-9">{exercise.notes}</p>
+							)}
 						</div>
 
+						{/* PR Celebration Banner */}
 						{prMsg && (
 							<div className="mx-4 mb-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center gap-2 animate-pulse">
 								<Trophy size={16} className="text-yellow-400 flex-shrink-0" />
@@ -567,7 +705,8 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 							</div>
 						)}
 
-						<div className="px-4 pb-4 space-y-2">
+						{/* Sets */}
+						<div className="px-4 pb-3 space-y-2">
 							<div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-1">
 								<span>Set</span>
 								<span className="text-center">Weight (kg)</span>
@@ -635,10 +774,89 @@ export function ActiveWorkoutView({ workoutPlan, workoutLog, user }: Props) {
 									</button>
 								</div>
 							))}
+
+							{/* Add/Remove set buttons */}
+							<div className="flex gap-2 pt-1">
+								<button
+									type="button"
+									onClick={() => addSet(exIdx)}
+									className="flex-1 py-2 rounded-lg text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-1"
+								>
+									<Plus size={12} />
+									Add Set
+								</button>
+								{exercise.sets.length > 1 && (
+									<button
+										type="button"
+										onClick={() => removeLastSet(exIdx)}
+										className="py-2 px-3 rounded-lg text-xs font-medium bg-muted/30 text-muted-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1"
+									>
+										<Minus size={12} />
+									</button>
+								)}
+							</div>
 						</div>
 					</Card>
 				)
 			})}
+
+			{/* Add Exercise Button */}
+			<Card className="p-4">
+				{addMenuOpen ? (
+					<div className="space-y-3">
+						<div className="flex items-center justify-between">
+							<p className="text-sm font-semibold">Add Exercise</p>
+							<button
+								type="button"
+								onClick={() => {
+									setAddMenuOpen(false)
+									setAddSearch("")
+								}}
+								className="text-xs text-muted-foreground hover:text-foreground"
+							>
+								Cancel
+							</button>
+						</div>
+						<input
+							type="text"
+							value={addSearch}
+							onChange={e => setAddSearch(e.target.value)}
+							placeholder="Search exercises..."
+							className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+							autoFocus
+						/>
+						{filteredAddExercises.length > 0 && (
+							<div className="space-y-1 max-h-60 overflow-y-auto">
+								{filteredAddExercises.map(ex => (
+									<button
+										key={ex.name}
+										type="button"
+										onClick={() => addExercise(ex.name)}
+										className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted/50 text-sm transition-colors"
+									>
+										<span className="font-medium">{ex.name}</span>
+										<span className="text-[10px] text-muted-foreground ml-2">
+											{ex.muscleGroups.join(", ")} · {ex.weightNote}
+										</span>
+									</button>
+								))}
+							</div>
+						)}
+						{addSearch.length > 0 && filteredAddExercises.length === 0 && (
+							<p className="text-xs text-muted-foreground text-center py-2">No exercises found</p>
+						)}
+					</div>
+				) : (
+					<button
+						type="button"
+						onClick={() => setAddMenuOpen(true)}
+						className="w-full py-3 rounded-lg text-sm font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex items-center justify-center gap-2"
+					>
+						<Plus size={16} />
+						Add Exercise
+					</button>
+				)}
+			</Card>
 		</div>
 	)
 }
