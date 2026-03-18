@@ -64,6 +64,63 @@
         "carbsG": -82,
         "fatG": -17
       }
+    },
+    {
+      "date": "2026-03-18",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "mealName": "Pita (2/5 portion)",
+          "items": [
+            { "food": "Whole Grain Phyllo (kore)", "portionG": 60, "calories": 186, "proteinG": 4, "carbsG": 27, "fatG": 6 },
+            { "food": "Sitni Sir (cottage cheese)", "portionG": 100, "calories": 98, "proteinG": 11, "carbsG": 3, "fatG": 4 },
+            { "food": "Egg Whites", "portionG": 26, "calories": 14, "proteinG": 3, "carbsG": 0, "fatG": 0 },
+            { "food": "Whole Egg", "portionG": 20, "calories": 29, "proteinG": 2, "carbsG": 0, "fatG": 2 },
+            { "food": "Sesame Seeds", "portionG": 2, "calories": 12, "proteinG": 0, "carbsG": 0, "fatG": 1 }
+          ]
+        },
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 90, "proteinG": 7, "carbsG": 9, "fatG": 2 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "Whey Protein (1 scoop)", "portionG": 30, "calories": 120, "proteinG": 24, "carbsG": 2, "fatG": 1 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "mealName": "Half-Tortilla Egg Meal (modified)",
+          "items": [
+            { "food": "Egg Whites", "portionG": 66, "calories": 34, "proteinG": 7, "carbsG": 1, "fatG": 0 },
+            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
+            { "food": "Kiselo Mleko 2.8%", "portionG": 100, "calories": 55, "proteinG": 3, "carbsG": 4, "fatG": 3 },
+            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "JoYa Soja Vanilla Milk", "portionG": 150, "calories": 86, "proteinG": 5, "carbsG": 11, "fatG": 3 },
+            { "food": "Oven Baked Chips (Yogurt & Herbs)", "portionG": 30, "calories": 132, "proteinG": 2, "carbsG": 22, "fatG": 4 }
+          ]
+        }
+      ],
+      "dailyTotals": {
+        "calories": 1084,
+        "proteinG": 79,
+        "carbsG": 103,
+        "fatG": 34
+      },
+      "remaining": {
+        "calories": 442,
+        "proteinG": 55,
+        "carbsG": 50,
+        "fatG": 8
+      }
     }
   ]
 }

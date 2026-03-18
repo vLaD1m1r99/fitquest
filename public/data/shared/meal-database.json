@@ -34,6 +34,16 @@
         { "food": "Yogurt 1% Fat", "portionG": 200 },
         { "food": "Tortilla (half)", "portionG": 55 }
       ]
+    },
+    {
+      "name": "Pita (whole grain + sitni sir, full batch serves 5)",
+      "calories": 845,
+      "proteinG": 52,
+      "carbsG": 79,
+      "fatG": 34,
+      "portionG": 480,
+      "recipe": "150g whole grain phyllo (kore), 250g Milk House sitni sir (cottage cheese), 2 egg whites, 1 whole egg, 1 tsp sesame seeds. Bake until golden.",
+      "perServing": { "serves": 5, "calories": 169, "proteinG": 10, "carbsG": 16, "fatG": 7 }
     }
   ]
 }

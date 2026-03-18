@@ -54,6 +54,56 @@
         "carbsG": 36,
         "fatG": 21
       }
+    },
+    {
+      "date": "2026-03-18",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "mealName": "Pita (3/5 portion)",
+          "items": [
+            { "food": "Whole Grain Phyllo (kore)", "portionG": 90, "calories": 279, "proteinG": 6, "carbsG": 41, "fatG": 9 },
+            { "food": "Sitni Sir (cottage cheese)", "portionG": 150, "calories": 147, "proteinG": 17, "carbsG": 5, "fatG": 7 },
+            { "food": "Egg Whites", "portionG": 40, "calories": 20, "proteinG": 4, "carbsG": 0, "fatG": 0 },
+            { "food": "Whole Egg", "portionG": 30, "calories": 43, "proteinG": 4, "carbsG": 0, "fatG": 3 },
+            { "food": "Sesame Seeds", "portionG": 3, "calories": 17, "proteinG": 1, "carbsG": 1, "fatG": 1 }
+          ]
+        },
+        {
+          "mealType": "breakfast",
+          "items": [
+            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 90, "proteinG": 7, "carbsG": 9, "fatG": 2 }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "Whey Protein (1 scoop)", "portionG": 30, "calories": 120, "proteinG": 24, "carbsG": 2, "fatG": 1 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "food": "Whole Grain Bread", "portionG": 100, "calories": 250, "proteinG": 10, "carbsG": 42, "fatG": 4 },
+            { "food": "Egg Whites (2.5)", "portionG": 83, "calories": 42, "proteinG": 9, "carbsG": 1, "fatG": 0 },
+            { "food": "Whole Eggs (1.5)", "portionG": 75, "calories": 108, "proteinG": 9, "carbsG": 1, "fatG": 8 },
+            { "food": "Kiselo Mleko 2.8%", "portionG": 200, "calories": 110, "proteinG": 7, "carbsG": 8, "fatG": 6 },
+            { "food": "Chicken Salami (piletina salama)", "portionG": 100, "calories": 160, "proteinG": 14, "carbsG": 2, "fatG": 10 }
+          ]
+        }
+      ],
+      "dailyTotals": {
+        "calories": 1386,
+        "proteinG": 112,
+        "carbsG": 112,
+        "fatG": 51
+      },
+      "remaining": {
+        "calories": 1034,
+        "proteinG": 88,
+        "carbsG": 142,
+        "fatG": 16
+      }
     }
   ]
 }
