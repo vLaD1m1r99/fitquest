@@ -1,3 +1,60 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "date": "2026-03-18",
+      "sessionType": "Push Day",
+      "exercises": [
+        {
+          "name": "Machine Incline Bench Press",
+          "sets": [
+            { "reps": 10, "weightKg": 20, "rpe": 6 },
+            { "reps": 10, "weightKg": 20, "rpe": 6 },
+            { "reps": 8, "weightKg": 20, "rpe": 6 },
+            { "reps": 8, "weightKg": 20, "rpe": 6 },
+            { "reps": 10, "weightKg": 15, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Flys (Machine or Dumbbell Flat)",
+          "sets": [
+            { "reps": 10, "weightKg": 14, "rpe": 6 },
+            { "reps": 10, "weightKg": 18, "rpe": 6 },
+            { "reps": 10, "weightKg": 18, "rpe": 6 },
+            { "reps": 10, "weightKg": 18, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Skull Crushers",
+          "sets": [
+            { "reps": 10, "weightKg": 20, "rpe": 6 },
+            { "reps": 10, "weightKg": 20, "rpe": 6 },
+            { "reps": 8, "weightKg": 20, "rpe": 6 },
+            { "reps": 8, "weightKg": 20, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Cable Triceps Pushdowns",
+          "sets": [
+            { "reps": 12, "weightKg": 18, "rpe": 6 },
+            { "reps": 12, "weightKg": 18, "rpe": 6 },
+            { "reps": 12, "weightKg": 18, "rpe": 6 },
+            { "reps": 12, "weightKg": 18, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Dumbbell Lateral Raises",
+          "sets": [
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 8, "weightKg": 10, "rpe": 6 },
+            { "reps": 8, "weightKg": 10, "rpe": 6 }
+          ]
+        }
+      ],
+      "overallRPE": 6,
+      "durationMin": 50,
+      "notes": "First workout back after 9 days sick. Took it easy, RPE 6. Still recovering but felt good to move again."
+    }
+  ]
 }
