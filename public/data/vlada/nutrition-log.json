@@ -118,6 +118,34 @@
         "carbsG": 49,
         "fatG": -4
       }
+    },
+    {
+      "date": "2026-03-19",
+      "meals": [
+        {
+          "mealType": "breakfast",
+          "mealName": "Oatmeal Breakfast (2/3, no peanut butter)",
+          "items": [
+            { "food": "Oats", "portionG": 60, "calories": 234, "proteinG": 8, "carbsG": 40, "fatG": 4 },
+            { "food": "Whey Protein", "portionG": 32, "calories": 128, "proteinG": 26, "carbsG": 2, "fatG": 1 },
+            { "food": "Pineapple Ring", "portionG": 20, "calories": 16, "proteinG": 0, "carbsG": 4, "fatG": 0 },
+            { "food": "Homemade Raspberry Chia Jam", "portionG": 20, "calories": 15, "proteinG": 0, "carbsG": 3, "fatG": 0 },
+            { "food": "Banana", "portionG": 80, "calories": 71, "proteinG": 1, "carbsG": 18, "fatG": 0 }
+          ]
+        }
+      ],
+      "dailyTotals": {
+        "calories": 464,
+        "proteinG": 35,
+        "carbsG": 67,
+        "fatG": 5
+      },
+      "remaining": {
+        "calories": 1956,
+        "proteinG": 165,
+        "carbsG": 187,
+        "fatG": 62
+      }
     }
   ]
 }
