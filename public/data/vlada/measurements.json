@@ -2,13 +2,14 @@
   "entries": [
     {
       "date": "2026-03-19",
-      "waistCm": 100.5,
+      "waistCm": 90.5,
       "hipsCm": 107,
       "chestCm": 111,
       "armsCm": 35.5,
       "thighsCm": 68,
       "neckCm": 0,
-      "notes": "First measurements. Waist at navel (100.5), natural waist (90.5). Need neck measurement for body fat calc."
+      "bellyCm": 100.5,
+      "notes": "First measurements. Waist (90.5) is narrowest point, belly/stomach (100.5) at navel. Need neck for body fat calc."
     }
   ]
 }
