@@ -1,3 +1,67 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "date": "2026-03-18",
+      "sessionType": "Day 1 — Booty Burn",
+      "exercises": [
+        {
+          "name": "Reverse Hack Squat",
+          "sets": [
+            { "reps": 8, "weightKg": 0, "rpe": 6 },
+            { "reps": 8, "weightKg": 0, "rpe": 6 },
+            { "reps": 8, "weightKg": 0, "rpe": 6 },
+            { "reps": 8, "weightKg": 0, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Good Morning",
+          "sets": [
+            { "reps": 12, "weightKg": 20, "rpe": 6 },
+            { "reps": 12, "weightKg": 20, "rpe": 6 },
+            { "reps": 12, "weightKg": 20, "rpe": 6 },
+            { "reps": 12, "weightKg": 20, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Reverse Lunges",
+          "sets": [
+            { "reps": 15, "weightKg": 5, "rpe": 6 },
+            { "reps": 10, "weightKg": 7, "rpe": 6 },
+            { "reps": 10, "weightKg": 7, "rpe": 6 },
+            { "reps": 10, "weightKg": 7, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Glute Back Extensions",
+          "sets": [
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 10, "weightKg": 10, "rpe": 6 },
+            { "reps": 10, "weightKg": 10, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Cable Kickbacks",
+          "sets": [
+            { "reps": 15, "weightKg": 9, "rpe": 6 },
+            { "reps": 15, "weightKg": 9, "rpe": 6 },
+            { "reps": 15, "weightKg": 9, "rpe": 6 },
+            { "reps": 15, "weightKg": 9, "rpe": 6 }
+          ]
+        },
+        {
+          "name": "Abductor Machine (Leaning Forward + Seated)",
+          "sets": [
+            { "reps": 20, "weightKg": 40, "rpe": 6 },
+            { "reps": 20, "weightKg": 40, "rpe": 6 },
+            { "reps": 20, "weightKg": 40, "rpe": 6 },
+            { "reps": 20, "weightKg": 40, "rpe": 6 }
+          ]
+        }
+      ],
+      "overallRPE": 6,
+      "durationMin": 65,
+      "notes": "First workout back after 9 days sick. On period (day 1). Pushed through, kept it manageable."
+    }
+  ]
 }

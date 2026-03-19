@@ -98,18 +98,24 @@
             { "food": "Oven Potato Fries", "portionG": 275, "calories": 330, "proteinG": 6, "carbsG": 61, "fatG": 5 },
             { "food": "Cabbage Salad", "portionG": 150, "calories": 100, "proteinG": 2, "carbsG": 12, "fatG": 5 }
           ]
+        },
+        {
+          "mealType": "snack",
+          "items": [
+            { "food": "Mandarines (2 pcs)", "portionG": 150, "calories": 80, "proteinG": 1, "carbsG": 20, "fatG": 0 }
+          ]
         }
       ],
       "dailyTotals": {
-        "calories": 2270,
-        "proteinG": 205,
-        "carbsG": 185,
+        "calories": 2350,
+        "proteinG": 206,
+        "carbsG": 205,
         "fatG": 71
       },
       "remaining": {
-        "calories": 150,
-        "proteinG": -5,
-        "carbsG": 69,
+        "calories": 70,
+        "proteinG": -6,
+        "carbsG": 49,
         "fatG": -4
       }
     }
