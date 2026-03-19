@@ -135,13 +135,12 @@
       "meals": [
         {
           "mealType": "breakfast",
-          "mealName": "Oatmeal Breakfast (1/3, no peanut butter)",
+          "mealName": "Oatmeal Breakfast (1/3, no PB, no banana)",
           "items": [
             { "food": "Oats", "portionG": 30, "calories": 117, "proteinG": 4, "carbsG": 20, "fatG": 2 },
             { "food": "Whey Protein", "portionG": 16, "calories": 64, "proteinG": 13, "carbsG": 1, "fatG": 1 },
             { "food": "Pineapple Ring", "portionG": 10, "calories": 8, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Homemade Raspberry Chia Jam", "portionG": 10, "calories": 7, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Banana", "portionG": 40, "calories": 36, "proteinG": 0, "carbsG": 9, "fatG": 0 }
+            { "food": "Homemade Raspberry Chia Jam", "portionG": 10, "calories": 7, "proteinG": 0, "carbsG": 2, "fatG": 0 }
           ]
         },
         {
@@ -149,19 +148,34 @@
           "items": [
             { "food": "JoYa Soja Vanilla Milk", "portionG": 250, "calories": 143, "proteinG": 8, "carbsG": 18, "fatG": 5 }
           ]
+        },
+        {
+          "mealType": "lunch",
+          "mealName": "Egg Tortilla (modified)",
+          "items": [
+            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
+            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 90, "proteinG": 7, "carbsG": 9, "fatG": 2 },
+            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "items": [
+            { "food": "Tomato Soup (1 portion)", "portionG": 250, "calories": 60, "proteinG": 1, "carbsG": 12, "fatG": 1 }
+          ]
         }
       ],
       "dailyTotals": {
-        "calories": 375,
-        "proteinG": 25,
-        "carbsG": 52,
-        "fatG": 8
+        "calories": 717,
+        "proteinG": 44,
+        "carbsG": 88,
+        "fatG": 19
       },
       "remaining": {
-        "calories": 1151,
-        "proteinG": 109,
-        "carbsG": 101,
-        "fatG": 34
+        "calories": 809,
+        "proteinG": 90,
+        "carbsG": 65,
+        "fatG": 23
       }
     }
   ]
