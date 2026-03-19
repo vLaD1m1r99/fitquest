@@ -7,62 +7,202 @@
           "mealType": "breakfast",
           "mealName": "Oatmeal Breakfast (1/3 batch)",
           "items": [
-            { "food": "Oats", "portionG": 30, "calories": 117, "proteinG": 5, "carbsG": 20, "fatG": 2 },
-            { "food": "Whey Protein", "portionG": 16, "calories": 64, "proteinG": 13, "carbsG": 1, "fatG": 1 },
-            { "food": "Pineapple Ring", "portionG": 10, "calories": 8, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Homemade Raspberry Chia Jam", "portionG": 10, "calories": 7, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Banana", "portionG": 40, "calories": 36, "proteinG": 0, "carbsG": 9, "fatG": 0 },
-            { "food": "Kiki Puter (Peanut Butter)", "portionG": 13, "calories": 78, "proteinG": 3, "carbsG": 2, "fatG": 7 }
+            {
+              "food": "Oats",
+              "portionG": 30,
+              "calories": 118,
+              "proteinG": 5,
+              "carbsG": 20,
+              "fatG": 2
+            },
+            {
+              "food": "Whey Protein",
+              "portionG": 16,
+              "calories": 65,
+              "proteinG": 13,
+              "carbsG": 1,
+              "fatG": 1
+            },
+            {
+              "food": "Pineapple Ring",
+              "portionG": 10,
+              "calories": 8,
+              "proteinG": 0,
+              "carbsG": 2,
+              "fatG": 0
+            },
+            {
+              "food": "Homemade Raspberry Chia Jam",
+              "portionG": 10,
+              "calories": 8,
+              "proteinG": 0,
+              "carbsG": 2,
+              "fatG": 0
+            },
+            {
+              "food": "Banana",
+              "portionG": 40,
+              "calories": 36,
+              "proteinG": 0,
+              "carbsG": 9,
+              "fatG": 0
+            },
+            {
+              "food": "Kiki Puter (Peanut Butter)",
+              "portionG": 13,
+              "calories": 83,
+              "proteinG": 3,
+              "carbsG": 2,
+              "fatG": 7
+            }
           ]
         },
         {
           "mealType": "lunch",
           "mealName": "Half-Tortilla Egg Meal",
           "items": [
-            { "food": "Egg Whites", "portionG": 66, "calories": 34, "proteinG": 7, "carbsG": 1, "fatG": 0 },
-            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
-            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 82, "proteinG": 7, "carbsG": 9, "fatG": 1 },
-            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+            {
+              "food": "Egg Whites",
+              "portionG": 66,
+              "calories": 32,
+              "proteinG": 7,
+              "carbsG": 1,
+              "fatG": 0
+            },
+            {
+              "food": "Whole Egg",
+              "portionG": 50,
+              "calories": 69,
+              "proteinG": 6,
+              "carbsG": 0,
+              "fatG": 5
+            },
+            {
+              "food": "Yogurt 1% Fat",
+              "portionG": 200,
+              "calories": 73,
+              "proteinG": 7,
+              "carbsG": 9,
+              "fatG": 1
+            },
+            {
+              "food": "Tortilla (half)",
+              "portionG": 55,
+              "calories": 143,
+              "proteinG": 5,
+              "carbsG": 24,
+              "fatG": 3
+            }
           ]
         },
         {
           "mealType": "snack",
           "items": [
-            { "food": "Oven Baked Chips (Yogurt & Herbs)", "portionG": 50, "calories": 220, "proteinG": 3, "carbsG": 37, "fatG": 7 }
+            {
+              "food": "Oven Baked Chips (Yogurt & Herbs)",
+              "portionG": 50,
+              "calories": 223,
+              "proteinG": 3,
+              "carbsG": 37,
+              "fatG": 7
+            }
           ]
         },
         {
           "mealType": "dinner",
           "items": [
-            { "food": "Baked Sweet Potato", "portionG": 250, "calories": 225, "proteinG": 5, "carbsG": 52, "fatG": 0 },
-            { "food": "Chicken Breast (baked)", "portionG": 150, "calories": 248, "proteinG": 46, "carbsG": 0, "fatG": 6 },
-            { "food": "Milk 2.8%", "portionG": 100, "calories": 52, "proteinG": 3, "carbsG": 5, "fatG": 3 },
-            { "food": "Mixed Salad", "portionG": 150, "calories": 100, "proteinG": 2, "carbsG": 12, "fatG": 5 }
+            {
+              "food": "Baked Sweet Potato",
+              "portionG": 250,
+              "calories": 228,
+              "proteinG": 5,
+              "carbsG": 52,
+              "fatG": 0
+            },
+            {
+              "food": "Chicken Breast (baked)",
+              "portionG": 150,
+              "calories": 238,
+              "proteinG": 46,
+              "carbsG": 0,
+              "fatG": 6
+            },
+            {
+              "food": "Milk 2.8%",
+              "portionG": 100,
+              "calories": 59,
+              "proteinG": 3,
+              "carbsG": 5,
+              "fatG": 3
+            },
+            {
+              "food": "Mixed Salad",
+              "portionG": 150,
+              "calories": 101,
+              "proteinG": 2,
+              "carbsG": 12,
+              "fatG": 5
+            }
           ]
         },
         {
           "mealType": "snack",
           "mealName": "Ovsene Palačinke Very Berry (3/4 portion)",
           "items": [
-            { "food": "Oat Pancakes (3 pcs)", "portionG": 150, "calories": 240, "proteinG": 9, "carbsG": 33, "fatG": 8 },
-            { "food": "Domaći Krem (house spread)", "portionG": 26, "calories": 105, "proteinG": 2, "carbsG": 11, "fatG": 6 },
-            { "food": "Red Berry Mix", "portionG": 38, "calories": 19, "proteinG": 0, "carbsG": 4, "fatG": 0 },
-            { "food": "Almonds", "portionG": 11, "calories": 68, "proteinG": 2, "carbsG": 2, "fatG": 6 },
-            { "food": "Honey", "portionG": 11, "calories": 34, "proteinG": 0, "carbsG": 9, "fatG": 0 }
+            {
+              "food": "Oat Pancakes (3 pcs)",
+              "portionG": 150,
+              "calories": 240,
+              "proteinG": 9,
+              "carbsG": 33,
+              "fatG": 8
+            },
+            {
+              "food": "Domaći Krem (house spread)",
+              "portionG": 26,
+              "calories": 106,
+              "proteinG": 2,
+              "carbsG": 11,
+              "fatG": 6
+            },
+            {
+              "food": "Red Berry Mix",
+              "portionG": 38,
+              "calories": 16,
+              "proteinG": 0,
+              "carbsG": 4,
+              "fatG": 0
+            },
+            {
+              "food": "Almonds",
+              "portionG": 11,
+              "calories": 70,
+              "proteinG": 2,
+              "carbsG": 2,
+              "fatG": 6
+            },
+            {
+              "food": "Honey",
+              "portionG": 11,
+              "calories": 36,
+              "proteinG": 0,
+              "carbsG": 9,
+              "fatG": 0
+            }
           ]
         }
       ],
       "dailyTotals": {
-        "calories": 1964,
+        "calories": 1952,
         "proteinG": 118,
-        "carbsG": 234,
+        "carbsG": 235,
         "fatG": 60
       },
       "remaining": {
-        "calories": -429,
-        "proteinG": 17,
+        "calories": -426,
+        "proteinG": 16,
         "carbsG": -82,
-        "fatG": -17
+        "fatG": -18
       }
     },
     {
@@ -72,59 +212,171 @@
           "mealType": "breakfast",
           "mealName": "Pita (2/5 portion)",
           "items": [
-            { "food": "Whole Grain Phyllo (kore)", "portionG": 60, "calories": 186, "proteinG": 4, "carbsG": 27, "fatG": 6 },
-            { "food": "Sitni Sir (cottage cheese)", "portionG": 100, "calories": 98, "proteinG": 11, "carbsG": 3, "fatG": 4 },
-            { "food": "Egg Whites", "portionG": 26, "calories": 14, "proteinG": 3, "carbsG": 0, "fatG": 0 },
-            { "food": "Whole Egg", "portionG": 20, "calories": 29, "proteinG": 2, "carbsG": 0, "fatG": 2 },
-            { "food": "Sesame Seeds", "portionG": 2, "calories": 12, "proteinG": 0, "carbsG": 0, "fatG": 1 }
+            {
+              "food": "Whole Grain Phyllo (kore)",
+              "portionG": 60,
+              "calories": 178,
+              "proteinG": 4,
+              "carbsG": 27,
+              "fatG": 6
+            },
+            {
+              "food": "Sitni Sir (cottage cheese)",
+              "portionG": 100,
+              "calories": 92,
+              "proteinG": 11,
+              "carbsG": 3,
+              "fatG": 4
+            },
+            {
+              "food": "Egg Whites",
+              "portionG": 26,
+              "calories": 12,
+              "proteinG": 3,
+              "carbsG": 0,
+              "fatG": 0
+            },
+            {
+              "food": "Whole Egg",
+              "portionG": 20,
+              "calories": 26,
+              "proteinG": 2,
+              "carbsG": 0,
+              "fatG": 2
+            },
+            {
+              "food": "Sesame Seeds",
+              "portionG": 2,
+              "calories": 9,
+              "proteinG": 0,
+              "carbsG": 0,
+              "fatG": 1
+            }
           ]
         },
         {
           "mealType": "breakfast",
           "items": [
-            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 90, "proteinG": 7, "carbsG": 9, "fatG": 2 }
+            {
+              "food": "Yogurt 1% Fat",
+              "portionG": 200,
+              "calories": 82,
+              "proteinG": 7,
+              "carbsG": 9,
+              "fatG": 2
+            }
           ]
         },
         {
           "mealType": "snack",
           "items": [
-            { "food": "Whey Protein (1 scoop)", "portionG": 30, "calories": 120, "proteinG": 24, "carbsG": 2, "fatG": 1 }
+            {
+              "food": "Whey Protein (1 scoop)",
+              "portionG": 30,
+              "calories": 113,
+              "proteinG": 24,
+              "carbsG": 2,
+              "fatG": 1
+            }
           ]
         },
         {
           "mealType": "lunch",
           "mealName": "Half-Tortilla Egg Meal (modified)",
           "items": [
-            { "food": "Egg Whites", "portionG": 66, "calories": 34, "proteinG": 7, "carbsG": 1, "fatG": 0 },
-            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
-            { "food": "Kiselo Mleko 2.8%", "portionG": 100, "calories": 55, "proteinG": 3, "carbsG": 4, "fatG": 3 },
-            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+            {
+              "food": "Egg Whites",
+              "portionG": 66,
+              "calories": 32,
+              "proteinG": 7,
+              "carbsG": 1,
+              "fatG": 0
+            },
+            {
+              "food": "Whole Egg",
+              "portionG": 50,
+              "calories": 69,
+              "proteinG": 6,
+              "carbsG": 0,
+              "fatG": 5
+            },
+            {
+              "food": "Kiselo Mleko 2.8%",
+              "portionG": 100,
+              "calories": 55,
+              "proteinG": 3,
+              "carbsG": 4,
+              "fatG": 3
+            },
+            {
+              "food": "Tortilla (half)",
+              "portionG": 55,
+              "calories": 143,
+              "proteinG": 5,
+              "carbsG": 24,
+              "fatG": 3
+            }
           ]
         },
         {
           "mealType": "snack",
           "items": [
-            { "food": "JoYa Soja Vanilla Milk", "portionG": 150, "calories": 86, "proteinG": 5, "carbsG": 11, "fatG": 3 },
-            { "food": "Oven Baked Chips (Yogurt & Herbs)", "portionG": 30, "calories": 132, "proteinG": 2, "carbsG": 22, "fatG": 4 }
+            {
+              "food": "JoYa Soja Vanilla Milk",
+              "portionG": 150,
+              "calories": 91,
+              "proteinG": 5,
+              "carbsG": 11,
+              "fatG": 3
+            },
+            {
+              "food": "Oven Baked Chips (Yogurt & Herbs)",
+              "portionG": 30,
+              "calories": 132,
+              "proteinG": 2,
+              "carbsG": 22,
+              "fatG": 4
+            }
           ]
         },
         {
           "mealType": "dinner",
           "items": [
-            { "food": "Chicken Breast (baked)", "portionG": 150, "calories": 248, "proteinG": 46, "carbsG": 0, "fatG": 6 },
-            { "food": "Oven Potato Fries", "portionG": 200, "calories": 240, "proteinG": 4, "carbsG": 44, "fatG": 4 },
-            { "food": "Cabbage Salad", "portionG": 100, "calories": 50, "proteinG": 1, "carbsG": 6, "fatG": 3 }
+            {
+              "food": "Chicken Breast (baked)",
+              "portionG": 150,
+              "calories": 238,
+              "proteinG": 46,
+              "carbsG": 0,
+              "fatG": 6
+            },
+            {
+              "food": "Oven Potato Fries",
+              "portionG": 200,
+              "calories": 228,
+              "proteinG": 4,
+              "carbsG": 44,
+              "fatG": 4
+            },
+            {
+              "food": "Cabbage Salad",
+              "portionG": 100,
+              "calories": 55,
+              "proteinG": 1,
+              "carbsG": 6,
+              "fatG": 3
+            }
           ]
         }
       ],
       "dailyTotals": {
-        "calories": 1622,
+        "calories": 1555,
         "proteinG": 130,
         "carbsG": 153,
         "fatG": 47
       },
       "remaining": {
-        "calories": -96,
+        "calories": -29,
         "proteinG": 4,
         "carbsG": 0,
         "fatG": -5
@@ -137,42 +389,105 @@
           "mealType": "breakfast",
           "mealName": "Oatmeal Breakfast (1/3, no PB, no banana)",
           "items": [
-            { "food": "Oats", "portionG": 30, "calories": 117, "proteinG": 4, "carbsG": 20, "fatG": 2 },
-            { "food": "Whey Protein", "portionG": 16, "calories": 64, "proteinG": 13, "carbsG": 1, "fatG": 1 },
-            { "food": "Pineapple Ring", "portionG": 10, "calories": 8, "proteinG": 0, "carbsG": 2, "fatG": 0 },
-            { "food": "Homemade Raspberry Chia Jam", "portionG": 10, "calories": 7, "proteinG": 0, "carbsG": 2, "fatG": 0 }
+            {
+              "food": "Oats",
+              "portionG": 30,
+              "calories": 114,
+              "proteinG": 4,
+              "carbsG": 20,
+              "fatG": 2
+            },
+            {
+              "food": "Whey Protein",
+              "portionG": 16,
+              "calories": 65,
+              "proteinG": 13,
+              "carbsG": 1,
+              "fatG": 1
+            },
+            {
+              "food": "Pineapple Ring",
+              "portionG": 10,
+              "calories": 8,
+              "proteinG": 0,
+              "carbsG": 2,
+              "fatG": 0
+            },
+            {
+              "food": "Homemade Raspberry Chia Jam",
+              "portionG": 10,
+              "calories": 8,
+              "proteinG": 0,
+              "carbsG": 2,
+              "fatG": 0
+            }
           ]
         },
         {
           "mealType": "snack",
           "items": [
-            { "food": "JoYa Soja Vanilla Milk", "portionG": 250, "calories": 143, "proteinG": 8, "carbsG": 18, "fatG": 5 }
+            {
+              "food": "JoYa Soja Vanilla Milk",
+              "portionG": 250,
+              "calories": 149,
+              "proteinG": 8,
+              "carbsG": 18,
+              "fatG": 5
+            }
           ]
         },
         {
           "mealType": "lunch",
           "mealName": "Egg Tortilla (modified)",
           "items": [
-            { "food": "Whole Egg", "portionG": 50, "calories": 72, "proteinG": 6, "carbsG": 0, "fatG": 5 },
-            { "food": "Yogurt 1% Fat", "portionG": 200, "calories": 90, "proteinG": 7, "carbsG": 9, "fatG": 2 },
-            { "food": "Tortilla (half)", "portionG": 55, "calories": 156, "proteinG": 5, "carbsG": 24, "fatG": 3 }
+            {
+              "food": "Whole Egg",
+              "portionG": 50,
+              "calories": 69,
+              "proteinG": 6,
+              "carbsG": 0,
+              "fatG": 5
+            },
+            {
+              "food": "Yogurt 1% Fat",
+              "portionG": 200,
+              "calories": 82,
+              "proteinG": 7,
+              "carbsG": 9,
+              "fatG": 2
+            },
+            {
+              "food": "Tortilla (half)",
+              "portionG": 55,
+              "calories": 143,
+              "proteinG": 5,
+              "carbsG": 24,
+              "fatG": 3
+            }
           ]
         },
         {
           "mealType": "lunch",
           "items": [
-            { "food": "Tomato Soup (1 portion)", "portionG": 250, "calories": 60, "proteinG": 1, "carbsG": 12, "fatG": 1 }
+            {
+              "food": "Tomato Soup (1 portion)",
+              "portionG": 250,
+              "calories": 61,
+              "proteinG": 1,
+              "carbsG": 12,
+              "fatG": 1
+            }
           ]
         }
       ],
       "dailyTotals": {
-        "calories": 717,
+        "calories": 699,
         "proteinG": 44,
         "carbsG": 88,
         "fatG": 19
       },
       "remaining": {
-        "calories": 809,
+        "calories": 827,
         "proteinG": 90,
         "carbsG": 65,
         "fatG": 23
